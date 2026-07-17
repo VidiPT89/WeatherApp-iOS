@@ -1,10 +1,10 @@
 # 📱 WeatherApp — iOS Client
 
-> Native SwiftUI client for the [Weather API Aggregator](../WeatherAPI) — proves the same backend contract that powers the [web client](../WeatherApp) serves a native mobile app too.
+> Native SwiftUI client for the [Weather API Aggregator](https://github.com/VidiPT89/WeatherAPI) — proves the same backend contract that powers the [web client](https://github.com/VidiPT89/WeatherApp) serves a native mobile app too.
 
-**Live demo:** not published — runs in the iOS Simulator against the Weather API on `localhost:8080` (see *How to Run*).
+**Live demo:** not published (no App Store account for this project) — can also point at the live backend directly, see *How to Run*.
 
-One of three clients (Web / iOS / [Android](../WeatherApp-Android)) built on top of the same backend. This app talks directly to the Weather API over an HTTPS-exempted localhost connection — it never talks to Open-Meteo/OpenWeatherMap directly.
+One of three clients (Web / iOS / [Android](https://github.com/VidiPT89/WeatherApp-Android)) built on top of the same backend. This app talks directly to the Weather API — it never talks to Open-Meteo/OpenWeatherMap directly.
 
 ## 📦 What's Inside
 
@@ -55,7 +55,7 @@ WeatherApp-iOS/
 
 ## 🚀 How to Run
 
-Prerequisites: Xcode 16+, and the [Weather API](../WeatherAPI) running locally on `http://localhost:8080` (see that repo's README).
+Prerequisites: Xcode 16+, and the [Weather API](https://github.com/VidiPT89/WeatherAPI) running locally on `http://localhost:8080` (see that repo's README) — or point `APIClient`'s base URL at the live deployment: `https://weather-api-production-68ff.up.railway.app`.
 
 ```bash
 open WeatherApp-iOS.xcodeproj

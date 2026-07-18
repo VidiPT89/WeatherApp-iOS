@@ -52,6 +52,13 @@ actor APIClient {
         try await send(path: "/api/v1/weather/forecast", method: "GET", queryItems: Self.cityQuery(city, units))
     }
 
+    /// Water temperature + swell (wave height/direction/period) for a city.
+    /// All four data fields are `nil` for inland/non-coastal cities — that's
+    /// a normal 200 response, not an error.
+    func fetchMarine(city: String, units: Units?) async throws -> MarineResponse {
+        try await send(path: "/api/v1/weather/marine", method: "GET", queryItems: Self.cityQuery(city, units))
+    }
+
     func compareProviders(city: String, units: Units?) async throws -> CompareResponse {
         try await send(path: "/api/v1/weather/compare", method: "GET", queryItems: Self.cityQuery(city, units))
     }
@@ -129,7 +136,7 @@ actor APIClient {
         do {
             bodyData = try Self.encoder.encode(body)
         } catch {
-            throw APIError.decoding("Falha ao construir o pedido: \(error.localizedDescription)")
+            throw APIError.requestEncodingFailed(error.localizedDescription)
         }
         let request = try makeRequest(path: path, method: method, queryItems: queryItems, bodyData: bodyData, requiresAuth: requiresAuth)
         return try await perform(request)
@@ -145,7 +152,7 @@ actor APIClient {
         }
 
         guard let httpResponse = response as? HTTPURLResponse else {
-            throw APIError.transport("Resposta inválida do servidor.")
+            throw APIError.invalidResponse
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {
@@ -171,7 +178,7 @@ actor APIClient {
             components?.queryItems = queryItems
         }
         guard let url = components?.url else {
-            throw APIError.transport("URL inválido.")
+            throw APIError.invalidURL
         }
 
         var request = URLRequest(url: url)
@@ -194,7 +201,7 @@ actor APIClient {
 
     private static func decodeError(status: Int, data: Data) -> APIError {
         if let errorBody = try? decoder.decode(APIErrorResponse.self, from: data) {
-            return .server(status: status, message: errorBody.message)
+            return .server(status: status, message: errorBody.message, errorCode: errorBody.errorCode)
         }
         return .unexpectedResponse(status: status)
     }

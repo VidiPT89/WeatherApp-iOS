@@ -9,12 +9,14 @@ final class ForecastResponseDecodingTests: XCTestCase {
     {
       "city": "Lisboa", "country": "Portugal", "units": "metric", "provider": "open-meteo", "fromCache": false,
       "hourly": [
-        {"time": "2024-01-01T00:00:00", "temperature": 15.2, "description": "clear sky"},
-        {"time": "2024-01-01T01:00:00", "temperature": 14.8, "description": "clear sky"}
+        {"time": "2024-01-01T00:00:00", "temperature": 15.2, "description": "clear sky", "precipitationProbability": 10},
+        {"time": "2024-01-01T01:00:00", "temperature": 14.8, "description": "clear sky", "precipitationProbability": 5}
       ],
       "daily": [
-        {"date": "2024-01-01", "temperatureMax": 22.0, "temperatureMin": 12.0, "description": "clear sky"},
-        {"date": "2024-01-02", "temperatureMax": 20.5, "temperatureMin": 11.0, "description": "few clouds"}
+        {"date": "2024-01-01", "temperatureMax": 22.0, "temperatureMin": 12.0, "description": "clear sky",
+         "sunrise": "2024-01-01T07:45:00", "sunset": "2024-01-01T17:30:00", "uvIndexMax": 3.5, "precipitationProbabilityMax": 20},
+        {"date": "2024-01-02", "temperatureMax": 20.5, "temperatureMin": 11.0, "description": "few clouds",
+         "sunrise": "2024-01-02T07:45:00", "sunset": "2024-01-02T17:31:00", "uvIndexMax": 3.8, "precipitationProbabilityMax": 30}
       ]
     }
     """.data(using: .utf8)!

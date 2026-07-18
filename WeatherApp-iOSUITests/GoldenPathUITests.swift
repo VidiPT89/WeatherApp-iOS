@@ -57,20 +57,50 @@ final class GoldenPathUITests: XCTestCase {
         attachScreenshot(name: "09_settings")
     }
 
+    /// The marine card shows real data for a coastal city and a graceful
+    /// "no data" message (never an error, never raw nulls) for an inland one.
+    func test_marineConditionsCard_showsDataForCoastalCity_andEmptyStateForInlandCity() throws {
+        signOutIfAlreadyAuthenticated()
+        registerNewAccount()
+
+        searchCity("Lisbon")
+        XCTAssertTrue(weatherLoadedIndicator().waitForExistence(timeout: defaultTimeout))
+        let seaConditionsTitle = app.staticTexts["Condições marítimas"]
+        XCTAssertTrue(seaConditionsTitle.waitForExistence(timeout: defaultTimeout), "Sea conditions card should render for a coastal city")
+        let waterTempLabel = app.staticTexts["Temp. da água"]
+        XCTAssertTrue(waterTempLabel.waitForExistence(timeout: defaultTimeout), "Coastal city should show real water temperature")
+        attachScreenshot(name: "marine_coastal_lisbon")
+
+        searchCity("Madrid")
+        XCTAssertTrue(weatherLoadedIndicator().waitForExistence(timeout: defaultTimeout))
+        XCTAssertTrue(app.staticTexts["Condições marítimas"].waitForExistence(timeout: defaultTimeout))
+        let noDataLabel = app.staticTexts["Sem dados marítimos para esta localização."]
+        XCTAssertTrue(noDataLabel.waitForExistence(timeout: defaultTimeout), "Inland city should show the graceful no-data message, not raw nulls or an error")
+        attachScreenshot(name: "marine_inland_madrid")
+    }
+
     // MARK: - Steps
 
     private func signOutIfAlreadyAuthenticated() {
         let settingsTab = app.tabBars.buttons["Definições"]
         guard settingsTab.waitForExistence(timeout: 3) else { return }
         settingsTab.tap()
+        // "Terminar sessão" now sits below the Units/Language/Appearance
+        // sections, so it may not be materialized yet in the Form's
+        // (UICollectionView-backed) accessibility tree until scrolled into view.
         let logoutButton = app.buttons["Terminar sessão"]
+        if !logoutButton.waitForExistence(timeout: 1) {
+            for _ in 0..<3 where !logoutButton.waitForExistence(timeout: 1) {
+                app.swipeUp()
+            }
+        }
         if logoutButton.waitForExistence(timeout: 3) {
             logoutButton.tap()
         }
     }
 
     private func registerNewAccount() {
-        let registerTab = app.buttons["Criar conta"]
+        let registerTab = app.segmentedControls.buttons["Criar conta"]
         XCTAssertTrue(registerTab.waitForExistence(timeout: defaultTimeout), "Auth screen should show the Criar conta tab")
         registerTab.tap()
 

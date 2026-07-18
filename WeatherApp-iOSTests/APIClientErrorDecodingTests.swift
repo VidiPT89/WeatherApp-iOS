@@ -19,12 +19,13 @@ final class APIClientErrorDecodingTests: XCTestCase {
             _ = try await client.fetchWeather(city: "Nonexistentville", units: .metric)
             XCTFail("Expected APIError.server to be thrown")
         } catch let error as APIError {
-            guard case .server(let status, let message) = error else {
+            guard case .server(let status, let message, let errorCode) = error else {
                 XCTFail("Expected .server case, got \(error)")
                 return
             }
             XCTAssertEqual(status, 404)
             XCTAssertEqual(message, "City not found")
+            XCTAssertNil(errorCode)
             XCTAssertEqual(error.errorDescription, "City not found")
         }
     }

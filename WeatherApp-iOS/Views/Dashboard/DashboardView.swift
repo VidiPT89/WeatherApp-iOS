@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// Main screen: city search with autocomplete, current-conditions card
-/// (with cache badge + fallback banner), forecast chart, and a unit toggle.
+/// (with cache badge + fallback banner + sunrise/sunset/UV/rain-chance),
+/// sea-conditions card, forecast chart, and a unit toggle.
 struct DashboardView: View {
     @Binding var prefillCity: String?
 
@@ -43,9 +44,8 @@ struct DashboardView: View {
     @ViewBuilder
     private var content: some View {
         if viewModel.isLoading {
-            ProgressView("A carregar...")
-                .frame(maxWidth: .infinity)
-                .padding(.top, 60)
+            LoadingSkeletonView()
+                .transition(.opacity)
         } else if let errorMessage = viewModel.errorMessage {
             ErrorStateView(message: errorMessage)
         } else if let weather = viewModel.weather, let forecast = viewModel.forecast {
@@ -53,9 +53,13 @@ struct DashboardView: View {
                 if weather.isFallbackProvider {
                     FallbackBannerView(provider: weather.provider)
                 }
-                WeatherCardView(weather: weather)
+                WeatherCardView(weather: weather, today: forecast.daily.first)
+                if let marine = viewModel.marine {
+                    MarineConditionsView(marine: marine)
+                }
                 ForecastChartView(forecast: forecast, range: $viewModel.forecastRange)
             }
+            .transition(.opacity.combined(with: .move(edge: .bottom)))
         } else if !viewModel.hasSearchedOnce {
             EmptyStateView()
         }
@@ -77,6 +81,53 @@ struct DashboardView: View {
     private func search(_ city: String) {
         Task { await viewModel.loadWeather(for: city) }
     }
+}
+
+/// `.redacted(reason: .placeholder)` skeleton shown while the dashboard is
+/// loading, standing in for the weather card + forecast chart shapes rather
+/// than a bare spinner/"Loading…" label.
+private struct LoadingSkeletonView: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(.secondary.opacity(0.15))
+                .frame(height: 220)
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.secondary.opacity(0.15))
+                .frame(height: 220)
+        }
+        .redacted(reason: .placeholder)
+        .shimmering()
+    }
+}
+
+/// A subtle looping shimmer over redacted content, so the skeleton reads as
+/// "actively loading" rather than a static gray placeholder.
+private struct ShimmerModifier: ViewModifier {
+    @State private var phase: CGFloat = -1
+
+    func body(content: Content) -> some View {
+        content
+            .overlay {
+                LinearGradient(
+                    colors: [.clear, .white.opacity(0.35), .clear],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+                .rotationEffect(.degrees(20))
+                .offset(x: phase * 400)
+                .blendMode(.plusLighter)
+            }
+            .onAppear {
+                withAnimation(.linear(duration: 1.4).repeatForever(autoreverses: false)) {
+                    phase = 1
+                }
+            }
+    }
+}
+
+private extension View {
+    func shimmering() -> some View { modifier(ShimmerModifier()) }
 }
 
 private struct EmptyStateView: View {
@@ -103,7 +154,7 @@ private struct ErrorStateView: View {
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.system(size: 36))
                 .foregroundStyle(.red)
-            Text(message)
+            Text(verbatim: message)
                 .font(.subheadline)
                 .multilineTextAlignment(.center)
         }

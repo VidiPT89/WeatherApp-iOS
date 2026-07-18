@@ -6,7 +6,7 @@ import SwiftUI
 /// suggestion tap.
 struct CitySearchField: View {
     @Bindable var searchViewModel: CitySearchViewModel
-    var placeholder: String = "Procurar cidade..."
+    var placeholder: LocalizedStringKey = "Procurar cidade..."
     var identifier: String = "citySearch.field"
     var onSubmitCity: (String) -> Void
 

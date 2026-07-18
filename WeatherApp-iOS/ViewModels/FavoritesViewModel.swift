@@ -43,7 +43,7 @@ final class FavoritesViewModel {
             newCityName = ""
             addFeedback = "\(created.city) adicionada aos favoritos."
         } catch let apiError as APIError {
-            if case .server(let status, _) = apiError, status == 409 {
+            if case .server(let status, _, _) = apiError, status == 409 {
                 addFeedback = "\(trimmed) já está nos teus favoritos."
             } else {
                 addFeedback = apiError.errorDescription

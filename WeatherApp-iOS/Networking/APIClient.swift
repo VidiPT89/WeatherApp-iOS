@@ -7,7 +7,7 @@ import Foundation
 actor APIClient {
     static let shared = APIClient()
 
-    static let baseURL = URL(string: "http://localhost:8080")!
+    static let baseURL = URL(string: "https://weather-api-production-68ff.up.railway.app")!
 
     private let session: URLSession
     private var authToken: String?

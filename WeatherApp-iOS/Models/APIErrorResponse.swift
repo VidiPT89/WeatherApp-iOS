@@ -64,7 +64,9 @@ enum APIError: Error, LocalizedError, Equatable {
         case .transport(let details):
             return LocalizedStrings.string("Falha de rede: \(details)", locale: locale)
         case .unauthenticated:
-            return LocalizedStrings.string("Sessão expirada. Por favor, inicia sessão novamente.", locale: locale)
+            // Same "please sign in again" case as a server-reported UNAUTHENTICATED — this is
+            // just the client-side flavor (no token available at all) — one message, not two.
+            return KnownErrorCode.unauthenticated.localizedMessage(locale: locale)
         }
     }
 }

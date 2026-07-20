@@ -8,6 +8,7 @@ import Observation
 @Observable
 final class AuthStore {
     private static let tokenKey = "jwt"
+    private static let refreshTokenKey = "refreshToken"
 
     private(set) var token: String?
     private(set) var isRestoringSession = true
@@ -18,15 +19,23 @@ final class AuthStore {
 
     init(apiClient: APIClient = .shared) {
         self.apiClient = apiClient
-        Task { await restoreSession() }
+        Task {
+            await apiClient.setOnTokensRefreshed { [weak self] response in
+                Task { @MainActor in
+                    self?.persist(response)
+                }
+            }
+            await restoreSession()
+        }
     }
 
-    /// Loads a previously persisted token from the Keychain, if any, and
-    /// pushes it into the shared `APIClient` so subsequent calls are authenticated.
+    /// Loads previously persisted tokens from the Keychain, if any, and pushes
+    /// them into the shared `APIClient` so subsequent calls are authenticated.
     private func restoreSession() async {
         let restoredToken = KeychainHelper.read(forKey: Self.tokenKey)
+        let restoredRefreshToken = KeychainHelper.read(forKey: Self.refreshTokenKey)
         token = restoredToken
-        await apiClient.setToken(restoredToken)
+        await apiClient.setTokens(access: restoredToken, refresh: restoredRefreshToken)
         isRestoringSession = false
     }
 
@@ -42,13 +51,18 @@ final class AuthStore {
 
     func logout() {
         KeychainHelper.delete(forKey: Self.tokenKey)
+        KeychainHelper.delete(forKey: Self.refreshTokenKey)
         token = nil
-        Task { await apiClient.setToken(nil) }
+        Task {
+            await apiClient.logout()
+            await apiClient.setTokens(access: nil, refresh: nil)
+        }
     }
 
     private func persist(_ response: AuthResponse) {
         KeychainHelper.save(response.token, forKey: Self.tokenKey)
-        Task { await apiClient.setToken(response.token) }
+        KeychainHelper.save(response.refreshToken, forKey: Self.refreshTokenKey)
+        Task { await apiClient.setTokens(access: response.token, refresh: response.refreshToken) }
         token = response.token
     }
 }

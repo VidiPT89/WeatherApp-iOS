@@ -11,15 +11,27 @@ actor APIClient {
 
     private let session: URLSession
     private var authToken: String?
+    private var refreshToken: String?
+    private var onTokensRefreshed: (@Sendable (AuthResponse) -> Void)?
+    private var inFlightRefresh: Task<Bool, Never>?
 
     init(session: URLSession = .shared) {
         self.session = session
     }
 
-    /// Updates the token attached to future authenticated requests. Called by
-    /// `AuthStore` on login/logout.
-    func setToken(_ token: String?) {
-        authToken = token
+    /// Updates the tokens attached to future requests. Called by `AuthStore` on
+    /// login/register/logout (with `nil` for both on logout).
+    func setTokens(access: String?, refresh: String?) {
+        authToken = access
+        refreshToken = refresh
+    }
+
+    /// Registers a callback fired whenever `perform` silently refreshes the
+    /// access token on the client's behalf, so `AuthStore` can persist the new
+    /// pair to the Keychain. Login/register/logout persistence is handled by
+    /// `AuthStore` directly via `setTokens` — this is only for the in-band case.
+    func setOnTokensRefreshed(_ handler: @escaping @Sendable (AuthResponse) -> Void) {
+        onTokensRefreshed = handler
     }
 
     // MARK: - Auth endpoints (no token required)
@@ -40,6 +52,18 @@ actor APIClient {
             body: AuthRequest(email: email, password: password),
             requiresAuth: false
         )
+    }
+
+    /// Best-effort server-side revocation. Callers should clear local state
+    /// regardless of whether this succeeds.
+    func logout() async {
+        guard let refreshToken else { return }
+        _ = try? await send(
+            path: "/api/v1/auth/logout",
+            method: "POST",
+            body: RefreshRequest(refreshToken: refreshToken),
+            requiresAuth: false
+        ) as EmptyResponse
     }
 
     // MARK: - Weather endpoints
@@ -118,10 +142,11 @@ actor APIClient {
         path: String,
         method: String,
         queryItems: [URLQueryItem] = [],
-        requiresAuth: Bool = true
+        requiresAuth: Bool = true,
+        allowRefresh: Bool = true
     ) async throws -> Response {
         let request = try makeRequest(path: path, method: method, queryItems: queryItems, bodyData: nil, requiresAuth: requiresAuth)
-        return try await perform(request)
+        return try await perform(request, allowRefresh: allowRefresh)
     }
 
     /// POST-style call with an encodable request body.
@@ -130,7 +155,8 @@ actor APIClient {
         method: String,
         queryItems: [URLQueryItem] = [],
         body: Body,
-        requiresAuth: Bool = true
+        requiresAuth: Bool = true,
+        allowRefresh: Bool = true
     ) async throws -> Response {
         let bodyData: Data
         do {
@@ -139,10 +165,12 @@ actor APIClient {
             throw APIError.requestEncodingFailed(error.localizedDescription)
         }
         let request = try makeRequest(path: path, method: method, queryItems: queryItems, bodyData: bodyData, requiresAuth: requiresAuth)
-        return try await perform(request)
+        return try await perform(request, allowRefresh: allowRefresh)
     }
 
-    private func perform<Response: Decodable>(_ request: URLRequest) async throws -> Response {
+    /// `allowRefresh` is `false` only for the retry itself and for the refresh
+    /// call's own request — both must never trigger a second refresh attempt.
+    private func perform<Response: Decodable>(_ request: URLRequest, allowRefresh: Bool = true) async throws -> Response {
         let data: Data
         let response: URLResponse
         do {
@@ -156,7 +184,18 @@ actor APIClient {
         }
 
         guard (200...299).contains(httpResponse.statusCode) else {
-            throw Self.decodeError(status: httpResponse.statusCode, data: data)
+            let error = Self.decodeError(status: httpResponse.statusCode, data: data)
+            if allowRefresh, case .server(401, _, let errorCode) = error, errorCode == "UNAUTHENTICATED",
+               await refreshAccessToken() {
+                var retryRequest = request
+                retryRequest.setValue("Bearer \(authToken ?? "")", forHTTPHeaderField: "Authorization")
+                return try await perform(retryRequest, allowRefresh: false)
+            }
+            throw error
+        }
+
+        if data.isEmpty, let empty = EmptyResponse() as? Response {
+            return empty
         }
 
         do {
@@ -164,6 +203,44 @@ actor APIClient {
         } catch {
             throw APIError.decoding(String(describing: error))
         }
+    }
+
+    /// Exchanges the stored refresh token for a new access+refresh pair.
+    /// Concurrent callers (several requests hitting a 401 at once) share a
+    /// single in-flight attempt instead of each firing their own network call.
+    private func refreshAccessToken() async -> Bool {
+        if let inFlightRefresh {
+            return await inFlightRefresh.value
+        }
+        guard let refreshToken else { return false }
+
+        let task = Task<Bool, Never> { [weak self] in
+            guard let self else { return false }
+            do {
+                let response: AuthResponse = try await self.send(
+                    path: "/api/v1/auth/refresh",
+                    method: "POST",
+                    body: RefreshRequest(refreshToken: refreshToken),
+                    requiresAuth: false,
+                    allowRefresh: false
+                )
+                await self.applyRefreshed(response)
+                return true
+            } catch {
+                await self.setTokens(access: nil, refresh: nil)
+                return false
+            }
+        }
+        inFlightRefresh = task
+        let result = await task.value
+        inFlightRefresh = nil
+        return result
+    }
+
+    private func applyRefreshed(_ response: AuthResponse) {
+        authToken = response.token
+        refreshToken = response.refreshToken
+        onTokensRefreshed?(response)
     }
 
     private func makeRequest(
@@ -209,3 +286,6 @@ actor APIClient {
     private static let decoder = JSONDecoder()
     private static let encoder = JSONEncoder()
 }
+
+/// Placeholder result type for endpoints that respond `204 No Content`.
+private struct EmptyResponse: Decodable {}

@@ -4,7 +4,7 @@ import XCTest
 final class APIClientErrorDecodingTests: XCTestCase {
     func test_throwsServerError_withBackendMessage_onNon2xxResponse() async throws {
         let client = APIClient(session: MockURLProtocol.makeMockedSession())
-        await client.setToken("test-token")
+        await client.setTokens(access: "test-token", refresh: "test-refresh-token")
 
         let errorBody = """
         {
@@ -32,7 +32,7 @@ final class APIClientErrorDecodingTests: XCTestCase {
 
     func test_throwsUnauthenticated_whenNoTokenIsSet() async throws {
         let client = APIClient(session: MockURLProtocol.makeMockedSession())
-        // No setToken call — request must fail before hitting the network.
+        // No setTokens call — request must fail before hitting the network.
 
         MockURLProtocol.requestHandler = { _ in
             XCTFail("Should not perform network request without a token")
@@ -49,7 +49,7 @@ final class APIClientErrorDecodingTests: XCTestCase {
 
     func test_decodesSuccessfulResponse() async throws {
         let client = APIClient(session: MockURLProtocol.makeMockedSession())
-        await client.setToken("test-token")
+        await client.setTokens(access: "test-token", refresh: "test-refresh-token")
 
         let body = """
         {
@@ -68,7 +68,7 @@ final class APIClientErrorDecodingTests: XCTestCase {
 
     func test_unexpectedResponse_whenErrorBodyIsNotStandardShape() async throws {
         let client = APIClient(session: MockURLProtocol.makeMockedSession())
-        await client.setToken("test-token")
+        await client.setTokens(access: "test-token", refresh: "test-refresh-token")
 
         MockURLProtocol.requestHandler = { _ in (500, "Internal Server Error".data(using: .utf8)!) }
 

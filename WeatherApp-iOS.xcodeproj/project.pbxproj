@@ -51,6 +51,7 @@
 		AFC50F8EBB2975EB32672621 /* CitySearchField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82DFAB916FB7D2829B7453FE /* CitySearchField.swift */; };
 		B9E09D2257323FFD5D3FBD1F /* FallbackBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40CA41BA637422C30EF574D3 /* FallbackBannerView.swift */; };
 		BB613CF681A1B88DEF4AE47B /* AppTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861B3A8A3D50CA677F2FE6F4 /* AppTheme.swift */; };
+		BC9051E336E37FCA8166DF36 /* APIClientRefreshTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 378ED12AC903B0B0026E2F9F /* APIClientRefreshTests.swift */; };
 		D104AB4A96C3DF36965D1DE8 /* ForecastChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28A79D7E9363F25D92A91267 /* ForecastChartView.swift */; };
 		D8CFF1AA410D37E9CEB0F1D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF123BC45A0243C8EA06C3B8 /* Constants.swift */; };
 		DAC1659EF52D8A58BF8B7E71 /* APIErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854A357CBB51E157B45F7720 /* APIErrorResponse.swift */; };
@@ -94,6 +95,7 @@
 		28A79D7E9363F25D92A91267 /* ForecastChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastChartView.swift; sourceTree = "<group>"; };
 		28D4B3E25CD8DFA1E453DB25 /* ProviderResultCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProviderResultCard.swift; sourceTree = "<group>"; };
 		3120D10B3CD321F8DDFB678C /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
+		378ED12AC903B0B0026E2F9F /* APIClientRefreshTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClientRefreshTests.swift; sourceTree = "<group>"; };
 		3E358501670327BFB1491AF1 /* FavoriteCity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteCity.swift; sourceTree = "<group>"; };
 		3F8697BF0013D774AFEF29DF /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		40CA41BA637422C30EF574D3 /* FallbackBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallbackBannerView.swift; sourceTree = "<group>"; };
@@ -316,6 +318,7 @@
 			isa = PBXGroup;
 			children = (
 				F20D127892C44CB9123BCAB5 /* APIClientErrorDecodingTests.swift */,
+				378ED12AC903B0B0026E2F9F /* APIClientRefreshTests.swift */,
 				689D14A1AFE887A47ECAC736 /* CacheAgeFormatterTests.swift */,
 				B560D69C47AFDD4E9F5AA052 /* CompareResponseTests.swift */,
 				F0B412AF4A99ECBDEC72ABA5 /* ForecastResponseDecodingTests.swift */,
@@ -477,6 +480,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				78FB96BAB44F4E30882703F9 /* APIClientErrorDecodingTests.swift in Sources */,
+				BC9051E336E37FCA8166DF36 /* APIClientRefreshTests.swift in Sources */,
 				66061EDE79BA81BE3948AD1D /* CacheAgeFormatterTests.swift in Sources */,
 				A7E3E381BD004C10CD3B9EC8 /* CompareResponseTests.swift in Sources */,
 				7BC28A94EDE9492AE3A7B2E7 /* ForecastResponseDecodingTests.swift in Sources */,

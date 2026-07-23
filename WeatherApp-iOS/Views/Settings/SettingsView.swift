@@ -65,6 +65,19 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    Link(destination: URL(string: "https://ividi.dev")!) {
+                        Label("O meu site", systemImage: "globe")
+                    }
+                    Link(destination: URL(string: "https://github.com/VidiPT89")!) {
+                        Label("GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
+                    }
+                } header: {
+                    Text("Sobre")
+                } footer: {
+                    Text("Feito por David Martins.")
+                }
+
+                Section {
                     Button("Terminar sessão", role: .destructive) {
                         authStore.logout()
                     }

@@ -24,7 +24,7 @@ struct ProviderResultCard: View {
             }
 
             if result.success, let weather = result.weather {
-                Text("\(Int(weather.temperature))\(weather.units.temperatureSymbol)")
+                Text("\(NumberFormatting.roundedWhole(weather.temperature))\(weather.units.temperatureSymbol)")
                     .font(.system(size: 32, weight: .bold, design: .rounded))
                 Text(weather.description.capitalized)
                     .font(.subheadline)

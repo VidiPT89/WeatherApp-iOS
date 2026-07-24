@@ -38,7 +38,7 @@ struct WeatherCardView: View {
             }
 
             HStack(alignment: .firstTextBaseline, spacing: 4) {
-                Text(formattedTemperature(weather.temperature))
+                Text(NumberFormatting.roundedWhole(weather.temperature))
                     .font(.system(size: 56, weight: .bold, design: .rounded))
                     .contentTransition(.numericText())
                 Text(weather.units.temperatureSymbol)
@@ -51,9 +51,9 @@ struct WeatherCardView: View {
                 .font(.headline)
 
             HStack(spacing: 20) {
-                metric(icon: "thermometer.medium", label: "Sensação", value: "\(formattedTemperature(weather.feelsLike))\(weather.units.temperatureSymbol)")
+                metric(icon: "thermometer.medium", label: "Sensação", value: "\(NumberFormatting.roundedWhole(weather.feelsLike))\(weather.units.temperatureSymbol)")
                 metric(icon: "humidity.fill", label: "Humidade", value: "\(weather.humidity)%")
-                metric(icon: "wind", label: "Vento", value: "\(formattedTemperature(weather.windSpeed)) \(weather.units.windSpeedSymbol)")
+                metric(icon: "wind", label: "Vento", value: "\(NumberFormatting.roundedWhole(weather.windSpeed)) \(weather.units.windSpeedSymbol)")
             }
 
             if let today {
@@ -62,7 +62,7 @@ struct WeatherCardView: View {
                 HStack(spacing: 20) {
                     metric(icon: "sunrise.fill", label: "Nascer do sol", value: formattedHour(today.sunrise))
                     metric(icon: "sunset.fill", label: "Pôr do sol", value: formattedHour(today.sunset))
-                    metric(icon: "sun.max.trianglebadge.exclamationmark.fill", label: "Índice UV", value: String(format: "%.0f", today.uvIndexMax))
+                    metric(icon: "sun.max.trianglebadge.exclamationmark.fill", label: "Índice UV", value: NumberFormatting.roundedWhole(today.uvIndexMax))
                     metric(icon: "drop.fill", label: "Prob. de chuva", value: "\(today.precipitationProbabilityMax)%")
                 }
                 .transition(.opacity.combined(with: .move(edge: .top)))
@@ -99,10 +99,6 @@ struct WeatherCardView: View {
                 .font(.caption2)
                 .opacity(0.85)
         }
-    }
-
-    private func formattedTemperature(_ value: Double) -> String {
-        String(format: "%.0f", value)
     }
 
     private func formattedHour(_ date: Date) -> String {

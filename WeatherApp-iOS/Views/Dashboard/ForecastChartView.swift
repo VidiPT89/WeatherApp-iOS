@@ -83,7 +83,7 @@ struct ForecastChartView: View {
                 .foregroundStyle(.blue.gradient)
                 .cornerRadius(6)
                 .annotation(position: .top) {
-                    Text("\(Int(entry.temperatureMax))°")
+                    Text("\(NumberFormatting.roundedWhole(entry.temperatureMax))°")
                         .font(.caption2.weight(.semibold))
                 }
             }

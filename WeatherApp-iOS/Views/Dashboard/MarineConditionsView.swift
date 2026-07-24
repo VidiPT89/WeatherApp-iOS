@@ -88,7 +88,7 @@ struct MarineConditionsView: View {
 
     private var formattedWaterTemperature: String? {
         guard let value = marine.waterTemperature else { return nil }
-        return "\(Int(value.rounded()))\(marine.units.temperatureSymbol)"
+        return "\(NumberFormatting.roundedWhole(value))\(marine.units.temperatureSymbol)"
     }
 
     private var formattedWaveHeight: String? {
@@ -101,7 +101,7 @@ struct MarineConditionsView: View {
 
     private var formattedWaveDirection: String? {
         guard let value = marine.waveDirectionDegrees else { return nil }
-        return "\(Int(value.rounded()))°"
+        return "\(NumberFormatting.roundedWhole(value))°"
     }
 
     private var formattedWavePeriod: String? {

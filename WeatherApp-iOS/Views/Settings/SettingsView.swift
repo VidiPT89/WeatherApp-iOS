@@ -24,6 +24,7 @@ struct SettingsView: View {
                             }
                         }
                         .pickerStyle(.inline)
+                        .labelsHidden()
                     }
 
                     if let errorMessage = viewModel.errorMessage {
@@ -40,6 +41,7 @@ struct SettingsView: View {
                         }
                     }
                     .pickerStyle(.inline)
+                    .labelsHidden()
                 } header: {
                     Text("Idioma")
                 } footer: {
@@ -58,6 +60,7 @@ struct SettingsView: View {
                         }
                     }
                     .pickerStyle(.inline)
+                    .labelsHidden()
                 } header: {
                     Text("Aparência")
                 } footer: {
@@ -72,9 +75,9 @@ struct SettingsView: View {
                         Label("GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
                     }
                 } header: {
-                    Text("Sobre")
+                    Text("Sobre o criador")
                 } footer: {
-                    Text("Feito por David Martins.")
+                    Text("Esta app foi criada por David Arsénio Martins.")
                 }
 
                 Section {

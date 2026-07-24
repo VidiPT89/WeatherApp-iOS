@@ -2,7 +2,8 @@ import SwiftUI
 
 /// Main screen: city search with autocomplete, current-conditions card
 /// (with cache badge + fallback banner + sunrise/sunset/UV/rain-chance),
-/// sea-conditions card, forecast chart, and a unit toggle.
+/// sea-conditions card, forecast chart, a weather-insights card, and a
+/// unit toggle.
 struct DashboardView: View {
     @Binding var prefillCity: String?
 
@@ -58,6 +59,9 @@ struct DashboardView: View {
                     MarineConditionsView(marine: marine)
                 }
                 ForecastChartView(forecast: forecast, range: $viewModel.forecastRange)
+                if let insights = viewModel.insights {
+                    WeatherInsightsView(insights: insights)
+                }
             }
             .transition(.opacity.combined(with: .move(edge: .bottom)))
         } else if !viewModel.hasSearchedOnce {

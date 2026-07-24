@@ -1,10 +1,9 @@
 import SwiftUI
 
-/// "Sea conditions" card: water temperature and swell (height/direction/
-/// period) for the searched city. Deliberately never says "tide" — the
-/// backend doesn't provide real tide high/low times, only water temperature
-/// and wave/swell data. Shows a graceful placeholder instead of an error
-/// when every field comes back `nil` (inland/non-coastal cities).
+/// "Sea conditions" card: water temperature, swell (height/direction/period)
+/// and estimated tide times for the searched city. Shows a graceful
+/// placeholder instead of an error when every field comes back `nil`
+/// (inland/non-coastal cities).
 struct MarineConditionsView: View {
     let marine: MarineResponse
 
@@ -42,6 +41,26 @@ struct MarineConditionsView: View {
                     .font(.footnote)
                     .foregroundStyle(Color("TextSecondary"))
                     .padding(.vertical, 4)
+            }
+
+            if !marine.tideEvents.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text("Marés de hoje")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(Color("TextSecondary"))
+                    HStack(spacing: 14) {
+                        ForEach(marine.tideEvents, id: \.time) { event in
+                            HStack(spacing: 4) {
+                                Text(event.isHigh ? "Alta" : "Baixa")
+                                    .font(.caption.weight(.semibold))
+                                Text(formattedTideTime(event.time))
+                                    .font(.caption)
+                                    .foregroundStyle(Color("TextSecondary"))
+                            }
+                        }
+                    }
+                }
+                .padding(.top, 4)
             }
         }
         .padding(18)
@@ -89,12 +108,20 @@ struct MarineConditionsView: View {
         guard let value = marine.wavePeriodSeconds else { return nil }
         return String(format: "%.1fs", value)
     }
+
+    private func formattedTideTime(_ time: String) -> String {
+        time.split(separator: "T").last.map(String.init) ?? time
+    }
 }
 
 #Preview("With data") {
     MarineConditionsView(marine: MarineResponse(
         city: "Lisbon", country: "Portugal", units: .metric, provider: "open-meteo", fromCache: false,
-        waterTemperature: 20.3, waveHeightMeters: 0.4, waveDirectionDegrees: 282.0, wavePeriodSeconds: 5.8
+        waterTemperature: 20.3, waveHeightMeters: 0.4, waveDirectionDegrees: 282.0, wavePeriodSeconds: 5.8,
+        tideEvents: [
+            TideEvent(type: "low", time: "2026-07-24T05:00"),
+            TideEvent(type: "high", time: "2026-07-24T11:00"),
+        ]
     ))
     .padding()
 }
@@ -102,7 +129,8 @@ struct MarineConditionsView: View {
 #Preview("No data") {
     MarineConditionsView(marine: MarineResponse(
         city: "Madrid", country: "Spain", units: .metric, provider: "open-meteo", fromCache: false,
-        waterTemperature: nil, waveHeightMeters: nil, waveDirectionDegrees: nil, wavePeriodSeconds: nil
+        waterTemperature: nil, waveHeightMeters: nil, waveDirectionDegrees: nil, wavePeriodSeconds: nil,
+        tideEvents: []
     ))
     .padding()
 }

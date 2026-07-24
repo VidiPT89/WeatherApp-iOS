@@ -83,6 +83,12 @@ actor APIClient {
         try await send(path: "/api/v1/weather/marine", method: "GET", queryItems: Self.cityQuery(city, units))
     }
 
+    /// Derived indicators (moon phase, UV risk, outdoor-activity score, fishing
+    /// conditions). `fishingConditionLabel` is `nil` for inland/non-coastal cities.
+    func fetchInsights(city: String, units: Units?) async throws -> WeatherInsightsResponse {
+        try await send(path: "/api/v1/weather/insights", method: "GET", queryItems: Self.cityQuery(city, units))
+    }
+
     func compareProviders(city: String, units: Units?) async throws -> CompareResponse {
         try await send(path: "/api/v1/weather/compare", method: "GET", queryItems: Self.cityQuery(city, units))
     }

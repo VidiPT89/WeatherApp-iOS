@@ -27,6 +27,9 @@ final class DashboardViewModel {
     /// AND when the marine endpoint simply has no data for an inland city —
     /// `marine?.hasData` distinguishes "no card" from "empty card" in the view.
     private(set) var marine: MarineResponse?
+    /// Derived insights (moon phase, UV risk, activity score, fishing
+    /// conditions) — best-effort like `marine`, `nil` on hiccup or while loading.
+    private(set) var insights: WeatherInsightsResponse?
     private(set) var isLoading = false
     private(set) var errorMessage: String?
     private(set) var lastLoadedCity: String?
@@ -63,12 +66,14 @@ final class DashboardViewModel {
             // dashboard: a marine-endpoint hiccup shouldn't blank out the
             // weather card and forecast the user actually searched for.
             async let marineTask: MarineResponse? = try? apiClient.fetchMarine(city: trimmedCity, units: units)
+            async let insightsTask: WeatherInsightsResponse? = try? apiClient.fetchInsights(city: trimmedCity, units: units)
 
             let (weatherResult, forecastResult) = try await (weatherTask, forecastTask)
             weather = weatherResult
             forecast = forecastResult
             lastLoadedCity = trimmedCity
             marine = await marineTask
+            insights = await insightsTask
         } catch let apiError as APIError {
             errorMessage = apiError.errorDescription
         } catch {

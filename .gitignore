@@ -10,3 +10,6 @@ xcuserdata/
 *.ipa
 *.dSYM.zip
 *.dSYM
+
+# claude code local config
+.claude/

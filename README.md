@@ -90,7 +90,7 @@ Given the project's scope (three client apps on one backend), test effort is wei
 
 ## 📄 License
 
-MIT.
+MIT — see [LICENSE](LICENSE).
 
 ---
 

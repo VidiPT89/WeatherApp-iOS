@@ -19,7 +19,10 @@ enum KeychainHelper {
 
         var attributes = query
         attributes[kSecValueData as String] = data
-        attributes[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
+        // ThisDeviceOnly excludes these items from encrypted iTunes/iCloud device backups --
+        // auth tokens have no legitimate reason to be restorable onto a different device than
+        // the one the user actually logged in on.
+        attributes[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly
 
         SecItemAdd(attributes as CFDictionary, nil)
     }

@@ -7,7 +7,18 @@ import Foundation
 actor APIClient {
     static let shared = APIClient()
 
-    static let baseURL = URL(string: "https://weather-api-production-68ff.up.railway.app")!
+    /// Sourced from the `API_BASE_URL` Info.plist key (itself driven by the `WEATHER_API_BASE_URL`
+    /// build setting in project.yml) so pointing a build at a different backend -- staging, a
+    /// local server for QA -- is a build-setting change, not a source edit and a re-release. The
+    /// literal here is only a fallback for contexts with no app bundle Info.plist (e.g. this
+    /// actor being touched from a plain unit test target), not the value real app runs use.
+    static let baseURL: URL = {
+        guard let configured = Bundle.main.object(forInfoDictionaryKey: "API_BASE_URL") as? String,
+              let url = URL(string: configured), !configured.isEmpty else {
+            return URL(string: "https://weather-api-production-68ff.up.railway.app")!
+        }
+        return url
+    }()
 
     private let session: URLSession
     private var authToken: String?

@@ -13,6 +13,14 @@ final class AuthStore {
     private(set) var token: String?
     private(set) var isRestoringSession = true
 
+    /// Guards against a token refresh that was already in flight when the user logged out
+    /// landing afterward and silently resurrecting the cleared session -- logout() and the
+    /// background refresh callback each fire an independent `Task` with no ordering guarantee
+    /// between them, so a refresh that wins the race can otherwise write a valid token pair back
+    /// into the Keychain right after logout cleared it. Only the background refresh callback
+    /// checks this; an explicit login()/register() always wins and re-arms it for the new session.
+    private var didLogOut = false
+
     var isAuthenticated: Bool { token != nil }
 
     private let apiClient: APIClient
@@ -22,7 +30,8 @@ final class AuthStore {
         Task {
             await apiClient.setOnTokensRefreshed { [weak self] response in
                 Task { @MainActor in
-                    self?.persist(response)
+                    guard let self, !self.didLogOut else { return }
+                    self.persist(response)
                 }
             }
             await restoreSession()
@@ -41,15 +50,18 @@ final class AuthStore {
 
     func register(email: String, password: String) async throws {
         let response = try await apiClient.register(email: email, password: password)
+        didLogOut = false
         persist(response)
     }
 
     func login(email: String, password: String) async throws {
         let response = try await apiClient.login(email: email, password: password)
+        didLogOut = false
         persist(response)
     }
 
     func logout() {
+        didLogOut = true
         KeychainHelper.delete(forKey: Self.tokenKey)
         KeychainHelper.delete(forKey: Self.refreshTokenKey)
         token = nil

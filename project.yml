@@ -30,6 +30,7 @@ targets:
             localhost:
               NSExceptionAllowsInsecureHTTPLoads: true
               NSIncludesSubdomains: false
+        API_BASE_URL: $(WEATHER_API_BASE_URL)
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
@@ -41,6 +42,9 @@ targets:
         GENERATE_INFOPLIST_FILE: NO
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
+        # Overridable per build configuration (e.g. a local xcconfig for a Debug build pointed at
+        # a staging/local backend) without editing source -- APIClient reads this via Info.plist.
+        WEATHER_API_BASE_URL: https://weather-api-production-68ff.up.railway.app
     dependencies: []
 
   WeatherApp-iOSTests:

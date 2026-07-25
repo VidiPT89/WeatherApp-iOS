@@ -2,7 +2,7 @@ import XCTest
 
 /// End-to-end walk of the app's golden path against the real backend at
 /// http://localhost:8080 (no mocking): register -> search -> cache badge
-/// fresh->cached -> favorites -> history -> compare -> settings -> logout.
+/// fresh->cached -> favorites -> history -> settings -> logout.
 ///
 /// Requires the Spring Boot backend to actually be running locally.
 @MainActor
@@ -15,7 +15,7 @@ final class GoldenPathUITests: XCTestCase {
         app.launch()
     }
 
-    func test_goldenPath_registerSearchFavoritesHistoryCompareSettings() throws {
+    func test_goldenPath_registerSearchFavoritesHistorySettings() throws {
         signOutIfAlreadyAuthenticated()
         registerNewAccount()
         attachScreenshot(name: "01_after_register_dashboard_empty")
@@ -49,12 +49,8 @@ final class GoldenPathUITests: XCTestCase {
         openHistoryTab()
         attachScreenshot(name: "07_history")
 
-        let compareResult = openCompareTab(city: "Lisboa")
-        XCTAssertTrue(compareResult, "Compare screen should show provider results for Lisboa")
-        attachScreenshot(name: "08_compare")
-
         openSettingsAndToggleUnits()
-        attachScreenshot(name: "09_settings")
+        attachScreenshot(name: "08_settings")
     }
 
     /// The marine card shows real data for a coastal city and a graceful
@@ -116,7 +112,7 @@ final class GoldenPathUITests: XCTestCase {
 
         app.buttons["auth.submit"].tap()
 
-        let dashboardTab = app.tabBars.buttons["Dashboard"]
+        let dashboardTab = app.tabBars.buttons["Início"]
         XCTAssertTrue(dashboardTab.waitForExistence(timeout: defaultTimeout), "Successful registration should land on the main tab view")
     }
 
@@ -170,18 +166,6 @@ final class GoldenPathUITests: XCTestCase {
         // Give the network call a moment; presence of the nav title is enough to
         // confirm the screen rendered without crashing.
         _ = app.navigationBars["Histórico"].waitForExistence(timeout: defaultTimeout)
-    }
-
-    private func openCompareTab(city: String) -> Bool {
-        app.tabBars.buttons["Comparar"].tap()
-        let searchField = app.textFields["compare.citySearch"]
-        guard searchField.waitForExistence(timeout: defaultTimeout) else { return false }
-        tapTextFieldAndWaitForKeyboard(searchField)
-        searchField.typeText(city)
-        searchField.typeText("\n")
-
-        let primaryProviderLabel = app.staticTexts["open-meteo"]
-        return primaryProviderLabel.waitForExistence(timeout: defaultTimeout)
     }
 
     private func openSettingsAndToggleUnits() {

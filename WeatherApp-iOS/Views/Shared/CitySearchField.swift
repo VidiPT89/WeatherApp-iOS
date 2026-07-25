@@ -1,9 +1,8 @@
 import SwiftUI
 
 /// A search field with a debounced autocomplete dropdown, backed by
-/// `CitySearchViewModel` (which talks to `/geocoding`). Shared by Dashboard
-/// and Compare. Calling `onSubmitCity` fires on both manual submit and
-/// suggestion tap.
+/// `CitySearchViewModel` (which talks to `/geocoding`). Calling `onSubmitCity`
+/// fires on both manual submit and suggestion tap.
 struct CitySearchField: View {
     @Bindable var searchViewModel: CitySearchViewModel
     var placeholder: LocalizedStringKey = "Procurar cidade..."

@@ -1,8 +1,8 @@
 import Foundation
 import Observation
 
-/// Debounced city-search/autocomplete backing the search field shared by the
-/// Dashboard and Compare screens. Waits `AppConstants.searchDebounceNanoseconds`
+/// Debounced city-search/autocomplete backing the Dashboard's search field.
+/// Waits `AppConstants.searchDebounceNanoseconds`
 /// after the last keystroke, and requires at least
 /// `AppConstants.minSearchCharacters` before querying `/geocoding`.
 @MainActor

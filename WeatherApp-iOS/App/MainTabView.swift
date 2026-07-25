@@ -1,10 +1,10 @@
 import SwiftUI
 
 private enum AppTab: Hashable {
-    case dashboard, compare, favorites, history, settings
+    case dashboard, favorites, history, settings
 }
 
-/// Post-login navigation: Dashboard / Compare / Favorites / History / Settings.
+/// Post-login navigation: Dashboard / Favorites / History / Settings.
 /// Tapping a favorite jumps to the Dashboard pre-loaded with that city by
 /// setting `pendingDashboardCity` and switching the tab selection.
 struct MainTabView: View {
@@ -16,10 +16,6 @@ struct MainTabView: View {
             DashboardView(prefillCity: $pendingDashboardCity)
                 .tabItem { Label("Início", systemImage: "cloud.sun.fill") }
                 .tag(AppTab.dashboard)
-
-            CompareView()
-                .tabItem { Label("Comparar", systemImage: "chart.bar.xaxis") }
-                .tag(AppTab.compare)
 
             FavoritesView(onSelectCity: { city in
                 pendingDashboardCity = city

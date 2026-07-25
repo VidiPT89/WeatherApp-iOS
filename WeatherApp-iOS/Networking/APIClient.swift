@@ -100,10 +100,6 @@ actor APIClient {
         try await send(path: "/api/v1/weather/insights", method: "GET", queryItems: Self.cityQuery(city, units))
     }
 
-    func compareProviders(city: String, units: Units?) async throws -> CompareResponse {
-        try await send(path: "/api/v1/weather/compare", method: "GET", queryItems: Self.cityQuery(city, units))
-    }
-
     func fetchHistory() async throws -> [HistoryEntry] {
         try await send(path: "/api/v1/weather/history", method: "GET")
     }

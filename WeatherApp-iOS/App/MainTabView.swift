@@ -14,7 +14,7 @@ struct MainTabView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             DashboardView(prefillCity: $pendingDashboardCity)
-                .tabItem { Label("Dashboard", systemImage: "cloud.sun.fill") }
+                .tabItem { Label("Início", systemImage: "cloud.sun.fill") }
                 .tag(AppTab.dashboard)
 
             CompareView()

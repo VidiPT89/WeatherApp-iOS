@@ -21,6 +21,10 @@ struct ForecastChartView: View {
             }
             .pickerStyle(.segmented)
 
+            Text("Temperatura do ar")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
             Group {
                 switch range {
                 case .hourly:
@@ -67,6 +71,16 @@ struct ForecastChartView: View {
                     AxisValueLabel(format: .dateTime.hour())
                 }
             }
+            .chartYAxis {
+                AxisMarks { value in
+                    AxisGridLine()
+                    AxisValueLabel {
+                        if let temperature = value.as(Double.self) {
+                            Text("\(NumberFormatting.roundedWhole(temperature))\(forecast.units.temperatureSymbol)")
+                        }
+                    }
+                }
+            }
             .frame(width: CGFloat(forecast.hourly.count) * Self.hourlyPointWidth, height: 220)
         }
     }
@@ -90,6 +104,16 @@ struct ForecastChartView: View {
             .chartXAxis {
                 AxisMarks(values: .stride(by: .day)) { _ in
                     AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+                }
+            }
+            .chartYAxis {
+                AxisMarks { value in
+                    AxisGridLine()
+                    AxisValueLabel {
+                        if let temperature = value.as(Double.self) {
+                            Text("\(NumberFormatting.roundedWhole(temperature))\(forecast.units.temperatureSymbol)")
+                        }
+                    }
                 }
             }
             .frame(width: CGFloat(forecast.daily.count) * Self.dailyPointWidth, height: 220)

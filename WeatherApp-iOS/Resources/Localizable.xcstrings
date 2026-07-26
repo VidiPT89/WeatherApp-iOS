@@ -1744,6 +1744,22 @@
     "Sobre o criador" : {
 
     },
+    "Sol, marés e o que mais precisares de saber" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sun, tides, and whatever else you need to know"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sol, marés e o que mais precisares de saber"
+          }
+        }
+      }
+    },
     "Temp. da água" : {
       "extractionState" : "stale",
       "localizations" : {

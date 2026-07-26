@@ -75,6 +75,48 @@ final class GoldenPathUITests: XCTestCase {
         attachScreenshot(name: "marine_inland_madrid")
     }
 
+    /// Regression check for a user report of not being able to see days 7-16
+    /// of the daily forecast. Repeated swipe gestures on the chart were found
+    /// to reliably move it only once and then ignore further swipes (a real,
+    /// reproducible quirk, not a test-tooling artifact -- confirmed with
+    /// native `swipeLeft()` calls, paced a full second apart). The paging
+    /// buttons added alongside the chart sidestep that by using discrete
+    /// taps, which page through reliably.
+    func test_dailyForecastChart_pagingRevealsLaterDays() throws {
+        signOutIfAlreadyAuthenticated()
+        registerNewAccount()
+
+        searchCity("Lisbon")
+        XCTAssertTrue(weatherLoadedIndicator().waitForExistence(timeout: defaultTimeout))
+
+        let dailyTab = app.segmentedControls.buttons["Diária"]
+        XCTAssertTrue(dailyTab.waitForExistence(timeout: defaultTimeout))
+        dailyTab.tap()
+
+        let chart = app.scrollViews["forecast.dailyChart"]
+        XCTAssertTrue(chart.waitForExistence(timeout: defaultTimeout))
+        attachScreenshot(name: "daily_chart_before_paging")
+
+        let pageForwardButton = app.buttons["forecast.chart.pageForward"]
+        XCTAssertTrue(pageForwardButton.waitForExistence(timeout: defaultTimeout))
+
+        // 16 days at a 6-day visible window needs at most 3 forward pages to
+        // exhaust; loop a couple extra times and assert the button disables
+        // itself once it reaches the last day, proving we actually got there.
+        for _ in 0..<5 where pageForwardButton.isEnabled {
+            pageForwardButton.tap()
+        }
+        attachScreenshot(name: "daily_chart_after_paging_to_end")
+
+        XCTAssertFalse(
+            pageForwardButton.isEnabled,
+            "Paging forward repeatedly should reach the last forecast day and disable the button"
+        )
+
+        let pageBackwardButton = app.buttons["forecast.chart.pageBackward"]
+        XCTAssertTrue(pageBackwardButton.isEnabled, "Having paged forward, paging backward should be available")
+    }
+
     // MARK: - Steps
 
     private func signOutIfAlreadyAuthenticated() {

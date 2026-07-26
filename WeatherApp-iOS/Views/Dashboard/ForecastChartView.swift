@@ -6,12 +6,24 @@ import Charts
 /// days). Both ranges use Chart's native `chartScrollableAxes` horizontal
 /// scrolling instead of truncating, since 48 hourly / 16 daily points don't
 /// fit on screen at once.
+///
+/// Design intent: this isn't just for a casual glance -- shore fishermen and
+/// surfers rely on it too, so every value that matters (min/max, rain
+/// chance, "which day/hour is this") is labeled directly on the chart
+/// instead of requiring the reader to cross-reference the axis by eye.
 struct ForecastChartView: View {
     let forecast: ForecastResponse
     @Binding var range: ForecastRange
 
     private static let visibleHourlyWindow: TimeInterval = 7 * 3600
     private static let visibleDailyWindow: TimeInterval = 6 * 86400
+    private static let coolColor = Color(red: 0.20, green: 0.55, blue: 0.95)
+    private static let warmColor = Color(red: 0.95, green: 0.35, blue: 0.20)
+    // Every other label in this view is a hardcoded PT string; date/time
+    // components must match rather than following the device's own locale
+    // (which showed English month/weekday names on an English-locale
+    // simulator otherwise).
+    private static let ptLocale = Locale(identifier: "pt_PT")
 
     // Explicit, app-owned scroll position, paired with the paging buttons
     // below. Repeated separate swipe gestures on the chart were observed to
@@ -20,7 +32,10 @@ struct ForecastChartView: View {
     // that affects discrete taps. The paging buttons give a reliable way to
     // reach every day/hour regardless of that swipe behavior.
     @State private var hourlyScrollPosition: Date = .now
-    @State private var dailyScrollPosition: Date = .now
+    // Daily bars are one full day wide, anchored at midnight -- starting the
+    // scroll position at `.now` (partway through today) clipped the left
+    // edge of today's bar. Starting at midnight shows it in full.
+    @State private var dailyScrollPosition: Date = Calendar.current.startOfDay(for: .now)
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -31,10 +46,20 @@ struct ForecastChartView: View {
             }
             .pickerStyle(.segmented)
 
-            HStack {
-                Text("Temperatura do ar")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            HStack(alignment: .firstTextBaseline) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Temperatura do ar")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(visibleRangeLabel)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                    if range == .hourly {
+                        Text("Agora: \(Date.now.formatted(.dateTime.hour().minute().locale(Self.ptLocale)))")
+                            .font(.caption2.weight(.semibold))
+                            .foregroundStyle(.orange)
+                    }
+                }
                 Spacer()
                 pagingControls
             }
@@ -51,6 +76,20 @@ struct ForecastChartView: View {
         }
         .padding(16)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+    }
+
+    private var visibleRangeLabel: String {
+        switch range {
+        case .hourly:
+            let end = hourlyScrollPosition.addingTimeInterval(Self.visibleHourlyWindow)
+            let dayMonthHour: Date.FormatStyle = .dateTime.day().month(.abbreviated).hour().locale(Self.ptLocale)
+            let hourOnly: Date.FormatStyle = .dateTime.hour().locale(Self.ptLocale)
+            return "\(hourlyScrollPosition.formatted(dayMonthHour)) – \(end.formatted(hourOnly))"
+        case .daily:
+            let end = dailyScrollPosition.addingTimeInterval(Self.visibleDailyWindow)
+            let dayMonth: Date.FormatStyle = .dateTime.day().month(.abbreviated).locale(Self.ptLocale)
+            return "\(dailyScrollPosition.formatted(dayMonth)) – \(end.formatted(dayMonth))"
+        }
     }
 
     private var pagingControls: some View {
@@ -120,35 +159,91 @@ struct ForecastChartView: View {
         }
     }
 
+    /// Interpolates cool->warm across this chart's own data range, so the
+    /// hottest day/hour in the current forecast always reads as "warm" and
+    /// the coolest as "cool", regardless of the units or absolute values --
+    /// a quick color scan matters more here than precise degrees.
+    private static func temperatureColor(_ value: Double, min: Double, max: Double) -> Color {
+        guard max > min else { return coolColor }
+        let t = ((value - min) / (max - min)).clamped(to: 0...1)
+        return Color(
+            red: coolColor.components.red + (warmColor.components.red - coolColor.components.red) * t,
+            green: coolColor.components.green + (warmColor.components.green - coolColor.components.green) * t,
+            blue: coolColor.components.blue + (warmColor.components.blue - coolColor.components.blue) * t
+        )
+    }
+
     private var hourlyChart: some View {
-        Chart(forecast.hourly) { entry in
-            AreaMark(
-                x: .value("Hora", entry.time),
-                y: .value("Temperatura", entry.temperature)
-            )
-            .foregroundStyle(.blue.opacity(0.15))
-            .interpolationMethod(.catmullRom)
+        let temperatures = forecast.hourly.map(\.temperature)
+        let minTemp = temperatures.min() ?? 0
+        let maxTemp = temperatures.max() ?? 1
+        let tempRange = max(maxTemp - minTemp, 1)
+        let precipitationBandHeight = tempRange * 0.18
 
-            LineMark(
-                x: .value("Hora", entry.time),
-                y: .value("Temperatura", entry.temperature)
-            )
-            .foregroundStyle(.blue)
-            .interpolationMethod(.catmullRom)
+        return Chart {
+            ForEach(forecast.hourly) { entry in
+                // Rain-chance bars anchored to the bottom of the chart, in
+                // their own band beneath the temperature line -- mirrors the
+                // Android chart so both platforms show rain likelihood the
+                // same way.
+                if entry.precipitationProbability > 0 {
+                    BarMark(
+                        x: .value("Hora", entry.time),
+                        yStart: .value("Base", minTemp),
+                        yEnd: .value("Chuva", minTemp + precipitationBandHeight * (Double(entry.precipitationProbability) / 100)),
+                        width: .fixed(5)
+                    )
+                    .foregroundStyle(.cyan.opacity(0.4))
+                }
 
-            if entry.precipitationProbability >= 30 {
-                PointMark(
+                AreaMark(
                     x: .value("Hora", entry.time),
                     y: .value("Temperatura", entry.temperature)
                 )
-                .symbolSize(18)
-                .foregroundStyle(.cyan)
+                .foregroundStyle(.blue.opacity(0.15))
+                .interpolationMethod(.catmullRom)
+
+                LineMark(
+                    x: .value("Hora", entry.time),
+                    y: .value("Temperatura", entry.temperature)
+                )
+                .foregroundStyle(.blue)
+                .interpolationMethod(.catmullRom)
+
+                if isLabeledHourlyTick(entry.time) {
+                    PointMark(
+                        x: .value("Hora", entry.time),
+                        y: .value("Temperatura", entry.temperature)
+                    )
+                    .symbolSize(28)
+                    .foregroundStyle(.blue)
+                    .annotation(position: .top) {
+                        Text("\(NumberFormatting.roundedWhole(entry.temperature))°")
+                            .font(.caption2.weight(.semibold))
+                    }
+                }
             }
+
+            // Added once, outside the per-entry ForEach, so it draws exactly
+            // one "now" marker rather than one per hourly entry. No
+            // `.annotation` here: attaching a text annotation to a
+            // full-height RuleMark made Charts pad the Y-domain to make
+            // room for it (observed pushing a ~30°C dataset's axis to
+            // 60°C) -- the "Agora" label lives in the header instead.
+            RuleMark(x: .value("Agora", Date.now))
+                .foregroundStyle(.orange)
+                .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
         }
         .chartXAxis {
-            AxisMarks(values: .stride(by: .hour, count: 3)) { _ in
+            AxisMarks(values: .stride(by: .hour, count: 3)) { value in
                 AxisGridLine()
-                AxisValueLabel(format: .dateTime.hour())
+                AxisValueLabel(format: .dateTime.hour().locale(Self.ptLocale))
+                if let date = value.as(Date.self), Calendar.current.component(.hour, from: date) == 0 {
+                    AxisValueLabel {
+                        Text(date.formatted(.dateTime.weekday(.abbreviated).locale(Self.ptLocale)))
+                            .font(.caption2.weight(.semibold))
+                    }
+                }
             }
         }
         .chartYAxis {
@@ -164,28 +259,49 @@ struct ForecastChartView: View {
         .chartScrollableAxes(.horizontal)
         .chartXVisibleDomain(length: Self.visibleHourlyWindow)
         .chartScrollPosition(x: $hourlyScrollPosition)
-        .frame(height: 220)
+        .frame(height: 240)
         .accessibilityIdentifier("forecast.hourlyChart")
     }
 
+    /// Only every 3rd hour gets a point + label, matching the axis ticks --
+    /// labeling all 48 points would overlap into an unreadable smear.
+    private func isLabeledHourlyTick(_ date: Date) -> Bool {
+        Calendar.current.component(.hour, from: date).isMultiple(of: 3)
+    }
+
     private var dailyChart: some View {
-        Chart(forecast.daily) { entry in
+        let overallMin = forecast.daily.map(\.temperatureMin).min() ?? 0
+        let overallMax = forecast.daily.map(\.temperatureMax).max() ?? 1
+
+        return Chart(forecast.daily) { entry in
             BarMark(
                 x: .value("Dia", entry.date, unit: .day),
                 yStart: .value("Mínima", entry.temperatureMin),
                 yEnd: .value("Máxima", entry.temperatureMax),
-                width: .fixed(28)
+                width: .fixed(30)
             )
-            .foregroundStyle(.blue.gradient)
-            .cornerRadius(6)
+            .foregroundStyle(Self.temperatureColor(entry.temperatureMax, min: overallMin, max: overallMax))
+            .cornerRadius(8)
             .annotation(position: .top) {
                 Text("\(NumberFormatting.roundedWhole(entry.temperatureMax))°")
-                    .font(.caption2.weight(.semibold))
+                    .font(.caption2.weight(.bold))
+            }
+            .annotation(position: .bottom) {
+                Text("\(NumberFormatting.roundedWhole(entry.temperatureMin))°")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             }
         }
         .chartXAxis {
-            AxisMarks(values: .stride(by: .day)) { _ in
-                AxisValueLabel(format: .dateTime.weekday(.abbreviated))
+            AxisMarks(values: .stride(by: .day)) { value in
+                AxisValueLabel {
+                    if let date = value.as(Date.self) {
+                        let isToday = Calendar.current.isDateInToday(date)
+                        Text(isToday ? "Hoje" : date.formatted(.dateTime.weekday(.abbreviated).locale(Self.ptLocale)))
+                            .font(.caption2.weight(isToday ? .bold : .regular))
+                            .foregroundStyle(isToday ? .orange : .secondary)
+                    }
+                }
             }
         }
         .chartYAxis {
@@ -201,8 +317,26 @@ struct ForecastChartView: View {
         .chartScrollableAxes(.horizontal)
         .chartXVisibleDomain(length: Self.visibleDailyWindow)
         .chartScrollPosition(x: $dailyScrollPosition)
-        .frame(height: 220)
+        .frame(height: 240)
         .accessibilityIdentifier("forecast.dailyChart")
+    }
+}
+
+private extension Comparable {
+    func clamped(to range: ClosedRange<Self>) -> Self {
+        min(max(self, range.lowerBound), range.upperBound)
+    }
+}
+
+private extension Color {
+    /// Best-effort sRGB component extraction for interpolating between two
+    /// known, explicitly-constructed `Color(red:green:blue:)` values -- not
+    /// intended for arbitrary system colors.
+    var components: (red: Double, green: Double, blue: Double) {
+        let uiColor = UIColor(self)
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        return (Double(red), Double(green), Double(blue))
     }
 }
 

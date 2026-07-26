@@ -36,6 +36,7 @@
 		68F66F0674D1D74D9037AFB6 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14E442BDC93065A2B7D4088 /* HistoryViewModel.swift */; };
 		6AD54A544CB08C7C4A9C8925 /* AuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C018BC8CFCA0CEF177F18AFD /* AuthStore.swift */; };
 		724890CB542C9D6A02F12346 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6760C12C0C5F0F2BD679FB2 /* APIClient.swift */; };
+		1A2B3C4D5E6F7089ABCDEF02 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF01 /* LocationService.swift */; };
 		768D4D1323C85ABE4858730E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5A99DD37127D9606069D90 /* MainTabView.swift */; };
 		78FB96BAB44F4E30882703F9 /* APIClientErrorDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20D127892C44CB9123BCAB5 /* APIClientErrorDecodingTests.swift */; };
 		7BC28A94EDE9492AE3A7B2E7 /* ForecastResponseDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0B412AF4A99ECBDEC72ABA5 /* ForecastResponseDecodingTests.swift */; };
@@ -125,6 +126,7 @@
 		B3BD4A25CEB23125221F9706 /* WeatherApp-iOSUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = "WeatherApp-iOSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B619AA59609351C2353C3A35 /* MarineResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarineResponse.swift; sourceTree = "<group>"; };
 		B6760C12C0C5F0F2BD679FB2 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7089ABCDEF01 /* LocationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationService.swift; sourceTree = "<group>"; };
 		B8F029FE6F92DFA8BB85834F /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		BA0BF7F855FDE90ADEA8D5FB /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
 		BB2D9E51875D36A9212C4329 /* WeatherResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherResponse.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 				C8FC8D57966E979CF700BF68 /* Info.plist */,
 				8F907AE57998FDEEB07D83C1 /* App */,
 				0DE249FE394E39407C610690 /* Models */,
+				1A2B3C4D5E6F7089ABCDEF03 /* Location */,
 				AD6C1D0338BE3CC114EA4C12 /* Networking */,
 				A84451F9329B0F9A6D8801A1 /* Resources */,
 				275DFAB185FD33B66BC73D89 /* Utilities */,
@@ -304,6 +307,14 @@
 				A6399FAD4033D878385E80B1 /* KeychainHelper.swift */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		1A2B3C4D5E6F7089ABCDEF03 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				1A2B3C4D5E6F7089ABCDEF01 /* LocationService.swift */,
+			);
+			path = Location;
 			sourceTree = "<group>";
 		};
 		C7414FC84CA4BD50310951F1 /* WeatherApp-iOSTests */ = {
@@ -501,6 +512,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				724890CB542C9D6A02F12346 /* APIClient.swift in Sources */,
+				1A2B3C4D5E6F7089ABCDEF02 /* LocationService.swift in Sources */,
 				DAC1659EF52D8A58BF8B7E71 /* APIErrorResponse.swift in Sources */,
 				AA08504CAAF5745E87F5E927 /* AppLocale.swift in Sources */,
 				BB613CF681A1B88DEF4AE47B /* AppTheme.swift in Sources */,

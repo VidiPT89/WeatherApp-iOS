@@ -31,6 +31,10 @@ final class DashboardViewModel {
     /// conditions) — best-effort like `marine`, `nil` on hiccup or while loading.
     private(set) var insights: WeatherInsightsResponse?
     private(set) var isLoading = false
+    /// True only while attempting the initial auto-location lookup, distinct
+    /// from `isLoading` so the empty state can show a "finding you" message
+    /// instead of the full skeleton for that brief step.
+    private(set) var isLocating = false
     private(set) var errorMessage: String?
     private(set) var lastLoadedCity: String?
 
@@ -41,9 +45,30 @@ final class DashboardViewModel {
     var hasSearchedOnce: Bool { lastLoadedCity != nil }
 
     private let apiClient: APIClient
+    private let locationService: LocationService
 
-    init(apiClient: APIClient = .shared) {
+    init(apiClient: APIClient = .shared, locationService: LocationService = LocationService()) {
         self.apiClient = apiClient
+        self.locationService = locationService
+    }
+
+    /// Auto-detects the user's location and loads its weather. Fails silently
+    /// (leaving the normal manual-search empty state) on denied permission or
+    /// any lookup error — this is a convenience, not a required flow.
+    func loadNearbyWeatherIfAvailable() async {
+        guard !hasSearchedOnce else { return }
+
+        isLocating = true
+        defer { isLocating = false }
+
+        do {
+            let coordinate = try await locationService.requestCurrentLocation()
+            let weatherResult = try await apiClient.fetchWeatherNearby(
+                latitude: coordinate.latitude, longitude: coordinate.longitude, units: units)
+            await loadWeather(for: weatherResult.city)
+        } catch {
+            // Permission denied or lookup failed -- the manual-search empty state stays in place.
+        }
     }
 
     /// Loads the user's saved unit preference. Call once after login/session restore.

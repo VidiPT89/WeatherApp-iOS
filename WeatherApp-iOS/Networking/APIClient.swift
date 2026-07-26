@@ -83,6 +83,15 @@ actor APIClient {
         try await send(path: "/api/v1/weather", method: "GET", queryItems: Self.cityQuery(city, units))
     }
 
+    /// Weather for the caller's GPS coordinates, reverse-geocoded server-side to a city.
+    func fetchWeatherNearby(latitude: Double, longitude: Double, units: Units?) async throws -> WeatherResponse {
+        var items = [URLQueryItem(name: "lat", value: String(latitude)), URLQueryItem(name: "lon", value: String(longitude))]
+        if let units {
+            items.append(URLQueryItem(name: "units", value: units.rawValue))
+        }
+        return try await send(path: "/api/v1/weather/nearby", method: "GET", queryItems: items)
+    }
+
     func fetchForecast(city: String, units: Units?) async throws -> ForecastResponse {
         try await send(path: "/api/v1/weather/forecast", method: "GET", queryItems: Self.cityQuery(city, units))
     }

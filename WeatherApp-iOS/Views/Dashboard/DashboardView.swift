@@ -32,6 +32,9 @@ struct DashboardView: View {
             if !didLoadInitialPreferences {
                 didLoadInitialPreferences = true
                 await viewModel.loadInitialPreferences()
+                if prefillCity == nil {
+                    await viewModel.loadNearbyWeatherIfAvailable()
+                }
             }
         }
         .onChange(of: prefillCity) { _, newValue in
@@ -65,7 +68,7 @@ struct DashboardView: View {
             }
             .transition(.opacity.combined(with: .move(edge: .bottom)))
         } else if !viewModel.hasSearchedOnce {
-            EmptyStateView()
+            EmptyStateView(isLocating: viewModel.isLocating)
         }
     }
 
@@ -135,12 +138,16 @@ private extension View {
 }
 
 private struct EmptyStateView: View {
+    let isLocating: Bool
+
     var body: some View {
         VStack(spacing: 12) {
-            Image(systemName: "magnifyingglass")
+            Image(systemName: isLocating ? "location.fill" : "magnifyingglass")
                 .font(.system(size: 40))
                 .foregroundStyle(.secondary)
-            Text("Procura uma cidade para veres o tempo atual e a previsão.")
+            Text(isLocating
+                 ? "A localizar-te…"
+                 : "Procura uma cidade para veres o tempo atual e a previsão.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

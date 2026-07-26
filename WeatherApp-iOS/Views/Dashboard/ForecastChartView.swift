@@ -73,9 +73,32 @@ struct ForecastChartView: View {
                 }
             }
             .transition(.opacity)
+
+            if range == .daily {
+                dailyInsightRows
+            }
         }
         .padding(16)
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+    }
+
+    /// One `DailyInsightRow` per day currently visible in the bar chart's
+    /// scroll window -- rain chance, UV risk, and (coastal cities only)
+    /// fishing/surf conditions, the things a chart of bare temperatures
+    /// can't show.
+    private var dailyInsightRows: some View {
+        let windowEnd = dailyScrollPosition.addingTimeInterval(Self.visibleDailyWindow)
+        let visibleEntries = forecast.daily.filter { $0.date >= dailyScrollPosition && $0.date < windowEnd }
+
+        return VStack(alignment: .leading, spacing: 10) {
+            Divider()
+            ForEach(visibleEntries) { entry in
+                DailyInsightRow(entry: entry, isToday: Calendar.current.isDateInToday(entry.date))
+                if entry.id != visibleEntries.last?.id {
+                    Divider()
+                }
+            }
+        }
     }
 
     private var visibleRangeLabel: String {
@@ -356,7 +379,10 @@ private extension Color {
                 DailyForecastEntry(
                     date: .now.addingTimeInterval(Double(day) * 86400),
                     temperatureMax: 24, temperatureMin: 15, description: "clear",
-                    sunrise: .now, sunset: .now, uvIndexMax: 5, precipitationProbabilityMax: 20
+                    sunrise: .now, sunset: .now, uvIndexMax: 5, precipitationProbabilityMax: 20,
+                    windSpeedMax: 15, waveHeightMax: 0.8, wavePeriodMax: 8,
+                    rainLikely: false, uvRiskLabel: "Moderate", outdoorActivityLabel: "Good",
+                    fishingConditionLabel: "Fair", surfConditionLabel: "Fair"
                 )
             }
         ),

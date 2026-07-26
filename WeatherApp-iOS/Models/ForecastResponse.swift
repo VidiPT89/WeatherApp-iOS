@@ -49,12 +49,22 @@ struct DailyForecastEntry: Decodable, Equatable, Identifiable {
     let sunset: Date
     let uvIndexMax: Double
     let precipitationProbabilityMax: Int
+    let windSpeedMax: Double
+    let waveHeightMax: Double?
+    let wavePeriodMax: Double?
+    let rainLikely: Bool
+    let uvRiskLabel: String
+    let outdoorActivityLabel: String
+    let fishingConditionLabel: String?
+    let surfConditionLabel: String?
 
     var id: Date { date }
 
     enum CodingKeys: String, CodingKey {
         case date, temperatureMax, temperatureMin, description
         case sunrise, sunset, uvIndexMax, precipitationProbabilityMax
+        case windSpeedMax, waveHeightMax, wavePeriodMax, rainLikely
+        case uvRiskLabel, outdoorActivityLabel, fishingConditionLabel, surfConditionLabel
     }
 
     init(
@@ -65,7 +75,15 @@ struct DailyForecastEntry: Decodable, Equatable, Identifiable {
         sunrise: Date,
         sunset: Date,
         uvIndexMax: Double,
-        precipitationProbabilityMax: Int
+        precipitationProbabilityMax: Int,
+        windSpeedMax: Double,
+        waveHeightMax: Double?,
+        wavePeriodMax: Double?,
+        rainLikely: Bool,
+        uvRiskLabel: String,
+        outdoorActivityLabel: String,
+        fishingConditionLabel: String?,
+        surfConditionLabel: String?
     ) {
         self.date = date
         self.temperatureMax = temperatureMax
@@ -75,6 +93,14 @@ struct DailyForecastEntry: Decodable, Equatable, Identifiable {
         self.sunset = sunset
         self.uvIndexMax = uvIndexMax
         self.precipitationProbabilityMax = precipitationProbabilityMax
+        self.windSpeedMax = windSpeedMax
+        self.waveHeightMax = waveHeightMax
+        self.wavePeriodMax = wavePeriodMax
+        self.rainLikely = rainLikely
+        self.uvRiskLabel = uvRiskLabel
+        self.outdoorActivityLabel = outdoorActivityLabel
+        self.fishingConditionLabel = fishingConditionLabel
+        self.surfConditionLabel = surfConditionLabel
     }
 
     init(from decoder: Decoder) throws {
@@ -103,6 +129,14 @@ struct DailyForecastEntry: Decodable, Equatable, Identifiable {
 
         uvIndexMax = try container.decode(Double.self, forKey: .uvIndexMax)
         precipitationProbabilityMax = try container.decode(Int.self, forKey: .precipitationProbabilityMax)
+        windSpeedMax = try container.decode(Double.self, forKey: .windSpeedMax)
+        waveHeightMax = try container.decodeIfPresent(Double.self, forKey: .waveHeightMax)
+        wavePeriodMax = try container.decodeIfPresent(Double.self, forKey: .wavePeriodMax)
+        rainLikely = try container.decode(Bool.self, forKey: .rainLikely)
+        uvRiskLabel = try container.decode(String.self, forKey: .uvRiskLabel)
+        outdoorActivityLabel = try container.decode(String.self, forKey: .outdoorActivityLabel)
+        fishingConditionLabel = try container.decodeIfPresent(String.self, forKey: .fishingConditionLabel)
+        surfConditionLabel = try container.decodeIfPresent(String.self, forKey: .surfConditionLabel)
     }
 }
 

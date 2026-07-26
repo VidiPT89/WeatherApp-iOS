@@ -125,7 +125,10 @@ struct WeatherCardView: View {
             date: .now, temperatureMax: 26, temperatureMin: 16, description: "clear sky",
             sunrise: Calendar.current.date(bySettingHour: 7, minute: 12, second: 0, of: .now)!,
             sunset: Calendar.current.date(bySettingHour: 20, minute: 45, second: 0, of: .now)!,
-            uvIndexMax: 6.4, precipitationProbabilityMax: 12
+            uvIndexMax: 6.4, precipitationProbabilityMax: 12,
+            windSpeedMax: 14, waveHeightMax: 0.8, wavePeriodMax: 8.5,
+            rainLikely: false, uvRiskLabel: "High", outdoorActivityLabel: "Great",
+            fishingConditionLabel: "Good", surfConditionLabel: "Good"
         )
     )
     .padding()

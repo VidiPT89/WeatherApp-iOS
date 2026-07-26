@@ -14,9 +14,11 @@ final class ForecastResponseDecodingTests: XCTestCase {
       ],
       "daily": [
         {"date": "2024-01-01", "temperatureMax": 22.0, "temperatureMin": 12.0, "description": "clear sky",
-         "sunrise": "2024-01-01T07:45:00", "sunset": "2024-01-01T17:30:00", "uvIndexMax": 3.5, "precipitationProbabilityMax": 20},
+         "sunrise": "2024-01-01T07:45:00", "sunset": "2024-01-01T17:30:00", "uvIndexMax": 3.5, "precipitationProbabilityMax": 20,
+         "windSpeedMax": 12.0, "rainLikely": false, "uvRiskLabel": "Moderate", "outdoorActivityLabel": "Good"},
         {"date": "2024-01-02", "temperatureMax": 20.5, "temperatureMin": 11.0, "description": "few clouds",
-         "sunrise": "2024-01-02T07:45:00", "sunset": "2024-01-02T17:31:00", "uvIndexMax": 3.8, "precipitationProbabilityMax": 30}
+         "sunrise": "2024-01-02T07:45:00", "sunset": "2024-01-02T17:31:00", "uvIndexMax": 3.8, "precipitationProbabilityMax": 30,
+         "windSpeedMax": 14.0, "rainLikely": false, "uvRiskLabel": "Moderate", "outdoorActivityLabel": "Good"}
       ]
     }
     """.data(using: .utf8)!

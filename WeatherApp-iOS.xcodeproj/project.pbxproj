@@ -11,6 +11,8 @@
 		112A24B856978EDD513CB47D /* FavoritesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97479B58B85EE63BE284D02 /* FavoritesViewModel.swift */; };
 		166B5540F0A72D56B89977DC /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0BF7F855FDE90ADEA8D5FB /* AuthViewModel.swift */; };
 		1A2B3C4D5E6F7089ABCDEF02 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF01 /* LocationService.swift */; };
+		1A2B3C4D5E6F7089ABCDEF07 /* ConditionLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF06 /* ConditionLabels.swift */; };
+		1A2B3C4D5E6F7089ABCDEF09 /* DailyInsightRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF08 /* DailyInsightRow.swift */; };
 		1C2A241C222613A5393B57DE /* WeatherInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A6A50A32CBD631657C58C /* WeatherInsightsView.swift */; };
 		1ED3DD3D23DB790F0A998EFC /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE418EE0FEE4F81640C089A5 /* AuthModels.swift */; };
 		25394D34C0F3F03C97C95E03 /* WeatherConditionStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46B84E0A4D17577BD75373C /* WeatherConditionStyle.swift */; };
@@ -139,6 +141,8 @@
 		C9360D9E15AA2060853ECD16 /* MarineConditionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarineConditionsView.swift; sourceTree = "<group>"; };
 		CD12E8E1AEEA3C6DC98A6952 /* DateFormatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatters.swift; sourceTree = "<group>"; };
 		D19A6A50A32CBD631657C58C /* WeatherInsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInsightsView.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7089ABCDEF06 /* ConditionLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionLabels.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7089ABCDEF08 /* DailyInsightRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyInsightRow.swift; sourceTree = "<group>"; };
 		D52D8DB6AB3B653967F48E85 /* KnownErrorCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnownErrorCode.swift; sourceTree = "<group>"; };
 		DD371BAAAF1532AEED54C286 /* NumberFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormatting.swift; sourceTree = "<group>"; };
 		DE418EE0FEE4F81640C089A5 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
@@ -227,6 +231,7 @@
 				6FFB9E849F8B833EC4B88B7C /* CacheAgeFormatter.swift */,
 				FF123BC45A0243C8EA06C3B8 /* Constants.swift */,
 				CD12E8E1AEEA3C6DC98A6952 /* DateFormatters.swift */,
+				1A2B3C4D5E6F7089ABCDEF06 /* ConditionLabels.swift */,
 				D52D8DB6AB3B653967F48E85 /* KnownErrorCode.swift */,
 				1636B2DBA62FF35C8B2F1BDA /* LocalizedStrings.swift */,
 				DD371BAAAF1532AEED54C286 /* NumberFormatting.swift */,
@@ -351,6 +356,7 @@
 			children = (
 				C35F91CAB9D0ECF9B0734B02 /* CacheBadgeView.swift */,
 				B8F029FE6F92DFA8BB85834F /* DashboardView.swift */,
+				1A2B3C4D5E6F7089ABCDEF08 /* DailyInsightRow.swift */,
 				40CA41BA637422C30EF574D3 /* FallbackBannerView.swift */,
 				28A79D7E9363F25D92A91267 /* ForecastChartView.swift */,
 				C9360D9E15AA2060853ECD16 /* MarineConditionsView.swift */,
@@ -527,7 +533,9 @@
 				AFC50F8EBB2975EB32672621 /* CitySearchField.swift in Sources */,
 				39034DC08D0489F07934D3B5 /* CitySearchViewModel.swift in Sources */,
 				D8CFF1AA410D37E9CEB0F1D4 /* Constants.swift in Sources */,
+				1A2B3C4D5E6F7089ABCDEF07 /* ConditionLabels.swift in Sources */,
 				60E2819C10F103D6AF40D7D2 /* DashboardView.swift in Sources */,
+				1A2B3C4D5E6F7089ABCDEF09 /* DailyInsightRow.swift in Sources */,
 				3825ED6F986E900C55E4975D /* DashboardViewModel.swift in Sources */,
 				9B6CE3877BADFEDC6FCEF8CA /* DateFormatters.swift in Sources */,
 				B9E09D2257323FFD5D3FBD1F /* FallbackBannerView.swift in Sources */,

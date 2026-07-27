@@ -13,6 +13,9 @@
 		1A2B3C4D5E6F7089ABCDEF02 /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF01 /* LocationService.swift */; };
 		1A2B3C4D5E6F7089ABCDEF07 /* ConditionLabels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF06 /* ConditionLabels.swift */; };
 		1A2B3C4D5E6F7089ABCDEF09 /* DailyInsightRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF08 /* DailyInsightRow.swift */; };
+		1A2B3C4D5E6F7089ABCDEF11 /* UserAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF10 /* UserAccount.swift */; };
+		1A2B3C4D5E6F7089ABCDEF13 /* AdminUsersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF12 /* AdminUsersViewModel.swift */; };
+		1A2B3C4D5E6F7089ABCDEF15 /* AdminUsersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A2B3C4D5E6F7089ABCDEF14 /* AdminUsersView.swift */; };
 		1C2A241C222613A5393B57DE /* WeatherInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A6A50A32CBD631657C58C /* WeatherInsightsView.swift */; };
 		1ED3DD3D23DB790F0A998EFC /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE418EE0FEE4F81640C089A5 /* AuthModels.swift */; };
 		25394D34C0F3F03C97C95E03 /* WeatherConditionStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46B84E0A4D17577BD75373C /* WeatherConditionStyle.swift */; };
@@ -143,6 +146,9 @@
 		D19A6A50A32CBD631657C58C /* WeatherInsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInsightsView.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7089ABCDEF06 /* ConditionLabels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionLabels.swift; sourceTree = "<group>"; };
 		1A2B3C4D5E6F7089ABCDEF08 /* DailyInsightRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyInsightRow.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7089ABCDEF10 /* UserAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAccount.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7089ABCDEF12 /* AdminUsersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUsersViewModel.swift; sourceTree = "<group>"; };
+		1A2B3C4D5E6F7089ABCDEF14 /* AdminUsersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminUsersView.swift; sourceTree = "<group>"; };
 		D52D8DB6AB3B653967F48E85 /* KnownErrorCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnownErrorCode.swift; sourceTree = "<group>"; };
 		DD371BAAAF1532AEED54C286 /* NumberFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormatting.swift; sourceTree = "<group>"; };
 		DE418EE0FEE4F81640C089A5 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
@@ -162,6 +168,7 @@
 			isa = PBXGroup;
 			children = (
 				9C7DE054DE9B4B9241D13AF1 /* SettingsView.swift */,
+				1A2B3C4D5E6F7089ABCDEF14 /* AdminUsersView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -175,6 +182,7 @@
 				E97479B58B85EE63BE284D02 /* FavoritesViewModel.swift */,
 				E14E442BDC93065A2B7D4088 /* HistoryViewModel.swift */,
 				3F8697BF0013D774AFEF29DF /* SettingsViewModel.swift */,
+				1A2B3C4D5E6F7089ABCDEF12 /* AdminUsersViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -191,6 +199,7 @@
 				B619AA59609351C2353C3A35 /* MarineResponse.swift */,
 				5C5EAFEE8B1A68D19FEF1A45 /* Units.swift */,
 				F87A6452716AA6732CBA4E79 /* UserPreferences.swift */,
+				1A2B3C4D5E6F7089ABCDEF10 /* UserAccount.swift */,
 				989912D8A92532CD7AD1ECED /* WeatherInsightsResponse.swift */,
 				BB2D9E51875D36A9212C4329 /* WeatherResponse.swift */,
 			);
@@ -548,6 +557,9 @@
 				2A656666972EE3E4E58A703F /* HistoryEntry.swift in Sources */,
 				2736EF38D10E3A9A385D12C3 /* HistoryView.swift in Sources */,
 				68F66F0674D1D74D9037AFB6 /* HistoryViewModel.swift in Sources */,
+				1A2B3C4D5E6F7089ABCDEF11 /* UserAccount.swift in Sources */,
+				1A2B3C4D5E6F7089ABCDEF13 /* AdminUsersViewModel.swift in Sources */,
+				1A2B3C4D5E6F7089ABCDEF15 /* AdminUsersView.swift in Sources */,
 				7DC4D8A96F0CD24D23FAB194 /* KeychainHelper.swift in Sources */,
 				949D4B7292CB184B0B0D2DB2 /* KnownErrorCode.swift in Sources */,
 				2A95E9C2F6F84C6F74219B2E /* LocalizedStrings.swift in Sources */,

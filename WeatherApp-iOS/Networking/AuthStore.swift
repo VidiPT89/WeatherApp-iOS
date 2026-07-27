@@ -12,6 +12,11 @@ final class AuthStore {
 
     private(set) var token: String?
     private(set) var isRestoringSession = true
+    /// The logged-in account, fetched once per session start (login/register/restore) rather
+    /// than per-screen. `nil` until that fetch resolves, and again after logout.
+    private(set) var currentUser: UserAccount?
+
+    var isAdmin: Bool { currentUser?.role == .admin }
 
     /// Guards against a token refresh that was already in flight when the user logged out
     /// landing afterward and silently resurrecting the cleared session -- logout() and the
@@ -46,6 +51,9 @@ final class AuthStore {
         token = restoredToken
         await apiClient.setTokens(access: restoredToken, refresh: restoredRefreshToken)
         isRestoringSession = false
+        if restoredToken != nil {
+            await fetchCurrentUser()
+        }
     }
 
     func register(email: String, password: String) async throws {
@@ -65,6 +73,7 @@ final class AuthStore {
         KeychainHelper.delete(forKey: Self.tokenKey)
         KeychainHelper.delete(forKey: Self.refreshTokenKey)
         token = nil
+        currentUser = nil
         Task {
             await apiClient.logout()
             await apiClient.setTokens(access: nil, refresh: nil)
@@ -76,5 +85,12 @@ final class AuthStore {
         KeychainHelper.save(response.refreshToken, forKey: Self.refreshTokenKey)
         Task { await apiClient.setTokens(access: response.token, refresh: response.refreshToken) }
         token = response.token
+        Task { await fetchCurrentUser() }
+    }
+
+    /// Best-effort -- a failure here just means `isAdmin` stays `false`, no different from any
+    /// other transient network hiccup, and every screen that cares already re-reads it lazily.
+    private func fetchCurrentUser() async {
+        currentUser = try? await apiClient.fetchMe()
     }
 }

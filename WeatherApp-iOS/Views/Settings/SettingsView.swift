@@ -80,6 +80,16 @@ struct SettingsView: View {
                     Text("Esta app foi criada por David Arsénio Martins.")
                 }
 
+                if authStore.isAdmin {
+                    Section {
+                        NavigationLink("Gerir utilizadores") {
+                            AdminUsersView(currentUserId: authStore.currentUser?.id)
+                        }
+                    } header: {
+                        Text("Administração")
+                    }
+                }
+
                 Section {
                     Button("Terminar sessão", role: .destructive) {
                         authStore.logout()

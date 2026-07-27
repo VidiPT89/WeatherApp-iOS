@@ -149,6 +149,21 @@ actor APIClient {
         )
     }
 
+    /// The caller's own account, including `role` -- nothing else exposes that client-side.
+    func fetchMe() async throws -> UserAccount {
+        try await send(path: "/api/v1/user/me", method: "GET")
+    }
+
+    // MARK: - Admin (server rejects these with 403 unless the caller's role is admin)
+
+    func fetchAdminUsers() async throws -> [UserAccount] {
+        try await send(path: "/api/v1/admin/users", method: "GET")
+    }
+
+    func deleteAdminUser(id: Int) async throws {
+        let _: EmptyResponse = try await send(path: "/api/v1/admin/users/\(id)", method: "DELETE")
+    }
+
     // MARK: - Core request plumbing
 
     private static func cityQuery(_ city: String, _ units: Units?) -> [URLQueryItem] {

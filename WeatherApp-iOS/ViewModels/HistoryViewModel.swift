@@ -20,12 +20,22 @@ final class HistoryViewModel {
         errorMessage = nil
         do {
             let fetched = try await apiClient.fetchHistory()
-            entries = fetched.sorted { $0.searchedAt > $1.searchedAt }
+            let sorted = fetched.sorted { $0.searchedAt > $1.searchedAt }
+            entries = Self.dedupedByCity(sorted)
         } catch let apiError as APIError {
             errorMessage = apiError.errorDescription
         } catch {
             errorMessage = error.localizedDescription
         }
         isLoading = false
+    }
+
+    /// Keeps only the most recent entry per city -- `entries` is expected
+    /// newest-first, so the first occurrence of each city is its latest
+    /// search. Repeated searches of the same city would otherwise clutter
+    /// the list with entries the user can't tell apart.
+    private static func dedupedByCity(_ entries: [HistoryEntry]) -> [HistoryEntry] {
+        var seenCities = Set<String>()
+        return entries.filter { seenCities.insert($0.city).inserted }
     }
 }

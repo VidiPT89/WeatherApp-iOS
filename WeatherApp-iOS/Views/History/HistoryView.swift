@@ -1,7 +1,10 @@
 import SwiftUI
 
-/// Read-only search history, newest first.
+/// Search history, newest first, deduped to one entry per city. Tapping a
+/// city jumps to the Dashboard and re-fetches it live via `onSelectCity`.
 struct HistoryView: View {
+    let onSelectCity: (String) -> Void
+
     @State private var viewModel = HistoryViewModel()
 
     var body: some View {
@@ -26,20 +29,27 @@ struct HistoryView: View {
                     .padding(.top, 40)
                 } else {
                     List(viewModel.entries) { entry in
-                        HStack {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(entry.city).font(.headline)
-                                Text(entry.searchedAt.formatted(date: .abbreviated, time: .shortened))
-                                    .font(.caption)
+                        Button {
+                            onSelectCity(entry.city)
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(entry.city).font(.headline)
+                                    Text(entry.searchedAt.formatted(date: .abbreviated, time: .shortened))
+                                        .font(.caption)
+                                        .foregroundStyle(.secondary)
+                                }
+                                Spacer()
+                                Text(entry.units.temperatureSymbol)
+                                    .font(.caption.weight(.semibold))
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 4)
+                                    .background(.blue.opacity(0.15), in: Capsule())
+                                Image(systemName: "chevron.right")
                                     .foregroundStyle(.secondary)
                             }
-                            Spacer()
-                            Text(entry.units.temperatureSymbol)
-                                .font(.caption.weight(.semibold))
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(.blue.opacity(0.15), in: Capsule())
                         }
+                        .buttonStyle(.plain)
                     }
                     .listStyle(.plain)
                 }
@@ -52,5 +62,5 @@ struct HistoryView: View {
 }
 
 #Preview {
-    HistoryView()
+    HistoryView(onSelectCity: { _ in })
 }

@@ -24,7 +24,10 @@ struct MainTabView: View {
                 .tabItem { Label("Favoritos", systemImage: "star.fill") }
                 .tag(AppTab.favorites)
 
-            HistoryView()
+            HistoryView(onSelectCity: { city in
+                pendingDashboardCity = city
+                selectedTab = .dashboard
+            })
                 .tabItem { Label("Histórico", systemImage: "clock.fill") }
                 .tag(AppTab.history)
 

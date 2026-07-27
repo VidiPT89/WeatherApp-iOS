@@ -66,7 +66,6 @@ struct DashboardView: View {
                     WeatherInsightsView(insights: insights)
                 }
             }
-            .transition(.opacity)
         } else if !viewModel.hasSearchedOnce {
             EmptyStateView(isLocating: viewModel.isLocating)
         }

@@ -65,7 +65,6 @@ struct WeatherCardView: View {
                     metric(icon: "sun.max.trianglebadge.exclamationmark.fill", label: "Índice UV", value: NumberFormatting.roundedWhole(today.uvIndexMax))
                     metric(icon: "drop.fill", label: "Prob. de chuva", value: "\(today.precipitationProbabilityMax)%")
                 }
-                .transition(.opacity)
             }
 
             CacheBadgeView(fromCache: weather.fromCache, observedAt: weather.observedAt)
@@ -73,11 +72,11 @@ struct WeatherCardView: View {
         .padding(20)
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .compositingGroup()
         .background(
             LinearGradient(colors: style.gradient, startPoint: .topLeading, endPoint: .bottomTrailing),
             in: RoundedRectangle(cornerRadius: 20)
         )
-        .animation(.easeInOut(duration: 0.4), value: today != nil)
         // Deliberately no `.accessibilityIdentifier` on this container: SwiftUI
         // pushes a container-level identifier down onto every descendant leaf
         // that doesn't already have a *more specific* one winning, which was

@@ -79,6 +79,7 @@ struct ForecastChartView: View {
             }
         }
         .padding(16)
+        .compositingGroup()
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
     }
 

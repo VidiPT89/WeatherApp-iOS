@@ -29,6 +29,7 @@ struct CitySearchField: View {
                 }
             }
             .padding(10)
+            .compositingGroup()
             .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 10))
 
             if isFocused && !searchViewModel.suggestions.isEmpty {

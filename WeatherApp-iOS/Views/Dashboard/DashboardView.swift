@@ -19,6 +19,7 @@ struct DashboardView: View {
 
                     content
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             }
             .navigationTitle("WeatherApp")

@@ -39,6 +39,15 @@ struct ForecastChartView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
+            // `.chartScrollableAxes(.horizontal)` gives the chart itself an
+            // ideal width spanning its FULL scrollable content (all 48
+            // hourly / 16 daily points), not just the visible window --
+            // without capping it here, that width leaks up into this
+            // VStack (and from there into the whole Dashboard's content
+            // stack), making everything wider than the screen and pushed
+            // off-center. `.frame(maxWidth: .infinity)` on the Group below
+            // is what actually constrains it; nothing upstream of this
+            // comment does.
             Picker("Intervalo", selection: $range.animation(.easeInOut)) {
                 ForEach(ForecastRange.allCases) { range in
                     Text(range.titleKey).tag(range)
@@ -72,13 +81,14 @@ struct ForecastChartView: View {
                     dailyChart
                 }
             }
-            .transition(.opacity)
+            .frame(maxWidth: .infinity)
 
             if range == .daily {
                 dailyInsightRows
             }
         }
         .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .compositingGroup()
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
     }

@@ -48,14 +48,16 @@ struct MarineConditionsView: View {
                     Text("Marés de hoje")
                         .font(.caption2.weight(.semibold))
                         .foregroundStyle(Color("TextSecondary"))
-                    HStack(spacing: 14) {
-                        ForEach(marine.tideEvents, id: \.time) { event in
-                            HStack(spacing: 4) {
-                                Text(event.isHigh ? "Alta" : "Baixa")
-                                    .font(.caption.weight(.semibold))
-                                Text(formattedTideTime(event.time))
-                                    .font(.caption)
-                                    .foregroundStyle(Color("TextSecondary"))
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 14) {
+                            ForEach(marine.tideEvents, id: \.time) { event in
+                                HStack(spacing: 4) {
+                                    Text(event.isHigh ? "Alta" : "Baixa")
+                                        .font(.caption.weight(.semibold))
+                                    Text(formattedTideTime(event.time))
+                                        .font(.caption)
+                                        .foregroundStyle(Color("TextSecondary"))
+                                }
                             }
                         }
                     }

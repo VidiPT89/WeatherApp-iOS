@@ -66,7 +66,7 @@ struct MarineConditionsView: View {
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color("CardBackground"), in: RoundedRectangle(cornerRadius: 18))
-        .transition(.opacity.combined(with: .move(edge: .bottom)))
+        .transition(.opacity)
     }
 
     private func metric(icon: String, label: LocalizedStringKey, value: String?) -> some View {

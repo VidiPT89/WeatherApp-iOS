@@ -41,7 +41,7 @@ struct WeatherInsightsView: View {
         .padding(18)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color("CardBackground"), in: RoundedRectangle(cornerRadius: 18))
-        .transition(.opacity.combined(with: .move(edge: .bottom)))
+        .transition(.opacity)
     }
 
     private func insight(label: LocalizedStringKey, value: Text, tone: ConditionTone) -> some View {

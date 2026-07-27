@@ -65,7 +65,7 @@ struct WeatherCardView: View {
                     metric(icon: "sun.max.trianglebadge.exclamationmark.fill", label: "Índice UV", value: NumberFormatting.roundedWhole(today.uvIndexMax))
                     metric(icon: "drop.fill", label: "Prob. de chuva", value: "\(today.precipitationProbabilityMax)%")
                 }
-                .transition(.opacity.combined(with: .move(edge: .top)))
+                .transition(.opacity)
             }
 
             CacheBadgeView(fromCache: weather.fromCache, observedAt: weather.observedAt)

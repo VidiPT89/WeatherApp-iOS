@@ -34,18 +34,15 @@ struct WeatherCardView: View {
                 Image(systemName: style.symbolName)
                     .font(.system(size: 40))
                     .symbolRenderingMode(.multicolor)
-                    .symbolEffect(.bounce, value: weather.city)
             }
 
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 Text(NumberFormatting.roundedWhole(weather.temperature))
                     .font(.system(size: 56, weight: .bold, design: .rounded))
-                    .contentTransition(.numericText())
                 Text(weather.units.temperatureSymbol)
                     .font(.title2)
                     .opacity(0.85)
             }
-            .animation(.snappy, value: weather.temperature)
 
             Text(weather.description.capitalized)
                 .font(.headline)

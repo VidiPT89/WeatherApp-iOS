@@ -2,10 +2,14 @@ import SwiftUI
 
 /// Search history, newest first, deduped to one entry per city. Tapping a
 /// city jumps to the Dashboard and re-fetches it live via `onSelectCity`.
+/// Entries can be removed one by one (swipe-to-delete) or all at once via
+/// the toolbar action, which is gated behind a confirmation since it can't
+/// be undone.
 struct HistoryView: View {
     let onSelectCity: (String) -> Void
 
     @State private var viewModel = HistoryViewModel()
+    @State private var showClearConfirmation = false
 
     var body: some View {
         NavigationStack {
@@ -50,11 +54,43 @@ struct HistoryView: View {
                             }
                         }
                         .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                Task { await viewModel.deleteEntry(entry) }
+                            } label: {
+                                Label("Eliminar", systemImage: "trash")
+                            }
+                            .disabled(viewModel.deletingEntryId == entry.id)
+                        }
                     }
                     .listStyle(.plain)
                 }
             }
             .navigationTitle("Histórico")
+            .toolbar {
+                if !viewModel.entries.isEmpty {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(role: .destructive) {
+                            showClearConfirmation = true
+                        } label: {
+                            Label("Limpar tudo", systemImage: "trash")
+                        }
+                        .disabled(viewModel.isClearing)
+                    }
+                }
+            }
+            .confirmationDialog(
+                "Eliminar todo o histórico?",
+                isPresented: $showClearConfirmation,
+                titleVisibility: .visible
+            ) {
+                Button("Eliminar tudo", role: .destructive) {
+                    Task { await viewModel.clearAll() }
+                }
+                Button("Cancelar", role: .cancel) {}
+            } message: {
+                Text("Esta ação não pode ser desfeita.")
+            }
             .task { await viewModel.loadHistory() }
             .refreshable { await viewModel.loadHistory() }
         }

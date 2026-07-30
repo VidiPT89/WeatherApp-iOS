@@ -2,17 +2,17 @@ import Foundation
 
 /// One entry of `GET /api/v1/weather/history`.
 struct HistoryEntry: Decodable, Equatable, Identifiable {
+    let id: Int
     let city: String
     let units: Units
     let searchedAt: Date
 
-    var id: String { "\(city)-\(units.rawValue)-\(searchedAt.timeIntervalSince1970)" }
-
     enum CodingKeys: String, CodingKey {
-        case city, units, searchedAt
+        case id, city, units, searchedAt
     }
 
-    init(city: String, units: Units, searchedAt: Date) {
+    init(id: Int, city: String, units: Units, searchedAt: Date) {
+        self.id = id
         self.city = city
         self.units = units
         self.searchedAt = searchedAt
@@ -20,6 +20,7 @@ struct HistoryEntry: Decodable, Equatable, Identifiable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
         city = try container.decode(String.self, forKey: .city)
         units = try container.decode(Units.self, forKey: .units)
         let raw = try container.decode(String.self, forKey: .searchedAt)

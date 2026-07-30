@@ -125,6 +125,18 @@ actor APIClient {
         try await send(path: "/api/v1/weather/history", method: "GET")
     }
 
+    /// Deletes a single history entry belonging to the caller. Throws an `APIError.server`
+    /// with a 404 status if `id` doesn't exist or belongs to another user.
+    func deleteHistoryEntry(id: Int) async throws {
+        let _: EmptyResponse = try await send(path: "/api/v1/weather/history/\(id)", method: "DELETE")
+    }
+
+    /// Clears the caller's entire search history. Always `204`, even if the history was
+    /// already empty.
+    func clearHistory() async throws {
+        let _: EmptyResponse = try await send(path: "/api/v1/weather/history", method: "DELETE")
+    }
+
     func fetchFavorites() async throws -> [FavoriteCity] {
         try await send(path: "/api/v1/weather/favorites", method: "GET")
     }

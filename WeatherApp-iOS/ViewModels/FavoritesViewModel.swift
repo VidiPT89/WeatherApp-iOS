@@ -2,13 +2,14 @@ import Foundation
 import Observation
 
 /// Backs the Favorites screen: listing, adding by name (handling the 409
-/// duplicate case with a friendly message), and no delete (v1 scope, by design).
+/// duplicate case with a friendly message), and removing by swipe-to-delete.
 @MainActor
 @Observable
 final class FavoritesViewModel {
     private(set) var favorites: [FavoriteCity] = []
     private(set) var isLoading = false
     private(set) var errorMessage: String?
+    private(set) var removingCity: String?
 
     var newCityName = ""
     private(set) var addFeedback: String?
@@ -51,5 +52,21 @@ final class FavoritesViewModel {
         } catch {
             addFeedback = error.localizedDescription
         }
+    }
+
+    /// Any favorite can be removed by its own owner -- unlike admin user deletion there's no
+    /// self-delete case to special-case here.
+    func removeFavorite(_ favorite: FavoriteCity) async {
+        removingCity = favorite.city
+        errorMessage = nil
+        do {
+            try await apiClient.removeFavorite(city: favorite.city)
+            favorites.removeAll { $0.id == favorite.id }
+        } catch let apiError as APIError {
+            errorMessage = apiError.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        removingCity = nil
     }
 }

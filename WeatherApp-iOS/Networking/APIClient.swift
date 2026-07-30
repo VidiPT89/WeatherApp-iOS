@@ -24,6 +24,7 @@ actor APIClient {
     private var authToken: String?
     private var refreshToken: String?
     private var onTokensRefreshed: (@Sendable (AuthResponse) -> Void)?
+    private var onRefreshFailed: (@Sendable () -> Void)?
     private var inFlightRefresh: Task<Bool, Never>?
 
     init(session: URLSession = .shared) {
@@ -43,6 +44,17 @@ actor APIClient {
     /// `AuthStore` directly via `setTokens` — this is only for the in-band case.
     func setOnTokensRefreshed(_ handler: @escaping @Sendable (AuthResponse) -> Void) {
         onTokensRefreshed = handler
+    }
+
+    /// Registers a callback fired when an in-band refresh attempt (triggered by `perform`
+    /// hitting a 401 UNAUTHENTICATED) *definitively fails* -- i.e. the refresh token itself was
+    /// rejected, not just a transient network hiccup on the refresh call. `AuthStore` uses this
+    /// to fall back to its own `logout()` so the app drops back to the login screen instead of
+    /// being stuck "authenticated" with a dead token pair forever. Fired at most once per failed
+    /// refresh regardless of how many concurrent callers were waiting on it, since they all share
+    /// the single in-flight `Task`.
+    func setOnRefreshFailed(_ handler: @escaping @Sendable () -> Void) {
+        onRefreshFailed = handler
     }
 
     // MARK: - Auth endpoints (no token required)
@@ -122,6 +134,17 @@ actor APIClient {
             path: "/api/v1/weather/favorites",
             method: "POST",
             body: AddFavoriteRequest(city: city)
+        )
+    }
+
+    /// Removes `city` (case-insensitive on the backend) from the caller's favorites. The
+    /// backend takes `city` as a query parameter rather than a path segment, and returns 404
+    /// (surfaced as a thrown `APIError`) if it isn't currently a favorite.
+    func removeFavorite(city: String) async throws {
+        let _: EmptyResponse = try await send(
+            path: "/api/v1/weather/favorites",
+            method: "DELETE",
+            queryItems: [URLQueryItem(name: "city", value: city)]
         )
     }
 
@@ -265,6 +288,7 @@ actor APIClient {
                 return true
             } catch {
                 await self.setTokens(access: nil, refresh: nil)
+                await self.notifyRefreshFailed()
                 return false
             }
         }
@@ -278,6 +302,10 @@ actor APIClient {
         authToken = response.token
         refreshToken = response.refreshToken
         onTokensRefreshed?(response)
+    }
+
+    private func notifyRefreshFailed() {
+        onRefreshFailed?()
     }
 
     private func makeRequest(

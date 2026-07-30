@@ -12,8 +12,8 @@ One of three clients (Web / iOS / [Android](https://github.com/VidiPT89/WeatherA
 - 🌡️ Current weather + hourly/daily forecast chart (Swift Charts), with a °C/°F toggle
 - ⚡ **Cache badge** — "dados frescos" vs "servido da cache há Xs", ticking live from the response's `fromCache` flag and timestamp
 - 🔁 **Fallback banner** — appears when the response was served by the secondary provider
-- ⚖️ **Provider comparison screen** — the same city, side by side, across every configured provider, with a computed average
-- 🔐 Auth (register/login, JWT in Keychain), favorite cities, search history, saved unit preference
+- 🔐 Auth (register/login, JWT in Keychain), favorite cities (add + swipe-to-delete), search history, saved unit preference
+- 🛡️ Admin section (Settings → "Administração", role-gated) — list every account and delete one (swipe-to-delete), except the caller's own
 - ✅ Loading, error and empty states throughout
 
 ## 🛠️ Tech Stack
@@ -43,7 +43,7 @@ WeatherApp-iOS/
 ├── Networking/      # APIClient (actor, URLSession), AuthStore (Keychain), KeychainHelper
 ├── ViewModels/      # one @Observable view model per screen
 ├── Views/           # Auth, Dashboard (weather card, cache badge, fallback banner, forecast chart),
-│                    # Favorites, History, Compare, Settings, MainTabView
+│                    # Favorites, History, Settings (incl. admin user list), MainTabView
 └── Info.plist       # NSAppTransportSecurity localhost exception (plain HTTP in local dev)
 ```
 
@@ -51,7 +51,7 @@ WeatherApp-iOS/
 
 - **Direct-to-API, no BFF**: unlike the web client (which proxies through Next.js Route Handlers to keep the JWT out of browser JS), a native app's Keychain is already a secure, sandboxed place to hold a token — no XSS surface to defend against, so there's no need for a server-side proxy layer.
 - **Local-datetime forecast decoding**: `hourly[].time`/`daily[].date` come back from the API without a timezone offset (Open-Meteo's `timezone=auto` already localizes them), so they're decoded as plain `Date`/`DateComponents` via a custom formatter instead of `.iso8601`, which would reject them.
-- **XCUITest over manual driving**: this environment doesn't have screen-recording permission for computer-use automation, so the golden path (register → search → cache badge flips → favorites → history → compare → settings) is captured as a real, re-runnable `XCUITest` instead of a one-off manual walkthrough — arguably stronger verification since it re-runs on every future change.
+- **XCUITest over manual driving**: this environment doesn't have screen-recording permission for computer-use automation, so the golden path (register → search → cache badge flips → favorites → history → settings) is captured as a real, re-runnable `XCUITest` instead of a one-off manual walkthrough — arguably stronger verification since it re-runs on every future change.
 
 ## 🚀 How to Run
 
@@ -78,14 +78,14 @@ xcodebuild test -project WeatherApp-iOS.xcodeproj -scheme WeatherApp-iOS \
   -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
-- **Unit tests** (`WeatherApp-iOSTests`): model decoding fixtures (including the local-datetime forecast parsing), `APIClient` error-decoding against a mocked `URLProtocol`, cache-age formatting, weather-condition keyword matching, provider-comparison average logic.
-- **UI test** (`WeatherApp-iOSUITests/GoldenPathUITests.swift`): drives the real app against a live backend end-to-end — register → search a city → confirm weather + forecast render → search again and confirm the cache badge flips to "servido da cache" → toggle the forecast chart tabs → add a favorite → jump back to it → check history → check compare (confirms the expected local fallback: `open-meteo` succeeds, `open-weather-map` fails since no API key is configured) → toggle units in settings.
+- **Unit tests** (`WeatherApp-iOSTests`): model decoding fixtures (including the local-datetime forecast parsing), `APIClient` error-decoding and token-refresh handling (retry-once on an expired access token, propagating the original error when the refresh token itself is rejected, single-flighting concurrent refreshes) against a mocked `URLProtocol`, `AuthStore`'s logout-vs-in-flight-refresh race handling (both the resurrection-after-logout case and the newer forced-logout-on-refresh-failure case), cache-age formatting, weather-condition keyword matching.
+- **UI test** (`WeatherApp-iOSUITests/GoldenPathUITests.swift`): drives the real app against a live backend end-to-end — register → search a city → confirm weather + forecast render → search again and confirm the cache badge flips to "servido da cache" → toggle the forecast chart tabs → add a favorite → jump back to it → check history → toggle units in settings.
 
 Given the project's scope (three client apps on one backend), test effort is weighted toward decoding/business-logic and one comprehensive end-to-end flow, rather than unit-testing pure SwiftUI layout.
 
 ## 📝 Notes
 
-- No delete-favorite/clear-history UI — matches the backend's intentional v1 scope (no delete endpoints exist yet).
+- No clear-history UI — matches the backend's intentional v1 scope (no delete endpoint exists yet for history). Favorites can be removed (swipe-to-delete).
 - Requires the backend reachable at `http://localhost:8080`; the simulator shares the host's network namespace so no special host mapping is needed (unlike the Android emulator, which needs `10.0.2.2`).
 
 ## 📄 License

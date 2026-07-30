@@ -25,6 +25,7 @@ targets:
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
+        NSLocationWhenInUseUsageDescription: Usamos a tua localização para mostrar automaticamente o tempo onde estás.
         NSAppTransportSecurity:
           NSExceptionDomains:
             localhost:

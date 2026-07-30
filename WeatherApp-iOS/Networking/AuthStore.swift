@@ -20,10 +20,12 @@ final class AuthStore {
 
     /// Guards against a token refresh that was already in flight when the user logged out
     /// landing afterward and silently resurrecting the cleared session -- logout() and the
-    /// background refresh callback each fire an independent `Task` with no ordering guarantee
-    /// between them, so a refresh that wins the race can otherwise write a valid token pair back
-    /// into the Keychain right after logout cleared it. Only the background refresh callback
-    /// checks this; an explicit login()/register() always wins and re-arms it for the new session.
+    /// background refresh callbacks (success and failure) each fire an independent `Task` with no
+    /// ordering guarantee between them, so a refresh that wins the race can otherwise write a
+    /// valid token pair back into the Keychain (success) or call logout() a second time for no
+    /// reason (failure) right after logout already cleared everything. Only the background
+    /// refresh callbacks check this; an explicit login()/register() always wins and re-arms it
+    /// for the new session.
     private var didLogOut = false
 
     var isAuthenticated: Bool { token != nil }
@@ -37,6 +39,14 @@ final class AuthStore {
                 Task { @MainActor in
                     guard let self, !self.didLogOut else { return }
                     self.persist(response)
+                }
+            }
+            await apiClient.setOnRefreshFailed { [weak self] in
+                Task { @MainActor in
+                    // Same guard as the success path above: if we already logged out there's
+                    // nothing to undo, and calling logout() again would just be redundant work.
+                    guard let self, !self.didLogOut else { return }
+                    self.logout()
                 }
             }
             await restoreSession()

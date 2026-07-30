@@ -47,6 +47,14 @@ struct FavoritesView: View {
                             }
                         }
                         .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                Task { await viewModel.removeFavorite(favorite) }
+                            } label: {
+                                Label("Eliminar", systemImage: "trash")
+                            }
+                            .disabled(viewModel.removingCity == favorite.city)
+                        }
                     }
                     .listStyle(.plain)
                 }

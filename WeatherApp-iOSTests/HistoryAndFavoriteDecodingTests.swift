@@ -5,14 +5,16 @@ final class HistoryAndFavoriteDecodingTests: XCTestCase {
     func test_decodesHistoryEntryList_sortableByInstant() throws {
         let json = """
         [
-          {"city": "Lisboa", "units": "metric", "searchedAt": "2024-01-01T10:00:00Z"},
-          {"city": "Porto", "units": "imperial", "searchedAt": "2024-01-02T10:00:00Z"}
+          {"id": 1, "city": "Lisboa", "units": "metric", "searchedAt": "2024-01-01T10:00:00Z"},
+          {"id": 2, "city": "Porto", "units": "imperial", "searchedAt": "2024-01-02T10:00:00Z"}
         ]
         """.data(using: .utf8)!
 
         let entries = try JSONDecoder().decode([HistoryEntry].self, from: json)
         XCTAssertEqual(entries.count, 2)
+        XCTAssertEqual(entries[0].id, 1)
         XCTAssertEqual(entries[0].units, .metric)
+        XCTAssertEqual(entries[1].id, 2)
         XCTAssertTrue(entries[1].searchedAt > entries[0].searchedAt)
     }
 

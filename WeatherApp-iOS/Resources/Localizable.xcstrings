@@ -47,9 +47,7 @@
         }
       }
     },
-    "%@°" : {
-
-    },
+    "%@°" : {},
     "A carregar..." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -63,23 +61,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A carregar..."
-          }
-        }
-      }
-    },
-    "A comparar..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comparing..."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A comparar..."
           }
         }
       }
@@ -405,40 +386,6 @@
         }
       }
     },
-    "Comparar" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Compare"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comparar"
-          }
-        }
-      }
-    },
-    "Comparar cidade..." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search a city to compare..."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comparar cidade..."
-          }
-        }
-      }
-    },
     "Condições de pesca" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -659,23 +606,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Entrar"
-          }
-        }
-      }
-    },
-    "Erro desconhecido." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unknown error."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Erro desconhecido."
           }
         }
       }
@@ -1176,23 +1106,6 @@
         }
       }
     },
-    "Média entre providers com sucesso: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Average across successful providers: %@"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Média entre providers com sucesso: %@"
-          }
-        }
-      }
-    },
     "Métrico (°C)" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1516,23 +1429,6 @@
         }
       }
     },
-    "Principal" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Primary"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Principal"
-          }
-        }
-      }
-    },
     "Prob. de chuva" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1546,23 +1442,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Prob. de chuva"
-          }
-        }
-      }
-    },
-    "Procura uma cidade para comparar todos os providers de meteorologia." : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Search for a city to compare all weather providers."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Procura uma cidade para comparar todos os providers de meteorologia."
           }
         }
       }
@@ -1597,22 +1476,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Procurar cidade..."
-          }
-        }
-      }
-    },
-    "Provider principal indisponível — a usar alternativa (%@)" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Primary provider unavailable — using fallback (%@)"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Provider principal indisponível — a usar alternativa (%@)"
           }
         }
       }
@@ -1821,9 +1684,7 @@
         }
       }
     },
-    "Sobre o criador" : {
-
-    },
+    "Sobre o criador" : {},
     "Sol, marés e o que mais precisares de saber" : {
       "localizations" : {
         "en" : {
@@ -2003,6 +1864,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "WeatherApp"
+          }
+        }
+      }
+    },
+    "Limpar tudo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear all"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Limpar tudo"
+          }
+        }
+      }
+    },
+    "Eliminar todo o histórico?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete entire history?"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar todo o histórico?"
+          }
+        }
+      }
+    },
+    "Eliminar tudo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete all"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eliminar tudo"
+          }
+        }
+      }
+    },
+    "Cancelar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancelar"
+          }
+        }
+      }
+    },
+    "Esta ação não pode ser desfeita." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action cannot be undone."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esta ação não pode ser desfeita."
           }
         }
       }

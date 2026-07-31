@@ -134,8 +134,10 @@ final class DashboardViewModel {
             temperature: weather.temperature,
             feelsLike: weather.feelsLike,
             humidity: weather.humidity,
+            windSpeed: weather.windSpeed,
             description: weather.description,
             temperatureSymbol: weather.units.temperatureSymbol,
+            windSpeedSymbol: weather.units.windSpeedSymbol,
             lastUpdated: weather.observedAt
         )
         WeatherWidgetStore.save(snapshot)

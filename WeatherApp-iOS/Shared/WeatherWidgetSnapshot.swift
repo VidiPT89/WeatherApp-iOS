@@ -14,8 +14,10 @@ struct WeatherWidgetSnapshot: Codable, Equatable {
     let temperature: Double
     let feelsLike: Double
     let humidity: Int
+    let windSpeed: Double
     let description: String
     let temperatureSymbol: String
+    let windSpeedSymbol: String
     let lastUpdated: Date
 }
 

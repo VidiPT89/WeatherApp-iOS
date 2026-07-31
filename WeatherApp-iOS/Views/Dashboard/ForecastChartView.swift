@@ -15,6 +15,8 @@ struct ForecastChartView: View {
     let forecast: ForecastResponse
     @Binding var range: ForecastRange
 
+    @State private var isDetailPresented = false
+
     // Widened from an original 7h window: at 7h, a normal user had to tap the
     // paging arrows 3-4 times to see the rest of the day, which was reported
     // as tedious. 12h roughly halves that (2 pages covers a full day) while
@@ -93,7 +95,18 @@ struct ForecastChartView: View {
                     dailyChart
                 }
             }
+            // The point/bar annotations (`.annotation(position: .top)` below) paint above the
+            // chart's own plotted area -- Swift Charts doesn't reserve layout space for them, so
+            // without this padding the highest-value labels visually collide with whatever sits
+            // directly above in the VStack (the glance strip's own axis, when `hourlyGlanceStrip`
+            // is showing). This is empty breathing room, not decoration -- don't remove it even
+            // if it looks redundant in isolation.
+            .padding(.top, 20)
             .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+            .onTapGesture { isDetailPresented = true }
+            .accessibilityAddTraits(.isButton)
+            .accessibilityHint("Toca para veres a previsão completa, hora a hora ou dia a dia")
 
             if range == .daily {
                 dailyInsightRows
@@ -103,6 +116,9 @@ struct ForecastChartView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .compositingGroup()
         .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 16))
+        .sheet(isPresented: $isDetailPresented) {
+            ForecastDetailView(forecast: forecast, initialRange: range)
+        }
     }
 
     /// One `DailyInsightRow` per day currently visible in the bar chart's

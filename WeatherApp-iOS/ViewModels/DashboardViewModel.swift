@@ -38,6 +38,9 @@ final class DashboardViewModel {
     private(set) var isLocating = false
     private(set) var errorMessage: String?
     private(set) var lastLoadedCity: String?
+    /// Whether `lastLoadedCity` came from GPS auto-detection rather than a manual search —
+    /// see `loadWeather(for:isFromNearbyLocation:)`.
+    private var lastLoadWasFromNearbyLocation = false
 
     var units: Units = .metric
     var forecastRange: ForecastRange = .hourly
@@ -66,7 +69,7 @@ final class DashboardViewModel {
             let coordinate = try await locationService.requestCurrentLocation()
             let weatherResult = try await apiClient.fetchWeatherNearby(
                 latitude: coordinate.latitude, longitude: coordinate.longitude, units: units)
-            await loadWeather(for: weatherResult.city)
+            await loadWeather(for: weatherResult.city, isFromNearbyLocation: true)
         } catch {
             // Permission denied or lookup failed -- the manual-search empty state stays in place.
         }
@@ -78,12 +81,18 @@ final class DashboardViewModel {
         units = preferences.units
     }
 
-    func loadWeather(for city: String) async {
+    /// - Parameter isFromNearbyLocation: `true` only for the GPS-detected city
+    ///   (`loadNearbyWeatherIfAvailable`) — this gates whether the home-screen
+    ///   widget gets updated. The widget is meant to answer "what's the
+    ///   weather where I am", not "what was the last city I looked up", so a
+    ///   manual search (the default, `false`) must never overwrite it.
+    func loadWeather(for city: String, isFromNearbyLocation: Bool = false) async {
         let trimmedCity = city.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedCity.isEmpty else { return }
 
         isLoading = true
         errorMessage = nil
+        lastLoadWasFromNearbyLocation = isFromNearbyLocation
 
         do {
             async let weatherTask = apiClient.fetchWeather(city: trimmedCity, units: units)
@@ -100,7 +109,9 @@ final class DashboardViewModel {
             lastLoadedCity = trimmedCity
             marine = await marineTask
             insights = await insightsTask
-            updateWidgetSnapshot(with: weatherResult)
+            if isFromNearbyLocation {
+                updateWidgetSnapshot(with: weatherResult)
+            }
         } catch let apiError as APIError {
             errorMessage = apiError.errorDescription
         } catch {
@@ -117,7 +128,9 @@ final class DashboardViewModel {
         units = newUnits
 
         if let city = lastLoadedCity {
-            await loadWeather(for: city)
+            // Preserve whether this city came from GPS auto-detection so a units toggle doesn't
+            // accidentally start (or stop) updating the widget.
+            await loadWeather(for: city, isFromNearbyLocation: lastLoadWasFromNearbyLocation)
         }
 
         Task { try? await apiClient.updatePreferences(units: newUnits) }

@@ -5,6 +5,11 @@ import SwiftUI
 /// server-side from data already fetched for the dashboard.
 struct WeatherInsightsView: View {
     let insights: WeatherInsightsResponse
+    /// Full daily forecast, passed through so the detail sheet can show the
+    /// next several days of these same labels instead of repeating today's.
+    var dailyForecast: [DailyForecastEntry] = []
+
+    @State private var isDetailPresented = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -42,6 +47,14 @@ struct WeatherInsightsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .compositingGroup()
         .background(Color("CardBackground"), in: RoundedRectangle(cornerRadius: 18))
+        .contentShape(RoundedRectangle(cornerRadius: 18))
+        .onTapGesture { isDetailPresented = true }
+        .accessibilityIdentifier("dashboard.insightsCard")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Toca para veres estes indicadores para os próximos dias")
+        .sheet(isPresented: $isDetailPresented) {
+            WeatherInsightsDetailView(insights: insights, dailyForecast: dailyForecast)
+        }
     }
 
     private func insight(label: LocalizedStringKey, value: Text, tone: ConditionTone) -> some View {

@@ -7,6 +7,8 @@ import SwiftUI
 struct MarineConditionsView: View {
     let marine: MarineResponse
 
+    @State private var isDetailPresented = false
+
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             Label("Condições marítimas", systemImage: "water.waves")
@@ -69,6 +71,14 @@ struct MarineConditionsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .compositingGroup()
         .background(Color("CardBackground"), in: RoundedRectangle(cornerRadius: 18))
+        .contentShape(RoundedRectangle(cornerRadius: 18))
+        .onTapGesture { isDetailPresented = true }
+        .accessibilityIdentifier("dashboard.marineCard")
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Toca para veres as marés do dia e mais detalhes")
+        .sheet(isPresented: $isDetailPresented) {
+            MarineDetailView(marine: marine)
+        }
     }
 
     private func metric(icon: String, label: LocalizedStringKey, value: String?) -> some View {

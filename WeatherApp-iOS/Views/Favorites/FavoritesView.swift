@@ -6,6 +6,7 @@ struct FavoritesView: View {
     let onSelectCity: (String) -> Void
 
     @State private var viewModel = FavoritesViewModel()
+    @State private var searchViewModel = CitySearchViewModel()
 
     var body: some View {
         NavigationStack {
@@ -67,20 +68,22 @@ struct FavoritesView: View {
 
     private var addForm: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                TextField("Adicionar cidade...", text: $viewModel.newCityName)
-                    .textFieldStyle(.roundedBorder)
-                    .textInputAutocapitalization(.words)
-                    .onSubmit { Task { await viewModel.addFavorite() } }
-                    .accessibilityIdentifier("favorites.cityField")
-
-                Button("Adicionar") {
-                    Task { await viewModel.addFavorite() }
+            // Autocomplete-only, backed by the same `/geocoding` search used
+            // on the Dashboard -- picking a real suggestion (rather than
+            // free-typing a name) guarantees whatever gets POSTed to
+            // `/favorites` is a place the backend's weather-by-name lookup
+            // can actually resolve later.
+            CitySearchField(
+                searchViewModel: searchViewModel,
+                placeholder: "Adicionar cidade...",
+                identifier: "favorites.cityField",
+                onSubmitCity: { city in
+                    Task {
+                        await viewModel.addFavorite(city: city)
+                        searchViewModel.queryText = ""
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(viewModel.newCityName.trimmingCharacters(in: .whitespaces).isEmpty)
-                .accessibilityIdentifier("favorites.addButton")
-            }
+            )
 
             if let feedback = viewModel.addFeedback {
                 Text(feedback)

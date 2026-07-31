@@ -15,6 +15,7 @@ struct WeatherCardView: View {
     var today: DailyForecastEntry?
 
     @Environment(\.locale) private var locale
+    @State private var isDetailPresented = false
 
     private var style: WeatherConditionStyle.Style {
         WeatherConditionStyle.style(for: weather.description)
@@ -79,6 +80,13 @@ struct WeatherCardView: View {
         // that doesn't already have a *more specific* one winning, which was
         // observed clobbering CacheBadgeView's own identifiers in UI tests.
         // Tests key off visible text (city name / cache badge copy) instead.
+        .contentShape(RoundedRectangle(cornerRadius: 20))
+        .onTapGesture { isDetailPresented = true }
+        .accessibilityAddTraits(.isButton)
+        .accessibilityHint("Toca para veres mais detalhes sobre as condições atuais")
+        .sheet(isPresented: $isDetailPresented) {
+            WeatherDetailView(weather: weather, today: today)
+        }
     }
 
     private func metric(icon: String, label: LocalizedStringKey, value: String) -> some View {

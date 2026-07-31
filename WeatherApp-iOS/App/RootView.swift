@@ -1,6 +1,6 @@
 import SwiftUI
 
-private let minimumSplashDuration: Duration = .seconds(1.4)
+private let minimumSplashDuration: Duration = .seconds(2.3)
 
 /// Switches between a restoring-session splash, the auth flow, and the main
 /// tab view, based on `AuthStore`'s persisted-JWT state. The splash stays up

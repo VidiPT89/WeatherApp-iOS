@@ -1,5 +1,6 @@
 import SwiftUI
 import Observation
+import WidgetKit
 
 enum ForecastRange: String, CaseIterable, Identifiable {
     case hourly
@@ -99,6 +100,7 @@ final class DashboardViewModel {
             lastLoadedCity = trimmedCity
             marine = await marineTask
             insights = await insightsTask
+            updateWidgetSnapshot(with: weatherResult)
         } catch let apiError as APIError {
             errorMessage = apiError.errorDescription
         } catch {
@@ -119,5 +121,24 @@ final class DashboardViewModel {
         }
 
         Task { try? await apiClient.updatePreferences(units: newUnits) }
+    }
+
+    /// The widget shows the last weather the app itself fetched -- it never
+    /// fetches independently. Every successful Dashboard load writes a fresh
+    /// snapshot to the shared App Group container and asks WidgetKit to
+    /// refresh immediately, rather than the widget polling on its own timer.
+    private func updateWidgetSnapshot(with weather: WeatherResponse) {
+        let snapshot = WeatherWidgetSnapshot(
+            city: weather.city,
+            country: weather.country,
+            temperature: weather.temperature,
+            feelsLike: weather.feelsLike,
+            humidity: weather.humidity,
+            description: weather.description,
+            temperatureSymbol: weather.units.temperatureSymbol,
+            lastUpdated: weather.observedAt
+        )
+        WeatherWidgetStore.save(snapshot)
+        WidgetCenter.shared.reloadAllTimelines()
     }
 }

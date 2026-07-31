@@ -64,7 +64,7 @@ struct DashboardView: View {
                 }
                 ForecastChartView(forecast: forecast, range: $viewModel.forecastRange)
                 if let insights = viewModel.insights {
-                    WeatherInsightsView(insights: insights)
+                    WeatherInsightsView(insights: insights, dailyForecast: forecast.daily)
                 }
             }
         } else if !viewModel.hasSearchedOnce {

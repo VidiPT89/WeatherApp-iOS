@@ -11,7 +11,6 @@ final class FavoritesViewModel {
     private(set) var errorMessage: String?
     private(set) var removingCity: String?
 
-    var newCityName = ""
     private(set) var addFeedback: String?
 
     private let apiClient: APIClient
@@ -33,15 +32,19 @@ final class FavoritesViewModel {
         isLoading = false
     }
 
-    func addFavorite() async {
-        let trimmed = newCityName.trimmingCharacters(in: .whitespacesAndNewlines)
+    /// Adds a favorite from a city name picked off the geocoding-backed
+    /// `CitySearchField` (autocomplete suggestion or its exact submitted
+    /// text) -- not free-typed, so it's guaranteed to correspond to a real
+    /// geocoded place rather than a string the backend's weather-by-name
+    /// lookup might later fail to resolve.
+    func addFavorite(city: String) async {
+        let trimmed = city.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return }
 
         addFeedback = nil
         do {
             let created = try await apiClient.addFavorite(city: trimmed)
             favorites.append(created)
-            newCityName = ""
             addFeedback = "\(created.city) adicionada aos favoritos."
         } catch let apiError as APIError {
             if case .server(let status, _, _) = apiError, status == 409 {

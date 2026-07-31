@@ -23,6 +23,11 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
     override init() {
         super.init()
         manager.delegate = self
+        // A weather lookup only needs city-level precision -- the default `.best` accuracy makes
+        // CoreLocation wait for a fine-grained GPS lock (slow, especially indoors/cold-start),
+        // when a much faster WiFi/cell-based fix is already precise enough for reverse-geocoding
+        // to a city.
+        manager.desiredAccuracy = kCLLocationAccuracyReduced
     }
 
     func requestCurrentLocation() async throws -> CLLocationCoordinate2D {

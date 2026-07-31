@@ -20,6 +20,6 @@ struct WeatherWidget: Widget {
         }
         .configurationDisplayName("Tempo")
         .description("Mostra o último tempo que consultaste na app.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }

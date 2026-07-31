@@ -44,8 +44,10 @@ struct WeatherWidgetProvider: TimelineProvider {
         temperature: 21,
         feelsLike: 20,
         humidity: 58,
+        windSpeed: 14,
         description: "clear sky",
         temperatureSymbol: "°C",
+        windSpeedSymbol: "km/h",
         lastUpdated: .now
     )
 }

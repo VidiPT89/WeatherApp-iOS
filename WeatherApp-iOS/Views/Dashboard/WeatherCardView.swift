@@ -45,7 +45,7 @@ struct WeatherCardView: View {
                     .opacity(0.85)
             }
 
-            Text(weather.description.capitalized)
+            Text(WeatherDescriptionLocalizer.localized(weather.description, locale: locale))
                 .font(.headline)
 
             HStack(spacing: 20) {

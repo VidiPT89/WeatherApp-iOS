@@ -11,6 +11,7 @@ import WidgetKit
 struct WeatherWidgetEntryView: View {
     let entry: WeatherWidgetEntry
     @Environment(\.widgetFamily) private var family
+    @Environment(\.locale) private var locale
 
     var body: some View {
         if let snapshot = entry.snapshot {
@@ -55,7 +56,7 @@ struct WeatherWidgetEntryView: View {
                     .font(.title3)
                     .opacity(0.85)
             }
-            Text(snapshot.description.capitalized)
+            Text(WeatherDescriptionLocalizer.localized(snapshot.description, locale: locale))
                 .font(.caption2)
                 .lineLimit(1)
                 .opacity(0.9)
@@ -86,7 +87,7 @@ struct WeatherWidgetEntryView: View {
                         .font(.title3)
                         .opacity(0.85)
                 }
-                Text(snapshot.description.capitalized)
+                Text(WeatherDescriptionLocalizer.localized(snapshot.description, locale: locale))
                     .font(.caption)
                     .lineLimit(1)
             }
@@ -138,7 +139,7 @@ struct WeatherWidgetEntryView: View {
                     .font(.title2)
                     .opacity(0.85)
             }
-            Text(snapshot.description.capitalized)
+            Text(WeatherDescriptionLocalizer.localized(snapshot.description, locale: locale))
                 .font(.headline)
 
             Divider().overlay(.white.opacity(0.3))

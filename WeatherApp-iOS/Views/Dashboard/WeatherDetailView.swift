@@ -85,7 +85,7 @@ struct WeatherDetailView: View {
                     .opacity(0.85)
             }
 
-            Text(weather.description.capitalized)
+            Text(WeatherDescriptionLocalizer.localized(weather.description, locale: locale))
                 .font(.headline)
         }
         .padding(20)

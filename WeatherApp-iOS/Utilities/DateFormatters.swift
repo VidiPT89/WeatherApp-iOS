@@ -32,8 +32,9 @@ enum BackendDateFormatters {
     }
 
     /// Local (zone-less) datetime used by `forecast.hourly[].time`,
-    /// e.g. `2024-01-01T00:00:00`.
-    nonisolated(unsafe) static let localDateTime: DateFormatter = {
+    /// e.g. `2024-01-01T00:00:00`. `DateFormatter` itself is `Sendable`, so unlike the
+    /// formatters above/below, this one needs no `nonisolated(unsafe)`.
+    static let localDateTime: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         formatter.timeZone = TimeZone(identifier: "UTC")
@@ -43,7 +44,7 @@ enum BackendDateFormatters {
     }()
 
     /// Local (zone-less) date used by `forecast.daily[].date`, e.g. `2024-01-01`.
-    nonisolated(unsafe) static let localDate: DateFormatter = {
+    static let localDate: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.timeZone = TimeZone(identifier: "UTC")
@@ -53,7 +54,7 @@ enum BackendDateFormatters {
     }()
 
     /// Short display formatter for hourly forecast axis labels, e.g. "14h".
-    nonisolated(unsafe) static let hourLabel: DateFormatter = {
+    static let hourLabel: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH'h'"
         formatter.locale = Locale(identifier: "pt_PT")
@@ -61,7 +62,7 @@ enum BackendDateFormatters {
     }()
 
     /// Short display formatter for daily forecast axis labels, e.g. "seg".
-    nonisolated(unsafe) static let weekdayLabel: DateFormatter = {
+    static let weekdayLabel: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEE"
         formatter.locale = Locale(identifier: "pt_PT")

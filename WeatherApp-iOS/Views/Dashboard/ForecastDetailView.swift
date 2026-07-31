@@ -68,7 +68,7 @@ struct ForecastDetailView: View {
                     .font(.caption)
                     .foregroundStyle(.cyan)
             }
-            Text(entry.description.capitalized)
+            Text(WeatherDescriptionLocalizer.localized(entry.description, locale: locale))
                 .font(.caption)
                 .foregroundStyle(Color("TextSecondary"))
                 .frame(width: 90, alignment: .trailing)
@@ -86,7 +86,7 @@ struct ForecastDetailView: View {
                 Text(entry.date.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated).locale(Self.ptLocale)))
                     .font(.subheadline)
                     .foregroundStyle(Color("TextPrimary"))
-                Text(entry.description.capitalized)
+                Text(WeatherDescriptionLocalizer.localized(entry.description, locale: locale))
                     .font(.caption)
                     .foregroundStyle(Color("TextSecondary"))
             }

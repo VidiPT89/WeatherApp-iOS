@@ -68,6 +68,7 @@ struct SplashView: View {
                 VStack(spacing: 2) {
                     Text("Criado por David Arsénio Martins")
                     Text("ividi.dev")
+                    Text("github.com/VidiPT89")
                 }
                 .font(.footnote)
                 .foregroundStyle(.white.opacity(0.75))
@@ -76,10 +77,14 @@ struct SplashView: View {
             }
         }
         .onAppear {
+            // Delays nudged slightly later than the original 1.4s-duration
+            // splash now that `minimumSplashDuration` (RootView) is ~2.3s --
+            // keeps the entrance from finishing with a long stretch of dead
+            // time before the screen dismisses.
             withAnimation(.spring(response: 0.6, dampingFraction: 0.65)) {
                 logoAppeared = true
             }
-            withAnimation(.easeOut(duration: 0.5).delay(0.25)) {
+            withAnimation(.easeOut(duration: 0.5).delay(0.35)) {
                 textAppeared = true
             }
             withAnimation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true).delay(0.6)) {

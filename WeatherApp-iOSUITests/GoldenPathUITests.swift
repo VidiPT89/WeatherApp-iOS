@@ -188,13 +188,16 @@ final class GoldenPathUITests: XCTestCase {
         ).firstMatch
     }
 
+    /// Favorites now uses the same autocomplete-backed `CitySearchField` as
+    /// the Dashboard (no more free-text "Adicionar" button) -- typing and
+    /// submitting with return mirrors `searchCity(_:)` below.
     private func addToFavorites(city: String) {
         app.tabBars.buttons["Favoritos"].tap()
         let cityField = app.textFields["favorites.cityField"]
         XCTAssertTrue(cityField.waitForExistence(timeout: defaultTimeout))
         tapTextFieldAndWaitForKeyboard(cityField)
         cityField.typeText(city)
-        app.buttons["favorites.addButton"].tap()
+        cityField.typeText("\n")
     }
 
     private func jumpToFavoriteFromList(city: String) {

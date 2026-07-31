@@ -15,7 +15,15 @@ struct ForecastChartView: View {
     let forecast: ForecastResponse
     @Binding var range: ForecastRange
 
-    private static let visibleHourlyWindow: TimeInterval = 7 * 3600
+    // Widened from an original 7h window: at 7h, a normal user had to tap the
+    // paging arrows 3-4 times to see the rest of the day, which was reported
+    // as tedious. 12h roughly halves that (2 pages covers a full day) while
+    // keeping the labeled ticks (every 3rd hour, see `isLabeledHourlyTick`)
+    // legible -- 4-5 labeled points across the window, same density per
+    // labeled point as before. Paired with `hourlyGlanceStrip` below, which
+    // shows the full next-24h at once for people who just want a quick look
+    // and don't need the detailed scrollable chart at all.
+    private static let visibleHourlyWindow: TimeInterval = 12 * 3600
     private static let visibleDailyWindow: TimeInterval = 6 * 86400
     private static let coolColor = Color(red: 0.20, green: 0.55, blue: 0.95)
     private static let warmColor = Color(red: 0.95, green: 0.35, blue: 0.20)
@@ -71,6 +79,10 @@ struct ForecastChartView: View {
                 }
                 Spacer()
                 pagingControls
+            }
+
+            if range == .hourly {
+                hourlyGlanceStrip
             }
 
             Group {
@@ -205,6 +217,61 @@ struct ForecastChartView: View {
             green: coolColor.components.green + (warmColor.components.green - coolColor.components.green) * t,
             blue: coolColor.components.blue + (warmColor.components.blue - coolColor.components.blue) * t
         )
+    }
+
+    /// "Next 24h at a glance" -- a compact, non-scrolling sparkline of the
+    /// next 24 hourly points, sitting above the detailed scrollable chart.
+    /// Answers "what's it doing today" in one glance without touching the
+    /// paging buttons at all; the detailed chart below is still there for
+    /// anyone who wants to dig into a specific hour/rain chance.
+    private var hourlyGlanceStrip: some View {
+        let entries = Array(forecast.hourly.prefix(24))
+        let temperatures = entries.map(\.temperature)
+        let minTemp = temperatures.min() ?? 0
+        let maxTemp = temperatures.max() ?? 1
+
+        return VStack(alignment: .leading, spacing: 4) {
+            Text("Próximas 24h")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.secondary)
+
+            Chart(entries) { entry in
+                AreaMark(
+                    x: .value("Hora", entry.time),
+                    y: .value("Temperatura", entry.temperature)
+                )
+                .foregroundStyle(.blue.opacity(0.12))
+                .interpolationMethod(.catmullRom)
+
+                LineMark(
+                    x: .value("Hora", entry.time),
+                    y: .value("Temperatura", entry.temperature)
+                )
+                .foregroundStyle(.blue.opacity(0.8))
+                .interpolationMethod(.catmullRom)
+                .lineStyle(StrokeStyle(lineWidth: 1.5))
+            }
+            .chartXAxis {
+                // Only every 6th hour labeled -- this strip is meant to be
+                // skimmed, not read precisely; the detailed chart below
+                // handles precision.
+                AxisMarks(values: .stride(by: .hour, count: 6)) { value in
+                    AxisValueLabel(format: .dateTime.hour().locale(Self.ptLocale))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .chartYAxis(.hidden)
+            .chartYScale(domain: (minTemp - 1)...(maxTemp + 1))
+            .frame(height: 64)
+            .accessibilityIdentifier("forecast.hourlyGlance")
+            .accessibilityLabel(glanceAccessibilitySummary(entries: entries, minTemp: minTemp, maxTemp: maxTemp))
+        }
+        .padding(.bottom, 4)
+    }
+
+    private func glanceAccessibilitySummary(entries: [HourlyForecastEntry], minTemp: Double, maxTemp: Double) -> String {
+        "Próximas 24 horas: mínima \(NumberFormatting.roundedWhole(minTemp))\(forecast.units.temperatureSymbol), máxima \(NumberFormatting.roundedWhole(maxTemp))\(forecast.units.temperatureSymbol)"
     }
 
     private var hourlyChart: some View {

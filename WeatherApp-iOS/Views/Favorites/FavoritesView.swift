@@ -5,11 +5,21 @@ import SwiftUI
 struct FavoritesView: View {
     let onSelectCity: (String) -> Void
 
+    @Environment(AuthStore.self) private var authStore
     @State private var viewModel = FavoritesViewModel()
     @State private var searchViewModel = CitySearchViewModel()
+    @State private var showAuthSheet = false
 
     var body: some View {
         NavigationStack {
+            if !authStore.isAuthenticated {
+                SignInRequiredView(
+                    message: "Inicia sessão para guardares as tuas cidades favoritas.",
+                    action: { showAuthSheet = true }
+                )
+                .navigationTitle("Favoritos")
+                .sheet(isPresented: $showAuthSheet) { AuthView() }
+            } else {
             VStack(spacing: 0) {
                 addForm
 
@@ -63,6 +73,7 @@ struct FavoritesView: View {
             }
             .navigationTitle("Favoritos")
             .task { await viewModel.loadFavorites() }
+            }
         }
     }
 

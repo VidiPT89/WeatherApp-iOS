@@ -16,7 +16,8 @@ final class SettingsViewModel {
         self.apiClient = apiClient
     }
 
-    func loadPreferences() async {
+    func loadPreferences(isAuthenticated: Bool) async {
+        guard isAuthenticated else { return }
         isLoading = true
         errorMessage = nil
         do {

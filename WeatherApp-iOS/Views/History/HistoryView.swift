@@ -8,11 +8,21 @@ import SwiftUI
 struct HistoryView: View {
     let onSelectCity: (String) -> Void
 
+    @Environment(AuthStore.self) private var authStore
     @State private var viewModel = HistoryViewModel()
     @State private var showClearConfirmation = false
+    @State private var showAuthSheet = false
 
     var body: some View {
         NavigationStack {
+            if !authStore.isAuthenticated {
+                SignInRequiredView(
+                    message: "Inicia sessão para guardares o teu histórico de pesquisas.",
+                    action: { showAuthSheet = true }
+                )
+                .navigationTitle("Histórico")
+                .sheet(isPresented: $showAuthSheet) { AuthView() }
+            } else {
             Group {
                 if viewModel.isLoading {
                     ProgressView("A carregar...")
@@ -93,6 +103,7 @@ struct HistoryView: View {
             }
             .task { await viewModel.loadHistory() }
             .refreshable { await viewModel.loadHistory() }
+            }
         }
     }
 }

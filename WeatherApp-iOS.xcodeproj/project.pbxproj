@@ -59,6 +59,7 @@
 		90C8DA88DD4B3F11AD28DD72 /* MarineResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B619AA59609351C2353C3A35 /* MarineResponse.swift */; };
 		949D4B7292CB184B0B0D2DB2 /* KnownErrorCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52D8DB6AB3B653967F48E85 /* KnownErrorCode.swift */; };
 		9B6CE3877BADFEDC6FCEF8CA /* DateFormatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD12E8E1AEEA3C6DC98A6952 /* DateFormatters.swift */; };
+		9DE2DA8D9AC4A9A1434D1C69 /* SignInRequiredView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D66DCFDFA1B7DBEF1CE2DF34 /* SignInRequiredView.swift */; };
 		A3A5E5D53F1A8A1D035D8A1D /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D85F99AA6966128533CA5DF4 /* WidgetKit.framework */; };
 		A73C70752CB03E3213E8A581 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C7DE054DE9B4B9241D13AF1 /* SettingsView.swift */; };
 		AA08504CAAF5745E87F5E927 /* AppLocale.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00699EDFD10EFF6AE9BC2540 /* AppLocale.swift */; };
@@ -206,6 +207,7 @@
 		D0F5AA7049BE7B33EBDF758C /* WeatherInsightsDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInsightsDetailView.swift; sourceTree = "<group>"; };
 		D19A6A50A32CBD631657C58C /* WeatherInsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherInsightsView.swift; sourceTree = "<group>"; };
 		D52D8DB6AB3B653967F48E85 /* KnownErrorCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnownErrorCode.swift; sourceTree = "<group>"; };
+		D66DCFDFA1B7DBEF1CE2DF34 /* SignInRequiredView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInRequiredView.swift; sourceTree = "<group>"; };
 		D85F99AA6966128533CA5DF4 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		DD371BAAAF1532AEED54C286 /* NumberFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberFormatting.swift; sourceTree = "<group>"; };
 		DE418EE0FEE4F81640C089A5 /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
@@ -357,6 +359,7 @@
 			isa = PBXGroup;
 			children = (
 				82DFAB916FB7D2829B7453FE /* CitySearchField.swift */,
+				D66DCFDFA1B7DBEF1CE2DF34 /* SignInRequiredView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -740,6 +743,7 @@
 				F57A0D4FED0A586EE0810F58 /* RootView.swift in Sources */,
 				A73C70752CB03E3213E8A581 /* SettingsView.swift in Sources */,
 				38B7AA2A87739C05FC6B9718 /* SettingsViewModel.swift in Sources */,
+				9DE2DA8D9AC4A9A1434D1C69 /* SignInRequiredView.swift in Sources */,
 				F9A49046C39EE7F3A1952974 /* SplashView.swift in Sources */,
 				2830344A71AF73F93EC582E4 /* Units.swift in Sources */,
 				291523741CE0D78B99AA11E6 /* UserAccount.swift in Sources */,

@@ -1,8 +1,12 @@
 import SwiftUI
 
 /// Combined Login/Register screen: a mode switcher over one email+password form.
+/// Presented as a sheet from Settings/Favorites/History (weather lookup itself
+/// needs no account), so it dismisses itself as soon as login/register
+/// succeeds, and offers an explicit close button for backing out.
 struct AuthView: View {
     @Environment(AuthStore.self) private var authStore
+    @Environment(\.dismiss) private var dismiss
     @State private var viewModel: AuthViewModel?
 
     var body: some View {
@@ -23,12 +27,19 @@ struct AuthView: View {
                 Spacer()
             }
             .padding()
-            .navigationBarHidden(true)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Fechar") { dismiss() }
+                }
+            }
         }
         .task {
             if viewModel == nil {
                 viewModel = AuthViewModel(authStore: authStore)
             }
+        }
+        .onChange(of: authStore.isAuthenticated) { _, isAuthenticated in
+            if isAuthenticated { dismiss() }
         }
     }
 }

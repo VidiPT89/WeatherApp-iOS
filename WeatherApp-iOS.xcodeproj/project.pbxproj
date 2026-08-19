@@ -814,7 +814,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.weatherapp;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
-				WEATHER_API_BASE_URL = "https://weather-api-production-68ff.up.railway.app";
+				WEATHER_API_BASE_URL = "https://weatherapi-4r5x.onrender.com";
 			};
 			name = Debug;
 		};
@@ -1057,7 +1057,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.weatherapp;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
-				WEATHER_API_BASE_URL = "https://weather-api-production-68ff.up.railway.app";
+				WEATHER_API_BASE_URL = "https://weatherapi-4r5x.onrender.com";
 			};
 			name = Release;
 		};

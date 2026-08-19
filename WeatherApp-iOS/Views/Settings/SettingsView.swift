@@ -5,32 +5,35 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(AuthStore.self) private var authStore
     @State private var viewModel = SettingsViewModel()
+    @State private var showAuthSheet = false
     @AppStorage(AppLocale.storageKey) private var appLocaleRaw: String = AppLocale.default.rawValue
     @AppStorage(AppTheme.storageKey) private var appThemeRaw: String = AppTheme.default.rawValue
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Unidades") {
-                    if viewModel.isLoading {
-                        ProgressView()
-                    } else {
-                        Picker("Temperatura", selection: Binding(
-                            get: { viewModel.units },
-                            set: { newUnits in Task { await viewModel.updateUnits(to: newUnits) } }
-                        )) {
-                            ForEach(Units.allCases) { units in
-                                Text(units.displayName).tag(units)
+                if authStore.isAuthenticated {
+                    Section("Unidades") {
+                        if viewModel.isLoading {
+                            ProgressView()
+                        } else {
+                            Picker("Temperatura", selection: Binding(
+                                get: { viewModel.units },
+                                set: { newUnits in Task { await viewModel.updateUnits(to: newUnits) } }
+                            )) {
+                                ForEach(Units.allCases) { units in
+                                    Text(units.displayName).tag(units)
+                                }
                             }
+                            .pickerStyle(.inline)
+                            .labelsHidden()
                         }
-                        .pickerStyle(.inline)
-                        .labelsHidden()
-                    }
 
-                    if let errorMessage = viewModel.errorMessage {
-                        Text(errorMessage).font(.footnote).foregroundStyle(.red)
-                    } else if let confirmation = viewModel.saveConfirmation {
-                        Text(confirmation).font(.footnote).foregroundStyle(.green)
+                        if let errorMessage = viewModel.errorMessage {
+                            Text(errorMessage).font(.footnote).foregroundStyle(.red)
+                        } else if let confirmation = viewModel.saveConfirmation {
+                            Text(confirmation).font(.footnote).foregroundStyle(.green)
+                        }
                     }
                 }
 
@@ -91,13 +94,28 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Button("Terminar sessão", role: .destructive) {
-                        authStore.logout()
+                    if authStore.isAuthenticated {
+                        Button("Terminar sessão", role: .destructive) {
+                            authStore.logout()
+                        }
+                    } else {
+                        Button("Iniciar sessão / Criar conta") {
+                            showAuthSheet = true
+                        }
+                    }
+                } footer: {
+                    if !authStore.isAuthenticated {
+                        Text("A pesquisa de tempo funciona sem conta. Inicia sessão para guardar favoritos e histórico.")
                     }
                 }
             }
             .navigationTitle("Definições")
-            .task { await viewModel.loadPreferences() }
+            .task(id: authStore.isAuthenticated) {
+                await viewModel.loadPreferences(isAuthenticated: authStore.isAuthenticated)
+            }
+            .sheet(isPresented: $showAuthSheet) {
+                AuthView()
+            }
         }
     }
 }

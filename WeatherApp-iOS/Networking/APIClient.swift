@@ -92,7 +92,8 @@ actor APIClient {
     // MARK: - Weather endpoints
 
     func fetchWeather(city: String, units: Units?) async throws -> WeatherResponse {
-        try await send(path: "/api/v1/weather", method: "GET", queryItems: Self.cityQuery(city, units))
+        try await send(
+            path: "/api/v1/weather", method: "GET", queryItems: Self.cityQuery(city, units), requiresAuth: false)
     }
 
     /// Weather for the caller's GPS coordinates, reverse-geocoded server-side to a city.
@@ -101,24 +102,30 @@ actor APIClient {
         if let units {
             items.append(URLQueryItem(name: "units", value: units.rawValue))
         }
-        return try await send(path: "/api/v1/weather/nearby", method: "GET", queryItems: items)
+        return try await send(path: "/api/v1/weather/nearby", method: "GET", queryItems: items, requiresAuth: false)
     }
 
     func fetchForecast(city: String, units: Units?) async throws -> ForecastResponse {
-        try await send(path: "/api/v1/weather/forecast", method: "GET", queryItems: Self.cityQuery(city, units))
+        try await send(
+            path: "/api/v1/weather/forecast", method: "GET", queryItems: Self.cityQuery(city, units),
+            requiresAuth: false)
     }
 
     /// Water temperature + swell (wave height/direction/period) for a city.
     /// All four data fields are `nil` for inland/non-coastal cities — that's
     /// a normal 200 response, not an error.
     func fetchMarine(city: String, units: Units?) async throws -> MarineResponse {
-        try await send(path: "/api/v1/weather/marine", method: "GET", queryItems: Self.cityQuery(city, units))
+        try await send(
+            path: "/api/v1/weather/marine", method: "GET", queryItems: Self.cityQuery(city, units),
+            requiresAuth: false)
     }
 
     /// Derived indicators (moon phase, UV risk, outdoor-activity score, fishing
     /// conditions). `fishingConditionLabel` is `nil` for inland/non-coastal cities.
     func fetchInsights(city: String, units: Units?) async throws -> WeatherInsightsResponse {
-        try await send(path: "/api/v1/weather/insights", method: "GET", queryItems: Self.cityQuery(city, units))
+        try await send(
+            path: "/api/v1/weather/insights", method: "GET", queryItems: Self.cityQuery(city, units),
+            requiresAuth: false)
     }
 
     func fetchHistory() async throws -> [HistoryEntry] {
@@ -167,7 +174,7 @@ actor APIClient {
             URLQueryItem(name: "query", value: query),
             URLQueryItem(name: "limit", value: String(limit))
         ]
-        return try await send(path: "/api/v1/geocoding", method: "GET", queryItems: queryItems)
+        return try await send(path: "/api/v1/geocoding", method: "GET", queryItems: queryItems, requiresAuth: false)
     }
 
     // MARK: - Preferences
@@ -342,6 +349,11 @@ actor APIClient {
             guard let authToken else {
                 throw APIError.unauthenticated
             }
+            request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
+        } else if let authToken {
+            // Weather lookup works anonymously, but a signed-in caller still gets its
+            // preferred units applied and searches recorded to history server-side --
+            // both keyed off this same Authorization header when present.
             request.setValue("Bearer \(authToken)", forHTTPHeaderField: "Authorization")
         }
 

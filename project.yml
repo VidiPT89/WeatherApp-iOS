@@ -45,7 +45,7 @@ targets:
         CURRENT_PROJECT_VERSION: "1"
         # Overridable per build configuration (e.g. a local xcconfig for a Debug build pointed at
         # a staging/local backend) without editing source -- APIClient reads this via Info.plist.
-        WEATHER_API_BASE_URL: https://weather-api-production-68ff.up.railway.app
+        WEATHER_API_BASE_URL: https://weatherapi-4r5x.onrender.com
         # App Group shared with WeatherWidgetExtension (see WeatherApp-iOS.entitlements /
         # Shared/WeatherWidgetSnapshot.swift) -- lets the widget read the last weather the
         # app itself fetched without talking to the network on its own.

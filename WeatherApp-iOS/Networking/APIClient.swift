@@ -15,7 +15,7 @@ actor APIClient {
     static let baseURL: URL = {
         guard let configured = Bundle.main.object(forInfoDictionaryKey: "API_BASE_URL") as? String,
               let url = URL(string: configured), !configured.isEmpty else {
-            return URL(string: "https://weather-api-production-68ff.up.railway.app")!
+            return URL(string: "https://weatherapi-4r5x.onrender.com")!
         }
         return url
     }()

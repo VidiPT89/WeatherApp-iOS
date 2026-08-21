@@ -59,12 +59,10 @@ targets:
         # Overridable per build configuration (e.g. a local xcconfig for a Debug build pointed at
         # a staging/local backend) without editing source -- APIClient reads this via Info.plist.
         WEATHER_API_BASE_URL: https://weatherapi-4r5x.onrender.com
-        # Fill in once an iOS-type OAuth client exists in the WeatherApp Google Cloud project
-        # (console.cloud.google.com -> APIs & Services -> Credentials -> Create -> iOS).
-        # GOOGLE_REVERSED_CLIENT_ID is the client id with the dot-segments reversed, e.g.
-        # "12345-abc.apps.googleusercontent.com" -> "com.googleusercontent.apps.12345-abc".
-        GOOGLE_IOS_CLIENT_ID: ""
-        GOOGLE_REVERSED_CLIENT_ID: ""
+        # From the WeatherApp Google Cloud project's iOS-type OAuth client (bundle id
+        # dev.ividi.weatherapp), console.cloud.google.com/auth/clients.
+        GOOGLE_IOS_CLIENT_ID: 903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv.apps.googleusercontent.com
+        GOOGLE_REVERSED_CLIENT_ID: com.googleusercontent.apps.903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv
         # App Group shared with WeatherWidgetExtension (see WeatherApp-iOS.entitlements /
         # Shared/WeatherWidgetSnapshot.swift) -- lets the widget read the last weather the
         # app itself fetched without talking to the network on its own.

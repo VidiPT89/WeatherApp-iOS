@@ -814,8 +814,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
-				GOOGLE_IOS_CLIENT_ID = "";
-				GOOGLE_REVERSED_CLIENT_ID = "";
+				GOOGLE_IOS_CLIENT_ID = "903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv.apps.googleusercontent.com";
+				GOOGLE_REVERSED_CLIENT_ID = "com.googleusercontent.apps.903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv";
 				INFOPLIST_FILE = "WeatherApp-iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1059,8 +1059,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
-				GOOGLE_IOS_CLIENT_ID = "";
-				GOOGLE_REVERSED_CLIENT_ID = "";
+				GOOGLE_IOS_CLIENT_ID = "903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv.apps.googleusercontent.com";
+				GOOGLE_REVERSED_CLIENT_ID = "com.googleusercontent.apps.903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv";
 				INFOPLIST_FILE = "WeatherApp-iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (

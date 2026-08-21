@@ -30,6 +30,7 @@
 		38B7AA2A87739C05FC6B9718 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8697BF0013D774AFEF29DF /* SettingsViewModel.swift */; };
 		39034DC08D0489F07934D3B5 /* CitySearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 189077F2A746E4B00836D014 /* CitySearchViewModel.swift */; };
 		397BAF8D79484CE8706E31C8 /* HistoryViewModelDeletionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2488EB6AA92B7E156DE45FBC /* HistoryViewModelDeletionTests.swift */; };
+		3D2F029BF64582FE72E6FB05 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = E851E81651B1ACD5545CE31D /* GoogleSignIn */; };
 		3D804D9E80BD6714121B0EDB /* WeatherResponseDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 553349F41928D4FC228320DB /* WeatherResponseDecodingTests.swift */; };
 		474183C1145313D9E11615B0 /* GeocodingResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE21569B8E9390B3D0ADDFA /* GeocodingResult.swift */; };
 		4A67B0438F19969717487263 /* NumberFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD371BAAAF1532AEED54C286 /* NumberFormatting.swift */; };
@@ -241,6 +242,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C096A027CBDF7257B658C629 /* WidgetKit.framework in Frameworks */,
+				3D2F029BF64582FE72E6FB05 /* GoogleSignIn in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -547,6 +549,7 @@
 			);
 			name = "WeatherApp-iOS";
 			packageProductDependencies = (
+				E851E81651B1ACD5545CE31D /* GoogleSignIn */,
 			);
 			productName = "WeatherApp-iOS";
 			productReference = A54E9597661FC39C509331E3 /* WeatherApp-iOS.app */;
@@ -626,6 +629,9 @@
 			);
 			mainGroup = 64E905174BF86373C16DD630;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				7AA4CC88E8DD81B374C07B2A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 24742B5EED91E1298A8DB132 /* Products */;
 			projectDirPath = "";
@@ -808,6 +814,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
+				GOOGLE_IOS_CLIENT_ID = "";
+				GOOGLE_REVERSED_CLIENT_ID = "";
 				INFOPLIST_FILE = "WeatherApp-iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1051,6 +1059,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
 				GENERATE_INFOPLIST_FILE = NO;
+				GOOGLE_IOS_CLIENT_ID = "";
+				GOOGLE_REVERSED_CLIENT_ID = "";
 				INFOPLIST_FILE = "WeatherApp-iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1114,6 +1124,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		7AA4CC88E8DD81B374C07B2A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/GoogleSignIn-iOS";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E851E81651B1ACD5545CE31D /* GoogleSignIn */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7AA4CC88E8DD81B374C07B2A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;
+			productName = GoogleSignIn;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3A9DA4378D90218C6BD535C7 /* Project object */;
 }

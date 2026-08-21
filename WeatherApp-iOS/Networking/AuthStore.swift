@@ -78,6 +78,13 @@ final class AuthStore {
         persist(response)
     }
 
+    /// `provider` is lowercase, e.g. "google" -- matches the backend's `/auth/oauth/{provider}` path.
+    func loginWithOAuth(provider: String, idToken: String) async throws {
+        let response = try await apiClient.loginWithOAuth(provider: provider, idToken: idToken)
+        didLogOut = false
+        persist(response)
+    }
+
     func logout() {
         didLogOut = true
         KeychainHelper.delete(forKey: Self.tokenKey)

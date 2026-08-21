@@ -11,6 +11,11 @@ settings:
     CODE_SIGN_STYLE: Automatic
     ENABLE_PREVIEWS: YES
 
+packages:
+  GoogleSignIn:
+    url: https://github.com/google/GoogleSignIn-iOS
+    from: 7.1.0
+
 targets:
   WeatherApp-iOS:
     type: application
@@ -32,6 +37,14 @@ targets:
               NSExceptionAllowsInsecureHTTPLoads: true
               NSIncludesSubdomains: false
         API_BASE_URL: $(WEATHER_API_BASE_URL)
+        # Google Sign-In needs both: GIDClientID so the SDK knows which OAuth client it's
+        # authenticating as, and the reversed-client-id URL scheme so Google's auth page can
+        # redirect back into this app. Both are empty (Sign in with Google button just won't work)
+        # until a real iOS OAuth client id exists in Google Cloud Console -- see GoogleSignIn docs.
+        GIDClientID: $(GOOGLE_IOS_CLIENT_ID)
+        CFBundleURLTypes:
+          - CFBundleURLSchemes:
+              - $(GOOGLE_REVERSED_CLIENT_ID)
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
@@ -46,6 +59,12 @@ targets:
         # Overridable per build configuration (e.g. a local xcconfig for a Debug build pointed at
         # a staging/local backend) without editing source -- APIClient reads this via Info.plist.
         WEATHER_API_BASE_URL: https://weatherapi-4r5x.onrender.com
+        # Fill in once an iOS-type OAuth client exists in the WeatherApp Google Cloud project
+        # (console.cloud.google.com -> APIs & Services -> Credentials -> Create -> iOS).
+        # GOOGLE_REVERSED_CLIENT_ID is the client id with the dot-segments reversed, e.g.
+        # "12345-abc.apps.googleusercontent.com" -> "com.googleusercontent.apps.12345-abc".
+        GOOGLE_IOS_CLIENT_ID: ""
+        GOOGLE_REVERSED_CLIENT_ID: ""
         # App Group shared with WeatherWidgetExtension (see WeatherApp-iOS.entitlements /
         # Shared/WeatherWidgetSnapshot.swift) -- lets the widget read the last weather the
         # app itself fetched without talking to the network on its own.
@@ -54,6 +73,8 @@ targets:
       - target: WeatherWidgetExtension
         embed: true
       - sdk: WidgetKit.framework
+      - package: GoogleSignIn
+        product: GoogleSignIn
 
   WeatherWidgetExtension:
     type: app-extension

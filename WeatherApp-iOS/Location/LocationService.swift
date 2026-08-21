@@ -30,7 +30,26 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         manager.desiredAccuracy = kCLLocationAccuracyReduced
     }
 
+    /// `CLLocationManager.requestLocation()` gives no guarantee on how long a fix takes -- indoors
+    /// or with weak GPS/WiFi signal it can hang well past what's reasonable for a "where am I"
+    /// weather lookup, with nothing surfacing to the caller in the meantime. This bounds the wait
+    /// so a bad fix fails fast instead of leaving the caller (and the UI) stuck indefinitely.
+    private static let locationTimeout: Duration = .seconds(15)
+
     func requestCurrentLocation() async throws -> CLLocationCoordinate2D {
+        try await withThrowingTaskGroup(of: CLLocationCoordinate2D.self) { group in
+            group.addTask { try await self.awaitLocation() }
+            group.addTask {
+                try await Task.sleep(for: Self.locationTimeout)
+                throw LocationError.unavailable
+            }
+            let result = try await group.next()!
+            group.cancelAll()
+            return result
+        }
+    }
+
+    private func awaitLocation() async throws -> CLLocationCoordinate2D {
         try await withCheckedThrowingContinuation { continuation in
             self.continuation = continuation
 

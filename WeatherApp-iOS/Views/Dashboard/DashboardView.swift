@@ -146,7 +146,7 @@ private struct EmptyStateView: View {
                 .font(.system(size: 40))
                 .foregroundStyle(.secondary)
             Text(isLocating
-                 ? "A localizar-te…"
+                 ? "A localizar-te… (pode demorar até 3 min se o servidor estiver a arrancar)"
                  : "Procura uma cidade para veres o tempo atual e a previsão.")
                 .font(.subheadline)
                 .foregroundStyle(.secondary)

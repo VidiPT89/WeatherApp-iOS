@@ -27,7 +27,18 @@ actor APIClient {
     private var onRefreshFailed: (@Sendable () -> Void)?
     private var inFlightRefresh: Task<Bool, Never>?
 
-    init(session: URLSession = .shared) {
+    /// The backend's free-tier host spins down after inactivity and can take up to ~3 minutes
+    /// to cold-boot (Flyway + Hibernate init) on the next request -- `URLSession.shared`'s
+    /// default 60s timeout fires well before that finishes, which without this override made
+    /// the very first request after any idle period fail (silently, by design elsewhere) even
+    /// though the backend was healthy and would have answered a few seconds later.
+    private static let defaultSession: URLSession = {
+        let configuration = URLSessionConfiguration.default
+        configuration.timeoutIntervalForRequest = 180
+        return URLSession(configuration: configuration)
+    }()
+
+    init(session: URLSession = APIClient.defaultSession) {
         self.session = session
     }
 

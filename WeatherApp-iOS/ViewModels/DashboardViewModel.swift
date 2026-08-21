@@ -37,6 +37,10 @@ final class DashboardViewModel {
     /// instead of the full skeleton for that brief step.
     private(set) var isLocating = false
     private(set) var errorMessage: String?
+    /// Set only when the auto-location convenience itself fails (GPS timeout/denial or the
+    /// nearby-lookup request) -- distinct from `errorMessage`, which is reserved for a failed
+    /// manual search, so a failed auto-locate doesn't get mistaken for a bad city search.
+    private(set) var locationErrorMessage: String?
     private(set) var lastLoadedCity: String?
     /// Whether `lastLoadedCity` came from GPS auto-detection rather than a manual search —
     /// see `loadWeather(for:isFromNearbyLocation:)`.
@@ -56,13 +60,16 @@ final class DashboardViewModel {
         self.locationService = locationService
     }
 
-    /// Auto-detects the user's location and loads its weather. Fails silently
-    /// (leaving the normal manual-search empty state) on denied permission or
-    /// any lookup error — this is a convenience, not a required flow.
+    /// Auto-detects the user's location and loads its weather. Falls back to the normal
+    /// manual-search empty state on denied permission or any lookup error -- this is a
+    /// convenience, not a required flow -- but sets `locationErrorMessage` so the empty state
+    /// can explain *why* instead of reverting with no feedback (a GPS fix can genuinely fail or
+    /// take a long time indoors/with poor signal, and silently going nowhere read as "broken").
     func loadNearbyWeatherIfAvailable() async {
         guard !hasSearchedOnce else { return }
 
         isLocating = true
+        locationErrorMessage = nil
         defer { isLocating = false }
 
         do {
@@ -70,8 +77,10 @@ final class DashboardViewModel {
             let weatherResult = try await apiClient.fetchWeatherNearby(
                 latitude: coordinate.latitude, longitude: coordinate.longitude, units: units)
             await loadWeather(for: weatherResult.city, isFromNearbyLocation: true)
+        } catch is LocationError {
+            locationErrorMessage = "Não foi possível obter a tua localização. Procura uma cidade manualmente."
         } catch {
-            // Permission denied or lookup failed -- the manual-search empty state stays in place.
+            locationErrorMessage = "Não foi possível obter o tempo para a tua localização. Procura uma cidade manualmente."
         }
     }
 

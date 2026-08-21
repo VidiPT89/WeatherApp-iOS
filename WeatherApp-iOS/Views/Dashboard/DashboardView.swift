@@ -68,7 +68,7 @@ struct DashboardView: View {
                 }
             }
         } else if !viewModel.hasSearchedOnce {
-            EmptyStateView(isLocating: viewModel.isLocating)
+            EmptyStateView(isLocating: viewModel.isLocating, locationErrorMessage: viewModel.locationErrorMessage)
         }
     }
 
@@ -139,15 +139,24 @@ private extension View {
 
 private struct EmptyStateView: View {
     let isLocating: Bool
+    let locationErrorMessage: String?
+
+    private var message: String {
+        if isLocating {
+            return "A localizar-te… (pode demorar até 3 min se o servidor estiver a arrancar)"
+        }
+        if let locationErrorMessage {
+            return locationErrorMessage
+        }
+        return "Procura uma cidade para veres o tempo atual e a previsão."
+    }
 
     var body: some View {
         VStack(spacing: 12) {
             Image(systemName: isLocating ? "location.fill" : "magnifyingglass")
                 .font(.system(size: 40))
                 .foregroundStyle(.secondary)
-            Text(isLocating
-                 ? "A localizar-te… (pode demorar até 3 min se o servidor estiver a arrancar)"
-                 : "Procura uma cidade para veres o tempo atual e a previsão.")
+            Text(message)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

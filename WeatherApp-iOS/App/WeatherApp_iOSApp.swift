@@ -1,3 +1,4 @@
+import GoogleSignIn
 import SwiftUI
 
 @main
@@ -12,6 +13,12 @@ struct WeatherApp_iOSApp: App {
                 .environment(authStore)
                 .environment(\.locale, (AppLocale(rawValue: appLocaleRaw) ?? .default).locale)
                 .preferredColorScheme((AppTheme(rawValue: appThemeRaw) ?? .default).colorScheme)
+                // Google's sign-in flow finishes in Safari/an ASWebAuthenticationSession and
+                // redirects back into the app via the reversed-client-id URL scheme (see
+                // project.yml) -- GIDSignIn needs this callback to complete the in-flight sign-in.
+                .onOpenURL { url in
+                    GIDSignIn.sharedInstance.handle(url)
+                }
         }
     }
 }

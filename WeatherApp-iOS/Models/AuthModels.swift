@@ -18,3 +18,8 @@ struct AuthResponse: Decodable {
 struct RefreshRequest: Encodable {
     let refreshToken: String
 }
+
+/// Body for `/auth/oauth/{provider}` — a native ID token the client already obtained.
+struct OAuthRequest: Encodable {
+    let idToken: String
+}

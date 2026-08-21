@@ -100,6 +100,18 @@ actor APIClient {
         ) as EmptyResponse
     }
 
+    /// Exchanges a native ID token (already obtained on-device from the provider's own SDK -- see
+    /// `AuthViewModel.signInWithGoogle`) for the same `AuthResponse` shape `login`/`register`
+    /// return. `provider` is lowercase, e.g. "google".
+    func loginWithOAuth(provider: String, idToken: String) async throws -> AuthResponse {
+        try await send(
+            path: "/api/v1/auth/oauth/\(provider)",
+            method: "POST",
+            body: OAuthRequest(idToken: idToken),
+            requiresAuth: false
+        )
+    }
+
     // MARK: - Weather endpoints
 
     func fetchWeather(city: String, units: Units?) async throws -> WeatherResponse {

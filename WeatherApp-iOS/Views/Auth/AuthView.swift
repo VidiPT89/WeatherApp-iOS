@@ -1,3 +1,4 @@
+import AuthenticationServices
 import SwiftUI
 
 /// Combined Login/Register screen: a mode switcher over one email+password form.
@@ -90,6 +91,26 @@ private struct AuthFormContent: View {
             .buttonStyle(.borderedProminent)
             .disabled(viewModel.isLoading)
             .accessibilityIdentifier("auth.submit")
+
+            Button {
+                Task { await viewModel.signInWithGoogle() }
+            } label: {
+                Text("Continuar com Google")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .disabled(viewModel.isLoading)
+            .accessibilityIdentifier("auth.google")
+
+            SignInWithAppleButton(.signIn) { request in
+                request.requestedScopes = [.email]
+            } onCompletion: { result in
+                Task { await viewModel.handleAppleSignIn(result) }
+            }
+            .signInWithAppleButtonStyle(.black)
+            .frame(height: 44)
+            .disabled(viewModel.isLoading)
+            .accessibilityIdentifier("auth.apple")
         }
         .padding(.horizontal)
     }

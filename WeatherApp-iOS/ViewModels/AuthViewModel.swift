@@ -140,12 +140,13 @@ final class AuthViewModel {
             // src/lib/social-auth.ts) -- accepts both personal and work/school Microsoft accounts.
             let authorityUrl = URL(string: "https://login.microsoftonline.com/common")!
             let authority = try MSALAADAuthority(url: authorityUrl)
+            // redirectUri: nil lets MSAL compute its own default ("msauth.<bundle-id>://auth")
+            // from the running app's actual bundle identifier at runtime, rather than trusting a
+            // literal string here to stay in sync with it.
             let config = MSALPublicClientApplicationConfig(
                 clientId: clientId,
-                redirectUri: "msauth.dev.ividi.weatherapp://auth",
+                redirectUri: nil,
                 authority: authority)
-            // Must match the keychain-access-groups entry in WeatherApp-iOS.entitlements.
-            config.cacheConfig.keychainSharingGroup = "com.microsoft.adalcache"
             let application = try MSALPublicClientApplication(configuration: config)
 
             let webParameters = MSALWebviewParameters(authPresentationViewController: presenter)
@@ -173,7 +174,19 @@ final class AuthViewModel {
             && nsError.code == MSALError.userCanceled.rawValue {
             // User dismissed the Microsoft login sheet -- not a failure worth surfacing.
         } catch {
-            errorMessage = error.localizedDescription
+            // MSAL's generic MSALErrorInternal (-50000) carries no localizedDescription of its
+            // own, so NSError falls back to an unhelpful boilerplate string -- surface whatever
+            // MSAL actually put in userInfo (e.g. MSALInternalErrorCodeKey/NSUnderlyingErrorKey)
+            // instead, since that's the only way to tell what really failed.
+            let nsError = error as NSError
+            var detail = nsError.localizedDescription
+            if let underlying = nsError.userInfo[NSUnderlyingErrorKey] as? NSError {
+                detail += " | underlying: \(underlying.domain) #\(underlying.code): \(underlying.localizedDescription)"
+            }
+            if let internalCode = nsError.userInfo["MSALInternalErrorCodeKey"] {
+                detail += " | internalCode: \(internalCode)"
+            }
+            errorMessage = detail
         }
     }
 }

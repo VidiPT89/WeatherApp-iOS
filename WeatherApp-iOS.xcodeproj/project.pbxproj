@@ -188,12 +188,12 @@
 		9C7DE054DE9B4B9241D13AF1 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		9DE69DBC37E515BA62C52A79 /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
 		A46B84E0A4D17577BD75373C /* WeatherConditionStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherConditionStyle.swift; sourceTree = "<group>"; };
-		A4DF93508B03F258CA5CCB7B /* WeatherApp-iOSTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = "WeatherApp-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A54E9597661FC39C509331E3 /* WeatherApp-iOS.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "WeatherApp-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A4DF93508B03F258CA5CCB7B /* WeatherApp-iOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "WeatherApp-iOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A54E9597661FC39C509331E3 /* WeatherApp-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "WeatherApp-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A6399FAD4033D878385E80B1 /* KeychainHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
 		ABE21569B8E9390B3D0ADDFA /* GeocodingResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeocodingResult.swift; sourceTree = "<group>"; };
-		B179E854AC50CD0B89FCEDFF /* WeatherWidgetExtension.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = WeatherWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		B3BD4A25CEB23125221F9706 /* WeatherApp-iOSUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = "WeatherApp-iOSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B179E854AC50CD0B89FCEDFF /* WeatherWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = WeatherWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3BD4A25CEB23125221F9706 /* WeatherApp-iOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "WeatherApp-iOSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B619AA59609351C2353C3A35 /* MarineResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarineResponse.swift; sourceTree = "<group>"; };
 		B6760C12C0C5F0F2BD679FB2 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		B8F029FE6F92DFA8BB85834F /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
@@ -604,19 +604,15 @@
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					3FAD23B43303B46CB1873FE5 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					3FAF88E4A32379BC8036740B = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					A30300085080AD847FFAC2A3 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					F373AD036D4078A27CE8BB53 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 						TestTargetID = 3FAF88E4A32379BC8036740B;
 					};
@@ -796,6 +792,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = S769436W24;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -817,6 +814,7 @@
 				CODE_SIGN_ENTITLEMENTS = "WeatherApp-iOS/WeatherApp-iOS.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S769436W24;
 				GENERATE_INFOPLIST_FILE = NO;
 				GOOGLE_IOS_CLIENT_ID = "903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv.apps.googleusercontent.com";
 				GOOGLE_REVERSED_CLIENT_ID = "com.googleusercontent.apps.903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv";
@@ -840,6 +838,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = WeatherWidget/WeatherWidget.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S769436W24;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = WeatherWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -860,6 +859,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = S769436W24;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -945,6 +945,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = WeatherWidget/WeatherWidget.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S769436W24;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = WeatherWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -965,6 +966,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = S769436W24;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -983,6 +985,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
+				DEVELOPMENT_TEAM = S769436W24;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1063,6 +1066,7 @@
 				CODE_SIGN_ENTITLEMENTS = "WeatherApp-iOS/WeatherApp-iOS.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = S769436W24;
 				GENERATE_INFOPLIST_FILE = NO;
 				GOOGLE_IOS_CLIENT_ID = "903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv.apps.googleusercontent.com";
 				GOOGLE_REVERSED_CLIENT_ID = "com.googleusercontent.apps.903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv";

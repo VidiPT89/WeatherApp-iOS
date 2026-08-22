@@ -149,9 +149,12 @@ final class AuthViewModel {
                 authority: authority)
             let application = try MSALPublicClientApplication(configuration: config)
 
+            // MSAL always adds "openid", "profile", and "offline_access" itself and rejects
+            // them if the caller also specifies them ("reserved scopes" error) -- only "email"
+            // needs requesting explicitly to get the email claim onto the ID token.
             let webParameters = MSALWebviewParameters(authPresentationViewController: presenter)
             let parameters = MSALInteractiveTokenParameters(
-                scopes: ["openid", "email", "profile"], webviewParameters: webParameters)
+                scopes: ["email"], webviewParameters: webParameters)
 
             let result: MSALResult = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<MSALResult, Error>) in
                 application.acquireToken(with: parameters) { tokenResult, error in

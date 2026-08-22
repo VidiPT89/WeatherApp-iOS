@@ -15,6 +15,9 @@ packages:
   GoogleSignIn:
     url: https://github.com/google/GoogleSignIn-iOS
     from: 7.1.0
+  MSAL:
+    url: https://github.com/AzureAD/microsoft-authentication-library-for-objc
+    from: 1.6.0
 
 targets:
   WeatherApp-iOS:
@@ -37,6 +40,7 @@ targets:
               NSExceptionAllowsInsecureHTTPLoads: true
               NSIncludesSubdomains: false
         API_BASE_URL: $(WEATHER_API_BASE_URL)
+        MICROSOFT_CLIENT_ID: $(MICROSOFT_CLIENT_ID)
         # Google Sign-In needs both: GIDClientID so the SDK knows which OAuth client it's
         # authenticating as, and the reversed-client-id URL scheme so Google's auth page can
         # redirect back into this app. Both are empty (Sign in with Google button just won't work)
@@ -45,6 +49,15 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLSchemes:
               - $(GOOGLE_REVERSED_CLIENT_ID)
+          # MSAL's required redirect scheme, "msauth.<bundle-id>" -- must be registered as a
+          # redirect URI "msauth.dev.ividi.weatherapp://auth" on the iOS platform in Azure too.
+          - CFBundleURLSchemes:
+              - msauth.dev.ividi.weatherapp
+        # Lets MSAL detect whether Microsoft Authenticator/Company Portal are installed, so it can
+        # hand off to them instead of always falling back to an in-app web view.
+        LSApplicationQueriesSchemes:
+          - msauthv2
+          - msauthv3
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
@@ -63,6 +76,10 @@ targets:
         # dev.ividi.weatherapp), console.cloud.google.com/auth/clients.
         GOOGLE_IOS_CLIENT_ID: 903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv.apps.googleusercontent.com
         GOOGLE_REVERSED_CLIENT_ID: com.googleusercontent.apps.903528455980-kg0ka4ohf7auuei1j3a9p08e86akfatv
+        # Same Azure app registration already used by the Web client (next.config.ts /
+        # social-auth.ts) -- Azure lets one Application (client) ID serve multiple platforms, each
+        # with its own registered redirect URI.
+        MICROSOFT_CLIENT_ID: 6c9a1a6d-70c4-4be1-8960-ae3869a8d74f
         # App Group shared with WeatherWidgetExtension (see WeatherApp-iOS.entitlements /
         # Shared/WeatherWidgetSnapshot.swift) -- lets the widget read the last weather the
         # app itself fetched without talking to the network on its own.
@@ -73,6 +90,8 @@ targets:
       - sdk: WidgetKit.framework
       - package: GoogleSignIn
         product: GoogleSignIn
+      - package: MSAL
+        product: MSAL
 
   WeatherWidgetExtension:
     type: app-extension

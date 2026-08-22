@@ -1,6 +1,7 @@
 import AuthenticationServices
 import Foundation
 import GoogleSignIn
+import MSAL
 import Observation
 import UIKit
 
@@ -117,6 +118,58 @@ final class AuthViewModel {
             try await authStore.loginWithOAuth(provider: "apple", idToken: idToken)
         } catch let apiError as APIError {
             errorMessage = apiError.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    func signInWithMicrosoft() async {
+        guard let presenter = presentingViewController() else { return }
+        guard let clientId = Bundle.main.object(forInfoDictionaryKey: "MICROSOFT_CLIENT_ID") as? String,
+              !clientId.isEmpty else {
+            errorMessage = "Login com Microsoft não está configurado."
+            return
+        }
+
+        errorMessage = nil
+        isLoading = true
+        defer { isLoading = false }
+
+        do {
+            // Same "common" multi-tenant authority as the Web client (see WeatherApp/
+            // src/lib/social-auth.ts) -- accepts both personal and work/school Microsoft accounts.
+            let authorityUrl = URL(string: "https://login.microsoftonline.com/common")!
+            let authority = try MSALAADAuthority(url: authorityUrl)
+            let config = MSALPublicClientApplicationConfig(
+                clientId: clientId,
+                redirectUri: "msauth.dev.ividi.weatherapp://auth",
+                authority: authority)
+            let application = try MSALPublicClientApplication(configuration: config)
+
+            let webParameters = MSALWebviewParameters(authPresentationViewController: presenter)
+            let parameters = MSALInteractiveTokenParameters(
+                scopes: ["openid", "email", "profile"], webviewParameters: webParameters)
+
+            let result: MSALResult = try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<MSALResult, Error>) in
+                application.acquireToken(with: parameters) { tokenResult, error in
+                    if let tokenResult {
+                        continuation.resume(returning: tokenResult)
+                    } else {
+                        continuation.resume(throwing: error ?? APIError.invalidResponse)
+                    }
+                }
+            }
+
+            guard let idToken = result.idToken else {
+                errorMessage = "Não foi possível obter o token da Microsoft."
+                return
+            }
+            try await authStore.loginWithOAuth(provider: "microsoft", idToken: idToken)
+        } catch let apiError as APIError {
+            errorMessage = apiError.errorDescription
+        } catch let nsError as NSError where nsError.domain == MSALErrorDomain
+            && nsError.code == MSALError.userCanceled.rawValue {
+            // User dismissed the Microsoft login sheet -- not a failure worth surfacing.
         } catch {
             errorMessage = error.localizedDescription
         }

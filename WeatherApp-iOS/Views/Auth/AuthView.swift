@@ -102,6 +102,16 @@ private struct AuthFormContent: View {
             .disabled(viewModel.isLoading)
             .accessibilityIdentifier("auth.google")
 
+            Button {
+                Task { await viewModel.signInWithMicrosoft() }
+            } label: {
+                Text("Continuar com Microsoft")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .disabled(viewModel.isLoading)
+            .accessibilityIdentifier("auth.microsoft")
+
             SignInWithAppleButton(.signIn) { request in
                 request.requestedScopes = [.email]
             } onCompletion: { result in

@@ -81,6 +81,7 @@
 		D52F97E4EECD8B221F80A11E /* WeatherWidgetEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15F1291C683F12C7C08A3AF1 /* WeatherWidgetEntryView.swift */; };
 		D8CFF1AA410D37E9CEB0F1D4 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF123BC45A0243C8EA06C3B8 /* Constants.swift */; };
 		DAC1659EF52D8A58BF8B7E71 /* APIErrorResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 854A357CBB51E157B45F7720 /* APIErrorResponse.swift */; };
+		DCE9B511A309602FE2F991FA /* MSAL in Frameworks */ = {isa = PBXBuildFile; productRef = CBC2CB285ADF3E26BA876FEC /* MSAL */; };
 		E04E57B1C5CE71CF9DB802DF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 74604397336BF52C4055A212 /* Assets.xcassets */; };
 		E4EC08FD7A243405F9B2C81A /* WeatherConditionStyleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBD741B84865423032B4F7D /* WeatherConditionStyleTests.swift */; };
 		E6B185DA946DF44C889B1B19 /* MarineConditionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9360D9E15AA2060853ECD16 /* MarineConditionsView.swift */; };
@@ -243,6 +244,7 @@
 			files = (
 				C096A027CBDF7257B658C629 /* WidgetKit.framework in Frameworks */,
 				3D2F029BF64582FE72E6FB05 /* GoogleSignIn in Frameworks */,
+				DCE9B511A309602FE2F991FA /* MSAL in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -550,6 +552,7 @@
 			name = "WeatherApp-iOS";
 			packageProductDependencies = (
 				E851E81651B1ACD5545CE31D /* GoogleSignIn */,
+				CBC2CB285ADF3E26BA876FEC /* MSAL */,
 			);
 			productName = "WeatherApp-iOS";
 			productReference = A54E9597661FC39C509331E3 /* WeatherApp-iOS.app */;
@@ -631,6 +634,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				7AA4CC88E8DD81B374C07B2A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				9BDE387CF7A48E34E037C460 /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 24742B5EED91E1298A8DB132 /* Products */;
@@ -823,6 +827,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				MICROSOFT_CLIENT_ID = "6c9a1a6d-70c4-4be1-8960-ae3869a8d74f";
 				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.weatherapp;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1068,6 +1073,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
+				MICROSOFT_CLIENT_ID = "6c9a1a6d-70c4-4be1-8960-ae3869a8d74f";
 				PRODUCT_BUNDLE_IDENTIFIER = dev.ividi.weatherapp;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1134,9 +1140,22 @@
 				minimumVersion = 7.1.0;
 			};
 		};
+		9BDE387CF7A48E34E037C460 /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AzureAD/microsoft-authentication-library-for-objc";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CBC2CB285ADF3E26BA876FEC /* MSAL */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9BDE387CF7A48E34E037C460 /* XCRemoteSwiftPackageReference "microsoft-authentication-library-for-objc" */;
+			productName = MSAL;
+		};
 		E851E81651B1ACD5545CE31D /* GoogleSignIn */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7AA4CC88E8DD81B374C07B2A /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */;

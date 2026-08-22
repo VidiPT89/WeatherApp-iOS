@@ -12,8 +12,13 @@ struct WeatherDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.locale) private var locale
 
+    private var isNight: Bool {
+        guard let today else { return false }
+        return weather.observedAt < today.sunrise || weather.observedAt > today.sunset
+    }
+
     private var style: WeatherConditionStyle.Style {
-        WeatherConditionStyle.style(for: weather.description)
+        WeatherConditionStyle.style(for: weather.description, isNight: isNight)
     }
 
     var body: some View {

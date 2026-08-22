@@ -124,6 +124,11 @@ final class AuthViewModel {
     }
 
     func signInWithMicrosoft() async {
+        // We have no Microsoft Authenticator/broker integration -- disable it so MSAL always
+        // runs the login purely in-app (ASWebAuthenticationSession), matching how the Web
+        // client already works. Broker-flow query parameters may be what's triggering
+        // Microsoft's generic "server_error" right after entering the email on device.
+        MSALGlobalConfig.brokerAvailability = .none
         guard let presenter = presentingViewController() else { return }
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "MICROSOFT_CLIENT_ID") as? String,
               !clientId.isEmpty else {

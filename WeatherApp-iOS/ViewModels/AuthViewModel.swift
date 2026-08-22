@@ -180,6 +180,11 @@ final class AuthViewModel {
             // instead, since that's the only way to tell what really failed.
             let nsError = error as NSError
             var detail = nsError.localizedDescription
+            // MSAL stores its real diagnostic text under this key, not NSLocalizedDescriptionKey
+            // -- that's why .localizedDescription alone is always the generic Cocoa boilerplate.
+            if let msalDescription = nsError.userInfo["MSALErrorDescriptionKey"] as? String {
+                detail += " | MSAL: \(msalDescription)"
+            }
             if let underlying = nsError.userInfo[NSUnderlyingErrorKey] as? NSError {
                 detail += " | underlying: \(underlying.domain) #\(underlying.code): \(underlying.localizedDescription)"
             }

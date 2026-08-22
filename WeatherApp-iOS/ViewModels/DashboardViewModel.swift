@@ -74,13 +74,26 @@ final class DashboardViewModel {
 
         do {
             let coordinate = try await locationService.requestCurrentLocation()
-            let weatherResult = try await apiClient.fetchWeatherNearby(
-                latitude: coordinate.latitude, longitude: coordinate.longitude, units: units)
+            let weatherResult = try await fetchWeatherNearbyWithRetry(
+                latitude: coordinate.latitude, longitude: coordinate.longitude)
             await loadWeather(for: weatherResult.city, isFromNearbyLocation: true)
         } catch is LocationError {
             locationErrorMessage = "Não foi possível obter a tua localização. Procura uma cidade manualmente."
         } catch {
             locationErrorMessage = "Não foi possível obter o tempo para a tua localização. Procura uma cidade manualmente."
+        }
+    }
+
+    /// The backend's free-tier host can occasionally take longer to cold-boot than even our
+    /// extended 180s request timeout (see `APIClient.defaultSession`), which fails the very first
+    /// request after a long idle period. By the time that happens the backend has finished
+    /// booting anyway, so one immediate retry succeeds in practice instead of dead-ending the
+    /// user into a manual search.
+    private func fetchWeatherNearbyWithRetry(latitude: Double, longitude: Double) async throws -> WeatherResponse {
+        do {
+            return try await apiClient.fetchWeatherNearby(latitude: latitude, longitude: longitude, units: units)
+        } catch {
+            return try await apiClient.fetchWeatherNearby(latitude: latitude, longitude: longitude, units: units)
         }
     }
 

@@ -143,7 +143,7 @@ private struct EmptyStateView: View {
 
     private var message: String {
         if isLocating {
-            return "A localizar-te… (pode demorar até 3 min se o servidor estiver a arrancar)"
+            return "A localizar-te… (pode demorar alguns minutos se o servidor estiver a arrancar)"
         }
         if let locationErrorMessage {
             return locationErrorMessage

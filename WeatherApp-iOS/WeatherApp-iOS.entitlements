@@ -10,5 +10,12 @@
 	<array>
 		<string>Default</string>
 	</array>
+	<!-- MSAL requires this to persist/retrieve its token cache -- without it, acquireToken fails
+	     immediately with MSALErrorDomain error -50000 (a bridged errSecParam keychain failure)
+	     before ever presenting the Microsoft login screen. -->
+	<key>keychain-access-groups</key>
+	<array>
+		<string>$(AppIdentifierPrefix)com.microsoft.adalcache</string>
+	</array>
 </dict>
 </plist>

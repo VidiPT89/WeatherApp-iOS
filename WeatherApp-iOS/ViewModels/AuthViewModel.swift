@@ -144,6 +144,8 @@ final class AuthViewModel {
                 clientId: clientId,
                 redirectUri: "msauth.dev.ividi.weatherapp://auth",
                 authority: authority)
+            // Must match the keychain-access-groups entry in WeatherApp-iOS.entitlements.
+            config.cacheConfig.keychainSharingGroup = "com.microsoft.adalcache"
             let application = try MSALPublicClientApplication(configuration: config)
 
             let webParameters = MSALWebviewParameters(authPresentationViewController: presenter)

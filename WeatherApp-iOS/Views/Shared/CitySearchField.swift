@@ -36,7 +36,10 @@ struct CitySearchField: View {
                 VStack(alignment: .leading, spacing: 0) {
                     ForEach(searchViewModel.suggestions) { suggestion in
                         Button {
-                            submit(suggestion.name)
+                            // Includes the country so same-named cities elsewhere (e.g. Beja,
+                            // Portugal vs. Beja, Tunisia) resolve to the one actually tapped
+                            // instead of the backend's own top geocoding match for the bare name.
+                            submit("\(suggestion.name), \(suggestion.country)")
                         } label: {
                             HStack {
                                 VStack(alignment: .leading) {

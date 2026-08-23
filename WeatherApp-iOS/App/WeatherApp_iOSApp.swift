@@ -1,4 +1,5 @@
 import GoogleSignIn
+import MSAL
 import SwiftUI
 
 @main
@@ -17,7 +18,14 @@ struct WeatherApp_iOSApp: App {
                 // redirects back into the app via the reversed-client-id URL scheme (see
                 // project.yml) -- GIDSignIn needs this callback to complete the in-flight sign-in.
                 .onOpenURL { url in
-                    GIDSignIn.sharedInstance.handle(url)
+                    if !GIDSignIn.sharedInstance.handle(url) {
+                        // MSAL's login page can hand off to the system/Microsoft Authenticator
+                        // broker mid-flow and redirects back via the msauth.<bundle-id> scheme --
+                        // without feeding that callback URL back in, MSAL never learns the result
+                        // and times out with "application did not receive response from broker".
+                        _ = MSALPublicClientApplication.handleMSALResponse(
+                            url, sourceApplication: nil)
+                    }
                 }
         }
     }

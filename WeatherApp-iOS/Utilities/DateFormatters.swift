@@ -53,22 +53,6 @@ enum BackendDateFormatters {
         return formatter
     }()
 
-    /// Short display formatter for hourly forecast axis labels, e.g. "14h".
-    static let hourLabel: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH'h'"
-        formatter.locale = Locale(identifier: "pt_PT")
-        return formatter
-    }()
-
-    /// Short display formatter for daily forecast axis labels, e.g. "seg".
-    static let weekdayLabel: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEE"
-        formatter.locale = Locale(identifier: "pt_PT")
-        return formatter
-    }()
-
     /// Human display formatter for history/favorites timestamps.
     nonisolated(unsafe) static let relative: RelativeDateTimeFormatter = {
         let formatter = RelativeDateTimeFormatter()

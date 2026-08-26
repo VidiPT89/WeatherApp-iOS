@@ -11,8 +11,5 @@ enum AppConstants {
     /// How often the cache-age label recomputes ("há Xs/Xmin/Xh").
     static let cacheAgeTickInterval: TimeInterval = 1
 
-    /// Backend's in-memory weather cache TTL, mirrored here only for display copy.
-    static let cacheTTLMinutes = 15
-
     static let defaultGeocodingLimit = 5
 }

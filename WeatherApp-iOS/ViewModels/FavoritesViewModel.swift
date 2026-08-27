@@ -15,21 +15,35 @@ final class FavoritesViewModel {
 
     private let apiClient: APIClient
 
+    /// Bumped on every `loadFavorites()` call; a request only applies its result if it's still
+    /// the most recently started one, so an older, slower-resolving load can't overwrite a newer
+    /// one's already-current list (see `HistoryViewModel.loadGeneration` for the full rationale).
+    private var loadGeneration = 0
+
     init(apiClient: APIClient = .shared) {
         self.apiClient = apiClient
     }
 
     func loadFavorites() async {
+        loadGeneration += 1
+        let generation = loadGeneration
+
         isLoading = true
         errorMessage = nil
         do {
-            favorites = try await apiClient.fetchFavorites()
+            let fetched = try await apiClient.fetchFavorites()
+            guard generation == loadGeneration else { return }
+            favorites = fetched
         } catch let apiError as APIError {
+            guard generation == loadGeneration else { return }
             errorMessage = apiError.errorDescription
         } catch {
+            guard generation == loadGeneration else { return }
             errorMessage = error.localizedDescription
         }
-        isLoading = false
+        if generation == loadGeneration {
+            isLoading = false
+        }
     }
 
     /// Adds a favorite from a city name picked off the geocoding-backed

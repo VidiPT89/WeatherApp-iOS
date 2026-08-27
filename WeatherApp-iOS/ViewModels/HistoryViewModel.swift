@@ -14,23 +14,38 @@ final class HistoryViewModel {
 
     private let apiClient: APIClient
 
+    /// Bumped on every `loadHistory()` call; a request only applies its result if it's still the
+    /// most recently started one. Without this, two overlapping loads (e.g. `.refreshable` pulled
+    /// twice, or the screen's `.task` re-running while a slower prior fetch is still in flight) can
+    /// resolve out of order and let the older response silently overwrite the newer, already-
+    /// current list -- surfacing as a just-deleted entry reappearing, or the list reverting.
+    private var loadGeneration = 0
+
     init(apiClient: APIClient = .shared) {
         self.apiClient = apiClient
     }
 
     func loadHistory() async {
+        loadGeneration += 1
+        let generation = loadGeneration
+
         isLoading = true
         errorMessage = nil
         do {
             let fetched = try await apiClient.fetchHistory()
+            guard generation == loadGeneration else { return }
             let sorted = fetched.sorted { $0.searchedAt > $1.searchedAt }
             entries = Self.dedupedByCity(sorted)
         } catch let apiError as APIError {
+            guard generation == loadGeneration else { return }
             errorMessage = apiError.errorDescription
         } catch {
+            guard generation == loadGeneration else { return }
             errorMessage = error.localizedDescription
         }
-        isLoading = false
+        if generation == loadGeneration {
+            isLoading = false
+        }
     }
 
     /// Removes a single entry, both server-side and from the in-memory list.

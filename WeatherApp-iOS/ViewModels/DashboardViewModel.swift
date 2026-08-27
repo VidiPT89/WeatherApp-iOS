@@ -118,17 +118,19 @@ final class DashboardViewModel {
 
         do {
             async let weatherTask = apiClient.fetchWeather(city: trimmedCity, units: units)
-            async let forecastTask = apiClient.fetchForecast(city: trimmedCity, units: units)
-            // Sea conditions are a secondary, best-effort addition to the
-            // dashboard: a marine-endpoint hiccup shouldn't blank out the
-            // weather card and forecast the user actually searched for.
+            // Forecast, sea conditions, and insights are secondary, best-effort additions to the
+            // dashboard: a hiccup on any of them (e.g. Open-Meteo's shared-IP quota on Render,
+            // which has no fallback provider for forecast/marine -- see ADR-001) shouldn't blank
+            // out the current-conditions card the user actually asked for. Only the current
+            // weather fetch itself can fail the whole load.
+            async let forecastTask: ForecastResponse? = try? apiClient.fetchForecast(city: trimmedCity, units: units)
             async let marineTask: MarineResponse? = try? apiClient.fetchMarine(city: trimmedCity, units: units)
             async let insightsTask: WeatherInsightsResponse? = try? apiClient.fetchInsights(city: trimmedCity, units: units)
 
-            let (weatherResult, forecastResult) = try await (weatherTask, forecastTask)
+            let weatherResult = try await weatherTask
             weather = weatherResult
-            forecast = forecastResult
             lastLoadedCity = trimmedCity
+            forecast = await forecastTask
             marine = await marineTask
             insights = await insightsTask
             if isFromNearbyLocation {

@@ -14,21 +14,35 @@ final class AdminUsersViewModel {
 
     private let apiClient: APIClient
 
+    /// Bumped on every `loadUsers()` call; a request only applies its result if it's still the
+    /// most recently started one, so an older, slower-resolving load can't overwrite a newer
+    /// one's already-current list (see `HistoryViewModel.loadGeneration` for the full rationale).
+    private var loadGeneration = 0
+
     init(apiClient: APIClient = .shared) {
         self.apiClient = apiClient
     }
 
     func loadUsers() async {
+        loadGeneration += 1
+        let generation = loadGeneration
+
         isLoading = true
         errorMessage = nil
         do {
-            users = try await apiClient.fetchAdminUsers()
+            let fetched = try await apiClient.fetchAdminUsers()
+            guard generation == loadGeneration else { return }
+            users = fetched
         } catch let apiError as APIError {
+            guard generation == loadGeneration else { return }
             errorMessage = apiError.errorDescription
         } catch {
+            guard generation == loadGeneration else { return }
             errorMessage = error.localizedDescription
         }
-        isLoading = false
+        if generation == loadGeneration {
+            isLoading = false
+        }
     }
 
     func delete(_ user: UserAccount) async {

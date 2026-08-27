@@ -49,20 +49,35 @@ final class LocationService: NSObject, CLLocationManagerDelegate {
         }
     }
 
+    /// Wrapped in `withTaskCancellationHandler` because `requestCurrentLocation`'s timeout branch
+    /// cancels this task (via `group.cancelAll()`) once it loses the race -- plain `Task`
+    /// cancellation does NOT resume a suspended `CheckedContinuation` on its own, so without this
+    /// handler a timed-out call would leak its continuation forever (a runtime-logged misuse) and
+    /// leave `self.continuation` pointing at it. A caller that retries right after a timeout would
+    /// then overwrite `self.continuation` with its own, and if CoreLocation's delegate callback for
+    /// the *first*, abandoned request fires late, it would resolve the *second* request's
+    /// continuation with the first request's (stale/unrelated) coordinate instead of its own.
     private func awaitLocation() async throws -> CLLocationCoordinate2D {
-        try await withCheckedThrowingContinuation { continuation in
-            self.continuation = continuation
+        try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { continuation in
+                self.continuation = continuation
 
-            switch manager.authorizationStatus {
-            case .denied, .restricted:
-                continuation.resume(throwing: LocationError.permissionDenied)
-                self.continuation = nil
-            case .notDetermined:
-                manager.requestWhenInUseAuthorization()
-            case .authorizedWhenInUse, .authorizedAlways:
-                manager.requestLocation()
-            @unknown default:
-                continuation.resume(throwing: LocationError.unavailable)
+                switch manager.authorizationStatus {
+                case .denied, .restricted:
+                    continuation.resume(throwing: LocationError.permissionDenied)
+                    self.continuation = nil
+                case .notDetermined:
+                    manager.requestWhenInUseAuthorization()
+                case .authorizedWhenInUse, .authorizedAlways:
+                    manager.requestLocation()
+                @unknown default:
+                    continuation.resume(throwing: LocationError.unavailable)
+                    self.continuation = nil
+                }
+            }
+        } onCancel: {
+            Task { @MainActor in
+                self.continuation?.resume(throwing: CancellationError())
                 self.continuation = nil
             }
         }

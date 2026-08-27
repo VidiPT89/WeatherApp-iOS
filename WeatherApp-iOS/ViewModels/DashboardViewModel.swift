@@ -24,6 +24,11 @@ enum ForecastRange: String, CaseIterable, Identifiable {
 final class DashboardViewModel {
     private(set) var weather: WeatherResponse?
     private(set) var forecast: ForecastResponse?
+    /// Set only when the forecast fetch itself fails (e.g. Open-Meteo's shared-IP quota, which
+    /// forecast has no fallback provider for -- see ADR-001) while `weather` still succeeded.
+    /// Lets the view show *why* the forecast section is missing instead of just silently omitting
+    /// it, matching how `WeatherApp-Android`'s per-section states already behave.
+    private(set) var forecastErrorMessage: String?
     /// Sea conditions for the loaded city. `nil` both while loading/on error
     /// AND when the marine endpoint simply has no data for an inland city —
     /// `marine?.hasData` distinguishes "no card" from "empty card" in the view.
@@ -114,6 +119,7 @@ final class DashboardViewModel {
 
         isLoading = true
         errorMessage = nil
+        forecastErrorMessage = nil
         lastLoadWasFromNearbyLocation = isFromNearbyLocation
 
         do {
@@ -122,15 +128,18 @@ final class DashboardViewModel {
             // dashboard: a hiccup on any of them (e.g. Open-Meteo's shared-IP quota on Render,
             // which has no fallback provider for forecast/marine -- see ADR-001) shouldn't blank
             // out the current-conditions card the user actually asked for. Only the current
-            // weather fetch itself can fail the whole load.
-            async let forecastTask: ForecastResponse? = try? apiClient.fetchForecast(city: trimmedCity, units: units)
+            // weather fetch itself can fail the whole load. Forecast's outcome is captured as a
+            // (data, errorMessage) pair rather than plain `try?` so the view can explain *why*
+            // that section is missing instead of just silently omitting it.
+            async let forecastOutcome = Self.fetchForecastOutcome(
+                apiClient: apiClient, city: trimmedCity, units: units, locale: AppLocale.current.locale)
             async let marineTask: MarineResponse? = try? apiClient.fetchMarine(city: trimmedCity, units: units)
             async let insightsTask: WeatherInsightsResponse? = try? apiClient.fetchInsights(city: trimmedCity, units: units)
 
             let weatherResult = try await weatherTask
             weather = weatherResult
             lastLoadedCity = trimmedCity
-            forecast = await forecastTask
+            (forecast, forecastErrorMessage) = await forecastOutcome
             marine = await marineTask
             insights = await insightsTask
             if isFromNearbyLocation {
@@ -143,6 +152,18 @@ final class DashboardViewModel {
         }
 
         isLoading = false
+    }
+
+    private static func fetchForecastOutcome(
+        apiClient: APIClient, city: String, units: Units, locale: Locale
+    ) async -> (ForecastResponse?, String?) {
+        do {
+            return (try await apiClient.fetchForecast(city: city, units: units), nil)
+        } catch let apiError as APIError {
+            return (nil, apiError.localizedDescription(locale: locale))
+        } catch {
+            return (nil, error.localizedDescription)
+        }
     }
 
     /// Switches units and re-fetches for the currently loaded city, then

@@ -67,6 +67,8 @@ struct DashboardView: View {
                 }
                 if let forecast = viewModel.forecast {
                     ForecastChartView(forecast: forecast, range: $viewModel.forecastRange)
+                } else if let forecastErrorMessage = viewModel.forecastErrorMessage {
+                    InlineSectionErrorView(message: forecastErrorMessage)
                 }
                 if let insights = viewModel.insights, let forecast = viewModel.forecast {
                     WeatherInsightsView(insights: insights, dailyForecast: forecast.daily)
@@ -168,6 +170,26 @@ private struct EmptyStateView: View {
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 80)
+    }
+}
+
+/// Small inline error for a single dashboard section that failed independently (currently just
+/// the forecast) while the rest of the screen loaded fine -- a lighter-weight sibling of
+/// `ErrorStateView` below, which is reserved for the whole screen having nothing to show at all.
+private struct InlineSectionErrorView: View {
+    let message: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(.orange)
+            Text(verbatim: message)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(.thinMaterial, in: RoundedRectangle(cornerRadius: 10))
     }
 }
 

@@ -53,17 +53,22 @@ struct DashboardView: View {
                 .transition(.opacity)
         } else if let errorMessage = viewModel.errorMessage {
             ErrorStateView(message: errorMessage)
-        } else if let weather = viewModel.weather, let forecast = viewModel.forecast {
+        } else if let weather = viewModel.weather {
+            // Forecast/marine/insights are all best-effort (see DashboardViewModel.loadWeather) --
+            // only `weather` itself is guaranteed here, so each of these renders independently
+            // instead of the whole card disappearing when just one of them failed to load.
             VStack(alignment: .leading, spacing: 16) {
                 if weather.isFallbackProvider {
                     FallbackBannerView(provider: weather.provider)
                 }
-                WeatherCardView(weather: weather, today: forecast.daily.first)
+                WeatherCardView(weather: weather, today: viewModel.forecast?.daily.first)
                 if let marine = viewModel.marine {
                     MarineConditionsView(marine: marine)
                 }
-                ForecastChartView(forecast: forecast, range: $viewModel.forecastRange)
-                if let insights = viewModel.insights {
+                if let forecast = viewModel.forecast {
+                    ForecastChartView(forecast: forecast, range: $viewModel.forecastRange)
+                }
+                if let insights = viewModel.insights, let forecast = viewModel.forecast {
                     WeatherInsightsView(insights: insights, dailyForecast: forecast.daily)
                 }
             }

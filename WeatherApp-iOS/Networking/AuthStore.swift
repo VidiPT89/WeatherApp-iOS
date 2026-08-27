@@ -38,7 +38,7 @@ final class AuthStore {
             await apiClient.setOnTokensRefreshed { [weak self] response in
                 Task { @MainActor in
                     guard let self, !self.didLogOut else { return }
-                    self.persist(response)
+                    await self.persist(response)
                 }
             }
             await apiClient.setOnRefreshFailed { [weak self] in
@@ -69,20 +69,20 @@ final class AuthStore {
     func register(email: String, password: String) async throws {
         let response = try await apiClient.register(email: email, password: password)
         didLogOut = false
-        persist(response)
+        await persist(response)
     }
 
     func login(email: String, password: String) async throws {
         let response = try await apiClient.login(email: email, password: password)
         didLogOut = false
-        persist(response)
+        await persist(response)
     }
 
     /// `provider` is lowercase, e.g. "google" -- matches the backend's `/auth/oauth/{provider}` path.
     func loginWithOAuth(provider: String, idToken: String) async throws {
         let response = try await apiClient.loginWithOAuth(provider: provider, idToken: idToken)
         didLogOut = false
-        persist(response)
+        await persist(response)
     }
 
     func logout() {
@@ -97,10 +97,16 @@ final class AuthStore {
         }
     }
 
-    private func persist(_ response: AuthResponse) {
+    /// Sets the `APIClient`'s tokens *before* flipping `token` (which drives `isAuthenticated`)
+    /// -- views like `SettingsView` fire an authenticated request the instant `isAuthenticated`
+    /// becomes true (`.task(id: authStore.isAuthenticated)`), and used to be able to race ahead
+    /// of a detached `Task` that set the API client's tokens, sending that first request with no
+    /// token at all and surfacing a nonsensical "session expired" message right after a
+    /// successful login/register.
+    private func persist(_ response: AuthResponse) async {
         KeychainHelper.save(response.token, forKey: Self.tokenKey)
         KeychainHelper.save(response.refreshToken, forKey: Self.refreshTokenKey)
-        Task { await apiClient.setTokens(access: response.token, refresh: response.refreshToken) }
+        await apiClient.setTokens(access: response.token, refresh: response.refreshToken)
         token = response.token
         Task { await fetchCurrentUser() }
     }

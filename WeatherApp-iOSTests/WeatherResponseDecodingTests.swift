@@ -7,7 +7,7 @@ final class WeatherResponseDecodingTests: XCTestCase {
         {
           "city": "Lisboa", "country": "Portugal", "temperature": 24.3, "feelsLike": 25.1,
           "humidity": 60, "windSpeed": 12.4, "description": "clear sky", "units": "metric",
-          "provider": "open-meteo", "observedAt": "2024-01-01T12:00:00Z", "fromCache": false
+          "provider": "open-weather-map", "observedAt": "2024-01-01T12:00:00Z", "fromCache": false
         }
         """.data(using: .utf8)!
 
@@ -24,7 +24,7 @@ final class WeatherResponseDecodingTests: XCTestCase {
         {
           "city": "Porto", "country": "Portugal", "temperature": 18.0, "feelsLike": 17.5,
           "humidity": 70, "windSpeed": 8.0, "description": "overcast clouds", "units": "metric",
-          "provider": "open-weather-map", "observedAt": "2024-01-01T12:00:00Z", "fromCache": false
+          "provider": "open-meteo", "observedAt": "2024-01-01T12:00:00Z", "fromCache": false
         }
         """.data(using: .utf8)!
 

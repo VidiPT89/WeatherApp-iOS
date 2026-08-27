@@ -17,7 +17,7 @@ struct WeatherResponse: Decodable, Equatable {
     /// The backend's primary provider. Any other value means the request
     /// fell back to a secondary provider — the fallback event this app
     /// exists to surface.
-    static let primaryProvider = "open-meteo"
+    static let primaryProvider = "open-weather-map"
 
     var isFallbackProvider: Bool {
         provider != Self.primaryProvider

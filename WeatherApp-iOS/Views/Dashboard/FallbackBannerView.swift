@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// Shown only when the weather response's `provider` isn't the primary
-/// ("open-meteo") — i.e. the backend's primary provider call failed and it
-/// fell back to a secondary one. This is the fallback event the whole app
+/// ("open-weather-map") — i.e. the backend's primary provider call failed and
+/// it fell back to a secondary one. This is the fallback event the whole app
 /// exists to surface, so it's a full-width warning banner, not a subtle pill.
 struct FallbackBannerView: View {
     let provider: String

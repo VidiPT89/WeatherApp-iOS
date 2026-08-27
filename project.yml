@@ -62,6 +62,12 @@ targets:
           - UIInterfaceOrientationPortrait
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
+        # Lets WidgetRefreshScheduler run a periodic background fetch (GPS lookup + widget
+        # snapshot update) even when the app itself isn't open -- see WidgetRefreshScheduler.swift.
+        UIBackgroundModes:
+          - fetch
+        BGTaskSchedulerPermittedIdentifiers:
+          - dev.ividi.weatherapp.widgetRefresh
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.ividi.weatherapp

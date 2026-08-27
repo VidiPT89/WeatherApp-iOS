@@ -163,19 +163,7 @@ final class DashboardViewModel {
     /// snapshot to the shared App Group container and asks WidgetKit to
     /// refresh immediately, rather than the widget polling on its own timer.
     private func updateWidgetSnapshot(with weather: WeatherResponse) {
-        let snapshot = WeatherWidgetSnapshot(
-            city: weather.city,
-            country: weather.country,
-            temperature: weather.temperature,
-            feelsLike: weather.feelsLike,
-            humidity: weather.humidity,
-            windSpeed: weather.windSpeed,
-            description: weather.description,
-            temperatureSymbol: weather.units.temperatureSymbol,
-            windSpeedSymbol: weather.units.windSpeedSymbol,
-            lastUpdated: weather.observedAt
-        )
-        WeatherWidgetStore.save(snapshot)
+        WeatherWidgetStore.save(WeatherWidgetSnapshot(weather: weather))
         WidgetCenter.shared.reloadAllTimelines()
     }
 }

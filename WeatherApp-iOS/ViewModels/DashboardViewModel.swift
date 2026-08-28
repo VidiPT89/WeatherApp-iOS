@@ -186,7 +186,15 @@ final class DashboardViewModel {
     /// snapshot to the shared App Group container and asks WidgetKit to
     /// refresh immediately, rather than the widget polling on its own timer.
     private func updateWidgetSnapshot(with weather: WeatherResponse) {
-        WeatherWidgetStore.save(WeatherWidgetSnapshot(weather: weather))
+        // Same day/night check WeatherCardView uses -- without it the widget always rendered as
+        // if it were day (bright gradient + sun icon), even overnight.
+        let isNight: Bool
+        if let today = forecast?.daily.first {
+            isNight = weather.observedAt < today.sunrise || weather.observedAt > today.sunset
+        } else {
+            isNight = false
+        }
+        WeatherWidgetStore.save(WeatherWidgetSnapshot(weather: weather, isNight: isNight))
         WidgetCenter.shared.reloadAllTimelines()
     }
 }

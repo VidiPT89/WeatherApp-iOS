@@ -70,6 +70,7 @@ struct WeatherWidgetProvider: TimelineProvider {
         description: "clear sky",
         temperatureSymbol: "°C",
         windSpeedSymbol: "km/h",
-        lastUpdated: .now
+        lastUpdated: .now,
+        isNight: false
     )
 }

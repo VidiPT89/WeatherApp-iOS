@@ -34,7 +34,7 @@ struct WeatherWidgetEntryView: View {
     }
 
     private func style(_ snapshot: WeatherWidgetSnapshot) -> WeatherConditionStyle.Style {
-        WeatherConditionStyle.style(for: snapshot.description)
+        WeatherConditionStyle.style(for: snapshot.description, isNight: snapshot.isNight)
     }
 
     private func smallContent(_ snapshot: WeatherWidgetSnapshot) -> some View {

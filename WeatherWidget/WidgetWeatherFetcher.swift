@@ -35,10 +35,33 @@ enum WidgetWeatherFetcher {
               let (data, response) = try? await URLSession.shared.data(from: url),
               let httpResponse = response as? HTTPURLResponse,
               (200...299).contains(httpResponse.statusCode),
-              let raw = try? JSONDecoder().decode(RawWeatherResponse.self, from: data)
+              let raw = try? JSONDecoder().decode(RawWeatherResponse.self, from: data),
+              let observedAt = BackendDateFormatters.parseInstant(raw.observedAt)
         else { return nil }
 
-        return raw.snapshot
+        // Best-effort: today's sunrise/sunset (only on /forecast, not /nearby itself) is what
+        // WeatherCardView also relies on to know it's night -- a failure here just means the
+        // widget renders as if it were day, same fallback WeatherConditionStyle itself uses when
+        // it has no sunrise/sunset on hand.
+        let isNight = await fetchIsNight(city: raw.city, baseURL: baseURL, observedAt: observedAt)
+
+        return raw.snapshot(observedAt: observedAt, isNight: isNight)
+    }
+
+    private static func fetchIsNight(city: String, baseURL: URL, observedAt: Date) async -> Bool {
+        var components = URLComponents(url: baseURL.appendingPathComponent("api/v1/weather/forecast"), resolvingAgainstBaseURL: false)
+        components?.queryItems = [URLQueryItem(name: "city", value: city)]
+        guard let url = components?.url,
+              let (data, response) = try? await URLSession.shared.data(from: url),
+              let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode),
+              let forecast = try? JSONDecoder().decode(RawForecastResponse.self, from: data),
+              let today = forecast.daily.first,
+              let sunrise = BackendDateFormatters.parseInstant(today.sunrise),
+              let sunset = BackendDateFormatters.parseInstant(today.sunset)
+        else { return false }
+
+        return observedAt < sunrise || observedAt > sunset
     }
 }
 
@@ -53,9 +76,8 @@ private struct RawWeatherResponse: Decodable {
     let units: Units
     let observedAt: String
 
-    var snapshot: WeatherWidgetSnapshot? {
-        guard let date = BackendDateFormatters.parseInstant(observedAt) else { return nil }
-        return WeatherWidgetSnapshot(
+    func snapshot(observedAt: Date, isNight: Bool) -> WeatherWidgetSnapshot {
+        WeatherWidgetSnapshot(
             city: city,
             country: country,
             temperature: temperature,
@@ -65,7 +87,18 @@ private struct RawWeatherResponse: Decodable {
             description: description,
             temperatureSymbol: units.temperatureSymbol,
             windSpeedSymbol: units.windSpeedSymbol,
-            lastUpdated: date
+            lastUpdated: observedAt,
+            isNight: isNight
         )
+    }
+}
+
+/// Only the fields needed to know whether it's currently night for the city's timezone.
+private struct RawForecastResponse: Decodable {
+    let daily: [Daily]
+
+    struct Daily: Decodable {
+        let sunrise: String
+        let sunset: String
     }
 }

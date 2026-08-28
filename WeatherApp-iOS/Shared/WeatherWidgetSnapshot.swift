@@ -19,6 +19,44 @@ struct WeatherWidgetSnapshot: Codable, Equatable {
     let temperatureSymbol: String
     let windSpeedSymbol: String
     let lastUpdated: Date
+    /// Whether `lastUpdated` falls outside today's sunrise/sunset -- same signal
+    /// `WeatherCardView` uses so the widget can show the same night gradient/icon as the app,
+    /// instead of always rendering as if it were day. Decoded as `false` for any snapshot
+    /// persisted before this field existed, matching `WeatherConditionStyle`'s own default.
+    let isNight: Bool
+
+    init(
+        city: String, country: String, temperature: Double, feelsLike: Double, humidity: Int,
+        windSpeed: Double, description: String, temperatureSymbol: String, windSpeedSymbol: String,
+        lastUpdated: Date, isNight: Bool
+    ) {
+        self.city = city
+        self.country = country
+        self.temperature = temperature
+        self.feelsLike = feelsLike
+        self.humidity = humidity
+        self.windSpeed = windSpeed
+        self.description = description
+        self.temperatureSymbol = temperatureSymbol
+        self.windSpeedSymbol = windSpeedSymbol
+        self.lastUpdated = lastUpdated
+        self.isNight = isNight
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        city = try container.decode(String.self, forKey: .city)
+        country = try container.decode(String.self, forKey: .country)
+        temperature = try container.decode(Double.self, forKey: .temperature)
+        feelsLike = try container.decode(Double.self, forKey: .feelsLike)
+        humidity = try container.decode(Int.self, forKey: .humidity)
+        windSpeed = try container.decode(Double.self, forKey: .windSpeed)
+        description = try container.decode(String.self, forKey: .description)
+        temperatureSymbol = try container.decode(String.self, forKey: .temperatureSymbol)
+        windSpeedSymbol = try container.decode(String.self, forKey: .windSpeedSymbol)
+        lastUpdated = try container.decode(Date.self, forKey: .lastUpdated)
+        isNight = try container.decodeIfPresent(Bool.self, forKey: .isNight) ?? false
+    }
 }
 
 /// Reads/writes `WeatherWidgetSnapshot` to the App Group container shared

@@ -13,10 +13,10 @@ struct WeatherWidgetEntry: TimelineEntry {
 /// `freshEnoughInterval`, `getTimeline` now also tries a live fetch of its own
 /// (`WidgetWeatherFetcher`) before rendering, so a freshly-placed widget shows real data
 /// immediately instead of "no data yet" until the app is opened or the main app's periodic
-/// background refresh (`WidgetRefreshScheduler`) happens to run. Still `.never` reload policy --
-/// updates are triggered by the main app (`reloadAllTimelines()`) or by this provider itself being
-/// re-invoked by the system (widget placement, returning to the home screen, etc.), not by a
-/// time-based WidgetKit poll.
+/// background refresh (`WidgetRefreshScheduler`) happens to run. Uses `.after(...)` reload
+/// policy so WidgetKit itself asks for the next update once the entry goes stale, instead of
+/// relying solely on the main app (`reloadAllTimelines()`) or `BGAppRefreshTask` -- both of which
+/// iOS treats as best-effort and can delay for hours (or skip) if the app isn't opened often.
 struct WeatherWidgetProvider: TimelineProvider {
     /// Below this age, an existing snapshot is shown as-is without a live fetch -- placing/
     /// reopening the widget shouldn't re-hit the network on every single glance at the home
@@ -38,7 +38,8 @@ struct WeatherWidgetProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<WeatherWidgetEntry>) -> Void) {
         let stored = WeatherWidgetStore.load()
         if let stored, Date().timeIntervalSince(stored.lastUpdated) < Self.freshEnoughInterval {
-            completion(Timeline(entries: [WeatherWidgetEntry(date: .now, snapshot: stored)], policy: .never))
+            let nextRefresh = stored.lastUpdated.addingTimeInterval(Self.freshEnoughInterval)
+            completion(Timeline(entries: [WeatherWidgetEntry(date: .now, snapshot: stored)], policy: .after(nextRefresh)))
             return
         }
 
@@ -54,7 +55,8 @@ struct WeatherWidgetProvider: TimelineProvider {
                 WeatherWidgetStore.save(fetched)
             }
             let entry = WeatherWidgetEntry(date: .now, snapshot: fetched ?? stored)
-            completion(Timeline(entries: [entry], policy: .never))
+            let nextRefresh = Date().addingTimeInterval(Self.freshEnoughInterval)
+            completion(Timeline(entries: [entry], policy: .after(nextRefresh)))
         }
     }
 

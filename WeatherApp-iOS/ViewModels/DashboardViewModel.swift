@@ -181,10 +181,10 @@ final class DashboardViewModel {
         Task { try? await apiClient.updatePreferences(units: newUnits) }
     }
 
-    /// The widget shows the last weather the app itself fetched -- it never
-    /// fetches independently. Every successful Dashboard load writes a fresh
-    /// snapshot to the shared App Group container and asks WidgetKit to
-    /// refresh immediately, rather than the widget polling on its own timer.
+    /// Every successful nearby-location Dashboard load writes a fresh snapshot to the shared App
+    /// Group container and asks WidgetKit to refresh immediately, keeping the widget in sync with
+    /// what the app itself just saw. The widget can also fetch on its own (`WidgetWeatherFetcher`)
+    /// when this snapshot goes stale and the app hasn't been opened -- see `WeatherWidgetProvider`.
     private func updateWidgetSnapshot(with weather: WeatherResponse) {
         // Same day/night check WeatherCardView uses -- without it the widget always rendered as
         // if it were day (bright gradient + sun icon), even overnight.

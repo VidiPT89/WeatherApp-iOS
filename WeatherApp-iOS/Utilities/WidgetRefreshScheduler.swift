@@ -5,9 +5,10 @@ import WidgetKit
 
 /// Keeps the home-screen widget fresh in the background, without the user needing to open the
 /// app -- see `WeatherWidgetStore`'s "app-driven only" design note. This periodic background
-/// fetch is the one deliberate exception, replaying the same GPS-lookup + snapshot-save path
-/// `DashboardViewModel.loadNearbyWeatherIfAvailable` already uses on open, on a schedule instead
-/// of "the app happened to be open". Mirrors `WeatherApp-Android`'s `WeatherWidgetRefreshWorker`.
+/// fetch is the one deliberate exception, replaying the weather-fetch + snapshot-save half of
+/// `DashboardViewModel.loadNearbyWeatherIfAvailable` (reusing its last foreground GPS fix, not a
+/// new one -- see `refresh()` below) on a schedule instead of "the app happened to be open".
+/// Mirrors `WeatherApp-Android`'s `WeatherWidgetRefreshWorker`.
 enum WidgetRefreshScheduler {
     static let taskIdentifier = "dev.ividi.weatherapp.widgetRefresh"
 
@@ -59,13 +60,16 @@ enum WidgetRefreshScheduler {
     /// nearby-location lookup (`DashboardViewModel.loadNearbyWeatherIfAvailable`); the next
     /// scheduled run tries again regardless. Deliberately skips ever requesting permission itself
     /// (a background task can't usefully prompt the user) -- only runs if location access was
-    /// already granted from a prior foreground use of the app.
+    /// already granted from a prior foreground use of the app. Also skips requesting a fresh GPS
+    /// fix: `BGAppRefreshTask` runs without "Always" access, so `CLLocationManager.requestLocation()`
+    /// never completes here -- it reuses the coordinate the app last resolved in the foreground
+    /// (`WeatherWidgetStore.saveLastKnownCoordinate`), same as `WidgetWeatherFetcher`.
     private static func refresh() async {
         let status = CLLocationManager().authorizationStatus
         guard status == .authorizedWhenInUse || status == .authorizedAlways else { return }
+        guard let location = WeatherWidgetStore.loadLastKnownCoordinate() else { return }
 
         do {
-            let location = try await LocationService().requestCurrentLocation()
             let units = try? await APIClient.shared.fetchPreferences().units
             let weather = try await APIClient.shared.fetchWeatherNearby(
                 latitude: location.latitude, longitude: location.longitude, units: units)

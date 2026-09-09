@@ -14,17 +14,19 @@ enum WidgetWeatherFetcher {
         return URL(string: value)
     }
 
-    /// Best-effort: `nil` on any failure (permission not yet granted from the main app, no GPS
-    /// fix, network/decoding error) -- same "convenience, not required" stance as the main app's
-    /// own nearby-location lookup. Never requests location permission itself: a widget extension
-    /// can't usefully prompt the user, so this only ever runs once the main app has already
-    /// obtained "when in use" access.
+    /// Best-effort: `nil` on any failure (permission not yet granted from the main app, no cached
+    /// fix yet, network/decoding error) -- same "convenience, not required" stance as the main
+    /// app's own nearby-location lookup. Never requests location permission itself, and never asks
+    /// CoreLocation for a fresh fix: a widget extension runs without "Always" access, so
+    /// `CLLocationManager.requestLocation()` never completes for it in the background -- it
+    /// reuses the coordinate the main app last resolved in the foreground instead
+    /// (`WeatherWidgetStore.saveLastKnownCoordinate`).
     static func fetchNearbySnapshot() async -> WeatherWidgetSnapshot? {
         guard let baseURL else { return nil }
 
         let status = CLLocationManager().authorizationStatus
         guard status == .authorizedWhenInUse || status == .authorizedAlways else { return nil }
-        guard let coordinate = try? await LocationService().requestCurrentLocation() else { return nil }
+        guard let coordinate = WeatherWidgetStore.loadLastKnownCoordinate() else { return nil }
 
         var components = URLComponents(url: baseURL.appendingPathComponent("api/v1/weather/nearby"), resolvingAgainstBaseURL: false)
         components?.queryItems = [

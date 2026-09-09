@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		04EAC72EA7D3F25E8EDEBD08 /* AuthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 271E85DB167BB2181CF66336 /* AuthView.swift */; };
-		0F431C71E6E9A69ADB675DCC /* LocationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EBAF432056AC599BA3C0180 /* LocationService.swift */; };
 		112A24B856978EDD513CB47D /* FavoritesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E97479B58B85EE63BE284D02 /* FavoritesViewModel.swift */; };
 		166B5540F0A72D56B89977DC /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0BF7F855FDE90ADEA8D5FB /* AuthViewModel.swift */; };
 		1C2A241C222613A5393B57DE /* WeatherInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A6A50A32CBD631657C58C /* WeatherInsightsView.swift */; };
@@ -675,7 +674,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				FB088549B40DA0403CD8111B /* DateFormatters.swift in Sources */,
-				0F431C71E6E9A69ADB675DCC /* LocationService.swift in Sources */,
 				D0801CBE09E0BEE047BD0720 /* NumberFormatting.swift in Sources */,
 				5F56ABD15C95668E8AA44B80 /* Units.swift in Sources */,
 				596B17D48F7EABC133231E4B /* WeatherConditionStyle.swift in Sources */,

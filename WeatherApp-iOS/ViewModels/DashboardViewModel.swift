@@ -79,6 +79,7 @@ final class DashboardViewModel {
 
         do {
             let coordinate = try await locationService.requestCurrentLocation()
+            WeatherWidgetStore.saveLastKnownCoordinate(latitude: coordinate.latitude, longitude: coordinate.longitude)
             let weatherResult = try await fetchWeatherNearbyWithRetry(
                 latitude: coordinate.latitude, longitude: coordinate.longitude)
             await loadWeather(for: weatherResult.city, isFromNearbyLocation: true)

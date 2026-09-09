@@ -91,4 +91,25 @@ enum WeatherWidgetStore {
         guard let data = sharedDefaults?.data(forKey: snapshotKey) else { return nil }
         return try? JSONDecoder().decode(WeatherWidgetSnapshot.self, from: data)
     }
+
+    private static let lastCoordinateLatKey = "weatherWidgetSnapshot.lastLat"
+    private static let lastCoordinateLonKey = "weatherWidgetSnapshot.lastLon"
+
+    /// Called by the main app every time `LocationService` successfully resolves a GPS fix in the
+    /// foreground. The widget extension and the background refresh task both run without "Always"
+    /// location access, so `CLLocationManager.requestLocation()` never completes for them there --
+    /// they reuse this cached fix instead of requesting a fresh one that would just time out.
+    static func saveLastKnownCoordinate(latitude: Double, longitude: Double) {
+        sharedDefaults?.set(latitude, forKey: lastCoordinateLatKey)
+        sharedDefaults?.set(longitude, forKey: lastCoordinateLonKey)
+    }
+
+    /// `nil` until the app has obtained at least one GPS fix in the foreground.
+    static func loadLastKnownCoordinate() -> (latitude: Double, longitude: Double)? {
+        guard let defaults = sharedDefaults,
+              defaults.object(forKey: lastCoordinateLatKey) != nil,
+              defaults.object(forKey: lastCoordinateLonKey) != nil
+        else { return nil }
+        return (defaults.double(forKey: lastCoordinateLatKey), defaults.double(forKey: lastCoordinateLonKey))
+    }
 }

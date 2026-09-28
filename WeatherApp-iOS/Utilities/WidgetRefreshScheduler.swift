@@ -4,8 +4,8 @@ import Foundation
 import WidgetKit
 
 /// Keeps the home-screen widget fresh in the background, without the user needing to open the
-/// app -- see `WeatherWidgetStore`'s "app-driven only" design note. This periodic background
-/// fetch is the one deliberate exception, replaying the weather-fetch + snapshot-save half of
+/// app (alongside the widget's own stale-snapshot fetch, see `WeatherWidgetProvider`). This
+/// periodic background fetch replays the weather-fetch + snapshot-save half of
 /// `DashboardViewModel.loadNearbyWeatherIfAvailable` (reusing its last foreground GPS fix, not a
 /// new one -- see `refresh()` below) on a schedule instead of "the app happened to be open".
 /// Mirrors `WeatherApp-Android`'s `WeatherWidgetRefreshWorker`.

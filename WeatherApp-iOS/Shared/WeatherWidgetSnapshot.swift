@@ -3,8 +3,8 @@ import Foundation
 /// Small `Codable` snapshot of "the last weather the Dashboard successfully
 /// loaded", written by the main app and read by the `WeatherWidget`
 /// extension. Deliberately tiny -- sized for `UserDefaults` in an App Group,
-/// not a database -- since the widget never fetches independently; it only
-/// ever mirrors what the app itself last saw. `description` is kept as the
+/// not a database -- since it only ever holds the latest reading, whether the
+/// app or the widget's own live fetch wrote it. `description` is kept as the
 /// raw backend string (not an icon name) so the widget can run it through
 /// the same `WeatherConditionStyle` mapping the main app uses, rather than
 /// duplicating that logic.

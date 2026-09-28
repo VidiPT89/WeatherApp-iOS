@@ -32,7 +32,8 @@ final class APIClientErrorDecodingTests: XCTestCase {
 
     func test_throwsUnauthenticated_whenNoTokenIsSet() async throws {
         let client = APIClient(session: MockURLProtocol.makeMockedSession())
-        // No setTokens call — request must fail before hitting the network.
+        // No setTokens call — request must fail before hitting the network. Uses history because
+        // weather lookups are anonymous; only per-user endpoints require a token.
 
         MockURLProtocol.requestHandler = { _ in
             XCTFail("Should not perform network request without a token")
@@ -40,7 +41,7 @@ final class APIClientErrorDecodingTests: XCTestCase {
         }
 
         do {
-            _ = try await client.fetchWeather(city: "Lisboa", units: .metric)
+            _ = try await client.fetchHistory()
             XCTFail("Expected APIError.unauthenticated to be thrown")
         } catch let error as APIError {
             XCTAssertEqual(error, .unauthenticated)

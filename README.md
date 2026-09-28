@@ -11,7 +11,7 @@ One of three clients (Web / iOS / [Android](https://github.com/VidiPT89/WeatherA
 - 🔎 City search with debounced autocomplete (backend geocoding endpoint) — also used on the Favorites tab now, so a favorite can only be added from a real geocoded suggestion, not free-typed text that the weather-by-name lookup might later fail to resolve
 - 🌡️ Current weather + hourly/daily forecast chart (Swift Charts), with a °C/°F toggle — the hourly chart's default visible window is 12h (up from 7h) plus a non-scrolling "next 24h at a glance" sparkline above it, so a full day's temperatures are readable with far less paging
 - 👆 Tap the weather, sea-conditions or "Mais sobre hoje" cards on the Dashboard for an expanded detail sheet (fuller current-conditions breakdown, the full day's tide events, or a multi-day view of UV/activity/fishing/surf conditions)
-- 🧩 **Home-screen widget** (`WeatherWidget`, small + medium) — mirrors the last weather the app itself fetched via an App Group; it never fetches independently, it just refreshes whenever the Dashboard loads a new city
+- 🧩 **Home-screen widget** (`WeatherWidget`, small + medium) — shows the last weather the app fetched (shared via an App Group), and fetches live GPS weather on its own when that snapshot is missing or older than 30 minutes, so a freshly placed widget shows real data straight away
 - ⚡ **Cache badge** — "dados frescos" vs "servido da cache há Xs", ticking live from the response's `fromCache` flag and timestamp
 - 🔁 **Fallback banner** — appears when the response was served by the secondary provider
 - 🔐 Auth (register/login, JWT in Keychain), favorite cities (add via autocomplete + swipe-to-delete), search history, saved unit preference
@@ -50,7 +50,7 @@ WeatherApp-iOS/
 │                    # the app and WeatherWidget targets
 └── Info.plist       # NSAppTransportSecurity localhost exception (plain HTTP in local dev)
 
-WeatherWidget/       # WidgetKit extension target: small/medium home-screen widget, app-driven only
+WeatherWidget/       # WidgetKit extension target: small/medium home-screen widget + its own live fetch
 ```
 
 ### Why these choices
@@ -58,11 +58,11 @@ WeatherWidget/       # WidgetKit extension target: small/medium home-screen widg
 - **Direct-to-API, no BFF**: unlike the web client (which proxies through Next.js Route Handlers to keep the JWT out of browser JS), a native app's Keychain is already a secure, sandboxed place to hold a token — no XSS surface to defend against, so there's no need for a server-side proxy layer.
 - **Local-datetime forecast decoding**: `hourly[].time`/`daily[].date` come back from the API without a timezone offset (Open-Meteo's `timezone=auto` already localizes them), so they're decoded as plain `Date`/`DateComponents` via a custom formatter instead of `.iso8601`, which would reject them.
 - **XCUITest over manual driving**: this environment doesn't have screen-recording permission for computer-use automation, so the golden path (register → search → cache badge flips → favorites → history → settings) is captured as a real, re-runnable `XCUITest` instead of a one-off manual walkthrough — arguably stronger verification since it re-runs on every future change.
-- **App-driven widget, not a polling one**: `WeatherWidget` never calls the network itself — its `TimelineProvider` reads a small `Codable` snapshot the main app wrote to a shared App Group container after its own last successful Dashboard fetch, and uses a `.never` reload policy since the app calls `WidgetCenter.shared.reloadAllTimelines()` right after writing a fresh snapshot. Simpler than giving the widget its own fetch/refresh schedule, and the data is never more stale than "whatever the app itself last saw" — which is the whole point of a glance widget.
+- **Snapshot first, live fetch as a fallback**: the widget's `TimelineProvider` reads a small `Codable` snapshot the main app writes to a shared App Group container after each successful Dashboard fetch. When that snapshot is missing or older than 30 minutes, the widget fetches the weather for the device's location itself (`WidgetWeatherFetcher`, using only Foundation/CoreLocation so it doesn't link the auth SDKs) and saves it back to the shared store. It uses an `.after(...)` reload policy so WidgetKit asks for the next update itself, and the app also schedules a 3-hourly background refresh (`WidgetRefreshScheduler`). Relying only on the app being opened, or only on `BGAppRefreshTask`, left the widget stale for hours, since iOS treats both as best-effort.
 
 ## 🚀 How to Run
 
-Prerequisites: Xcode 16+, and the [Weather API](https://github.com/VidiPT89/WeatherAPI) running locally on `http://localhost:8080` (see that repo's README) — or point `APIClient`'s base URL at the live deployment: `https://weather-api-production-68ff.up.railway.app`.
+Prerequisites: Xcode 16+. By default the app talks to the live [Weather API](https://github.com/VidiPT89/WeatherAPI) deployment at `https://weatherapi-4r5x.onrender.com` (Render free tier, so the first request after a quiet period can take up to a minute). To use a local backend on `http://localhost:8080` instead (see that repo's README), change `WEATHER_API_BASE_URL` in `project.yml` (app and widget targets) and run `xcodegen generate`.
 
 ```bash
 open WeatherApp-iOS.xcodeproj

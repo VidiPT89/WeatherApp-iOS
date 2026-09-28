@@ -7,7 +7,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    DEVELOPMENT_TEAM: ""
+    DEVELOPMENT_TEAM: S769436W24
     CODE_SIGN_STYLE: Automatic
     ENABLE_PREVIEWS: YES
 
@@ -108,15 +108,14 @@ targets:
       # Shared with the main app target (see project.yml's WeatherApp-iOS sources): the
       # App-Group-backed snapshot model, plus small self-contained helpers reused as-is so the
       # widget matches the main app instead of drifting into a second copy of the same rules.
-      # LocationService/DateFormatters/Units are pure CoreLocation/Foundation, no auth/network SDK
-      # dependencies, which is what lets the widget fetch its own live GPS weather on placement
-      # (see WeatherWidget/WidgetWeatherFetcher.swift) without linking Google/MSAL into it too.
+      # DateFormatters/Units are pure Foundation, no auth/network SDK dependencies, so the widget
+      # can fetch its own live GPS weather on placement (see WeatherWidget/WidgetWeatherFetcher.swift,
+      # which talks to CLLocationManager directly) without linking Google/MSAL into it too.
       - path: WeatherApp-iOS/Shared
       - path: WeatherApp-iOS/Utilities/WeatherConditionStyle.swift
       - path: WeatherApp-iOS/Utilities/NumberFormatting.swift
       - path: WeatherApp-iOS/Utilities/DateFormatters.swift
       - path: WeatherApp-iOS/Models/Units.swift
-      - path: WeatherApp-iOS/Location/LocationService.swift
     info:
       path: WeatherWidget/Info.plist
       properties:

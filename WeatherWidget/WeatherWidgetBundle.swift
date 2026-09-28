@@ -8,9 +8,8 @@ struct WeatherWidgetBundle: WidgetBundle {
     }
 }
 
-/// Shows the last weather the main app itself fetched -- see
-/// `WeatherWidgetProvider`'s doc comment for the "app-driven, no independent
-/// fetching" scope decision.
+/// Shows the latest weather snapshot, fetching its own when the app's is stale --
+/// see `WeatherWidgetProvider`'s doc comment for how the two sources combine.
 struct WeatherWidget: Widget {
     let kind: String = "WeatherWidget"
 

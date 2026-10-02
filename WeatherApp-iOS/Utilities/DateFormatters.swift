@@ -52,14 +52,6 @@ enum BackendDateFormatters {
         formatter.locale = Locale(identifier: "en_US_POSIX")
         return formatter
     }()
-
-    /// Human display formatter for history/favorites timestamps.
-    nonisolated(unsafe) static let relative: RelativeDateTimeFormatter = {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.locale = Locale(identifier: "pt_PT")
-        formatter.unitsStyle = .full
-        return formatter
-    }()
 }
 
 /// A `Decodable`/`Encodable`-friendly wrapper isn't needed here — models decode

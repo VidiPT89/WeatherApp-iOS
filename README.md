@@ -99,8 +99,8 @@ Given the project's scope (three client apps on one backend), test effort is wei
 
 ## 📝 Notes
 
-- No clear-history UI — matches the backend's intentional v1 scope (no delete endpoint exists yet for history). Favorites can be removed (swipe-to-delete).
-- Requires the backend reachable at `http://localhost:8080`; the simulator shares the host's network namespace so no special host mapping is needed (unlike the Android emulator, which needs `10.0.2.2`).
+- History entries can be removed individually or cleared together. Favorites support swipe-to-delete.
+- The app uses the live HTTPS API by default. For local development, the simulator can reach a backend at `http://localhost:8080` after changing `WEATHER_API_BASE_URL`.
 
 ## 📄 License
 

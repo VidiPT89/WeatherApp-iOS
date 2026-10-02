@@ -24,8 +24,7 @@ enum ForecastRange: String, CaseIterable, Identifiable {
 final class DashboardViewModel {
     private(set) var weather: WeatherResponse?
     private(set) var forecast: ForecastResponse?
-    /// Set only when the forecast fetch itself fails (e.g. Open-Meteo's shared-IP quota, which
-    /// forecast has no fallback provider for -- see ADR-001) while `weather` still succeeded.
+    /// Set when the forecast fetch fails while current weather still succeeds.
     /// Lets the view show *why* the forecast section is missing instead of just silently omitting
     /// it, matching how `WeatherApp-Android`'s per-section states already behave.
     private(set) var forecastErrorMessage: String?
@@ -50,6 +49,7 @@ final class DashboardViewModel {
     /// Whether `lastLoadedCity` came from GPS auto-detection rather than a manual search —
     /// see `loadWeather(for:isFromNearbyLocation:)`.
     private var lastLoadWasFromNearbyLocation = false
+    private var loadGeneration = 0
 
     var units: Units = .metric
     var forecastRange: ForecastRange = .hourly
@@ -71,7 +71,8 @@ final class DashboardViewModel {
     /// can explain *why* instead of reverting with no feedback (a GPS fix can genuinely fail or
     /// take a long time indoors/with poor signal, and silently going nowhere read as "broken").
     func loadNearbyWeatherIfAvailable() async {
-        guard !hasSearchedOnce else { return }
+        guard !hasSearchedOnce, !isLocating else { return }
+        let generation = loadGeneration
 
         isLocating = true
         locationErrorMessage = nil
@@ -79,13 +80,18 @@ final class DashboardViewModel {
 
         do {
             let coordinate = try await locationService.requestCurrentLocation()
+            guard generation == loadGeneration, !Task.isCancelled else { return }
             WeatherWidgetStore.saveLastKnownCoordinate(latitude: coordinate.latitude, longitude: coordinate.longitude)
             let weatherResult = try await fetchWeatherNearbyWithRetry(
                 latitude: coordinate.latitude, longitude: coordinate.longitude)
-            await loadWeather(for: weatherResult.city, isFromNearbyLocation: true)
+            guard generation == loadGeneration, !Task.isCancelled else { return }
+            let city = weatherResult.country.isEmpty ? weatherResult.city : "\(weatherResult.city), \(weatherResult.country)"
+            await loadWeather(for: city, isFromNearbyLocation: true, nearbyWeather: weatherResult)
         } catch is LocationError {
+            guard generation == loadGeneration, !Task.isCancelled else { return }
             locationErrorMessage = "Não foi possível obter a tua localização. Procura uma cidade manualmente."
         } catch {
+            guard generation == loadGeneration, !Task.isCancelled else { return }
             locationErrorMessage = "Não foi possível obter o tempo para a tua localização. Procura uma cidade manualmente."
         }
     }
@@ -99,13 +105,17 @@ final class DashboardViewModel {
         do {
             return try await apiClient.fetchWeatherNearby(latitude: latitude, longitude: longitude, units: units)
         } catch {
+            try Task.checkCancellation()
             return try await apiClient.fetchWeatherNearby(latitude: latitude, longitude: longitude, units: units)
         }
     }
 
     /// Loads the user's saved unit preference. Call once after login/session restore.
     func loadInitialPreferences() async {
-        guard let preferences = try? await apiClient.fetchPreferences() else { return }
+        let generation = loadGeneration
+        let initialUnits = units
+        guard let preferences = try? await apiClient.fetchPreferences(),
+              generation == loadGeneration, units == initialUnits, !Task.isCancelled else { return }
         units = preferences.units
     }
 
@@ -114,45 +124,66 @@ final class DashboardViewModel {
     ///   widget gets updated. The widget is meant to answer "what's the
     ///   weather where I am", not "what was the last city I looked up", so a
     ///   manual search (the default, `false`) must never overwrite it.
-    func loadWeather(for city: String, isFromNearbyLocation: Bool = false) async {
+    func loadWeather(for city: String, isFromNearbyLocation: Bool = false, nearbyWeather: WeatherResponse? = nil) async {
         let trimmedCity = city.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedCity.isEmpty else { return }
 
+        loadGeneration += 1
+        let generation = loadGeneration
+        let requestedUnits = units
+        defer {
+            if generation == loadGeneration { isLoading = false }
+        }
+        lastLoadedCity = trimmedCity
         isLoading = true
+        isLocating = false
+        weather = nil
+        forecast = nil
+        marine = nil
+        insights = nil
         errorMessage = nil
         forecastErrorMessage = nil
         lastLoadWasFromNearbyLocation = isFromNearbyLocation
 
         do {
-            async let weatherTask = apiClient.fetchWeather(city: trimmedCity, units: units)
+            async let weatherTask: WeatherResponse = {
+                if let nearbyWeather { return nearbyWeather }
+                return try await self.apiClient.fetchWeather(city: trimmedCity, units: requestedUnits)
+            }()
             // Forecast, sea conditions, and insights are secondary, best-effort additions to the
-            // dashboard: a hiccup on any of them (e.g. Open-Meteo's shared-IP quota on Render,
-            // which has no fallback provider for forecast/marine -- see ADR-001) shouldn't blank
+            // dashboard: a hiccup on any of them shouldn't blank
             // out the current-conditions card the user actually asked for. Only the current
             // weather fetch itself can fail the whole load. Forecast's outcome is captured as a
             // (data, errorMessage) pair rather than plain `try?` so the view can explain *why*
             // that section is missing instead of just silently omitting it.
             async let forecastOutcome = Self.fetchForecastOutcome(
-                apiClient: apiClient, city: trimmedCity, units: units, locale: AppLocale.current.locale)
-            async let marineTask: MarineResponse? = try? apiClient.fetchMarine(city: trimmedCity, units: units)
-            async let insightsTask: WeatherInsightsResponse? = try? apiClient.fetchInsights(city: trimmedCity, units: units)
+                apiClient: apiClient, city: trimmedCity, units: requestedUnits, locale: AppLocale.current.locale)
+            async let marineTask: MarineResponse? = try? apiClient.fetchMarine(city: trimmedCity, units: requestedUnits)
+            async let insightsTask: WeatherInsightsResponse? = try? apiClient.fetchInsights(city: trimmedCity, units: requestedUnits)
 
             let weatherResult = try await weatherTask
+            guard generation == loadGeneration, !Task.isCancelled else { return }
             weather = weatherResult
-            lastLoadedCity = trimmedCity
-            (forecast, forecastErrorMessage) = await forecastOutcome
-            marine = await marineTask
-            insights = await insightsTask
+            isLoading = false
+            let forecastResult = await forecastOutcome
+            guard generation == loadGeneration, !Task.isCancelled else { return }
+            (forecast, forecastErrorMessage) = forecastResult
+            let marineResult = await marineTask
+            guard generation == loadGeneration, !Task.isCancelled else { return }
+            marine = marineResult
+            let insightsResult = await insightsTask
+            guard generation == loadGeneration, !Task.isCancelled else { return }
+            insights = insightsResult
             if isFromNearbyLocation {
                 updateWidgetSnapshot(with: weatherResult)
             }
         } catch let apiError as APIError {
+            guard generation == loadGeneration, !Task.isCancelled else { return }
             errorMessage = apiError.errorDescription
         } catch {
+            guard generation == loadGeneration, !Task.isCancelled else { return }
             errorMessage = error.localizedDescription
         }
-
-        isLoading = false
     }
 
     private static func fetchForecastOutcome(
@@ -171,7 +202,9 @@ final class DashboardViewModel {
     /// fire-and-forgets a save of the new preference.
     func changeUnits(to newUnits: Units) async {
         guard newUnits != units else { return }
+        loadGeneration += 1
         units = newUnits
+        isLocating = false
 
         if let city = lastLoadedCity {
             // Preserve whether this city came from GPS auto-detection so a units toggle doesn't

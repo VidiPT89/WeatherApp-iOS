@@ -13,14 +13,11 @@ struct WeatherCardView: View {
     /// chance the `/weather` endpoint itself doesn't return. `nil` while the
     /// forecast hasn't loaded yet.
     var today: DailyForecastEntry?
+    /// Whether it's currently night in the city -- see `ForecastResponse.isNight(at:)`.
+    var isNight = false
 
     @Environment(\.locale) private var locale
     @State private var isDetailPresented = false
-
-    private var isNight: Bool {
-        guard let today else { return false }
-        return weather.observedAt < today.sunrise || weather.observedAt > today.sunset
-    }
 
     private var style: WeatherConditionStyle.Style {
         WeatherConditionStyle.style(for: weather.description, isNight: isNight)
@@ -90,7 +87,7 @@ struct WeatherCardView: View {
         .accessibilityAddTraits(.isButton)
         .accessibilityHint("Toca para veres mais detalhes sobre as condições atuais")
         .sheet(isPresented: $isDetailPresented) {
-            WeatherDetailView(weather: weather, today: today)
+            WeatherDetailView(weather: weather, today: today, isNight: isNight)
         }
     }
 

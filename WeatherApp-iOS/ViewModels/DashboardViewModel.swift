@@ -222,12 +222,7 @@ final class DashboardViewModel {
     private func updateWidgetSnapshot(with weather: WeatherResponse) {
         // Same day/night check WeatherCardView uses -- without it the widget always rendered as
         // if it were day (bright gradient + sun icon), even overnight.
-        let isNight: Bool
-        if let today = forecast?.daily.first {
-            isNight = weather.observedAt < today.sunrise || weather.observedAt > today.sunset
-        } else {
-            isNight = false
-        }
+        let isNight = forecast?.isNight(at: weather.observedAt) ?? false
         WeatherWidgetStore.save(WeatherWidgetSnapshot(weather: weather, isNight: isNight))
         WidgetCenter.shared.reloadAllTimelines()
     }

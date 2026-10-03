@@ -47,6 +47,11 @@ struct ForecastChartView: View {
     // edge of today's bar. Starting at midnight shows it in full.
     @State private var dailyScrollPosition: Date = Calendar.current.startOfDay(for: .now)
 
+    /// "Now" on the city's own clock, the frame every forecast time is in -- for a city in
+    /// another time zone the device's `.now` would put the marker, "Hoje" and the starting
+    /// scroll window hours away from where the data actually begins.
+    private var cityNow: Date { forecast.cityWallClock(of: .now) }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             // `.chartScrollableAxes(.horizontal)` gives the chart itself an
@@ -74,7 +79,7 @@ struct ForecastChartView: View {
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                     if range == .hourly {
-                        Text("Agora: \(Date.now.formatted(.dateTime.hour().minute().locale(Self.ptLocale)))")
+                        Text("Agora: \(cityNow.formatted(.dateTime.hour().minute().locale(Self.ptLocale)))")
                             .font(.caption2.weight(.semibold))
                             .foregroundStyle(.orange)
                     }
@@ -114,6 +119,8 @@ struct ForecastChartView: View {
         .sheet(isPresented: $isDetailPresented) {
             ForecastDetailView(forecast: forecast, initialRange: range)
         }
+        .onAppear(perform: resetScrollPositions)
+        .onChange(of: forecast.city) { resetScrollPositions() }
     }
 
     /// One `DailyInsightRow` per day currently visible in the bar chart's
@@ -127,7 +134,7 @@ struct ForecastChartView: View {
         return VStack(alignment: .leading, spacing: 10) {
             Divider()
             ForEach(visibleEntries) { entry in
-                DailyInsightRow(entry: entry, isToday: Calendar.current.isDateInToday(entry.date))
+                DailyInsightRow(entry: entry, isToday: Calendar.current.isDate(entry.date, inSameDayAs: cityNow))
                 if entry.id != visibleEntries.last?.id {
                     Divider()
                 }
@@ -187,6 +194,11 @@ struct ForecastChartView: View {
             guard let last = forecast.daily.last?.date else { return false }
             return dailyScrollPosition.addingTimeInterval(Self.visibleDailyWindow) < last
         }
+    }
+
+    private func resetScrollPositions() {
+        hourlyScrollPosition = cityNow
+        dailyScrollPosition = Calendar.current.startOfDay(for: cityNow)
     }
 
     private func pageBackward() {
@@ -287,7 +299,7 @@ struct ForecastChartView: View {
             // full-height RuleMark made Charts pad the Y-domain to make
             // room for it (observed pushing a ~30°C dataset's axis to
             // 60°C) -- the "Agora" label lives in the header instead.
-            RuleMark(x: .value("Agora", Date.now))
+            RuleMark(x: .value("Agora", cityNow))
                 .foregroundStyle(.orange)
                 .lineStyle(StrokeStyle(lineWidth: 1.5, dash: [4, 4]))
         }
@@ -353,7 +365,7 @@ struct ForecastChartView: View {
             AxisMarks(values: .stride(by: .day)) { value in
                 AxisValueLabel {
                     if let date = value.as(Date.self) {
-                        let isToday = Calendar.current.isDateInToday(date)
+                        let isToday = Calendar.current.isDate(date, inSameDayAs: cityNow)
                         Text(isToday ? "Hoje" : date.formatted(.dateTime.weekday(.abbreviated).locale(Self.ptLocale)))
                             .font(.caption2.weight(isToday ? .bold : .regular))
                             .foregroundStyle(isToday ? .orange : .secondary)

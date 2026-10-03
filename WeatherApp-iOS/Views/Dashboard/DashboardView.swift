@@ -61,7 +61,11 @@ struct DashboardView: View {
                 if weather.isFallbackProvider {
                     FallbackBannerView(provider: weather.provider)
                 }
-                WeatherCardView(weather: weather, today: viewModel.forecast?.daily.first)
+                WeatherCardView(
+                    weather: weather,
+                    today: viewModel.forecast?.daily.first,
+                    isNight: viewModel.forecast?.isNight(at: weather.observedAt) ?? false
+                )
                 if let marine = viewModel.marine {
                     MarineConditionsView(marine: marine)
                 }

@@ -2,7 +2,7 @@ import Foundation
 
 /// One entry of `forecast.hourly` (48 entries). `time` is a zone-less local
 /// datetime (`2024-01-01T00:00:00`), decoded via
-/// `BackendDateFormatters.localDateTime` rather than `.iso8601` (which
+/// `BackendDateFormatters.parseLocalDateTime` rather than `.iso8601` (which
 /// requires an offset and would throw).
 struct HourlyForecastEntry: Decodable, Equatable, Identifiable {
     let time: Date
@@ -26,7 +26,7 @@ struct HourlyForecastEntry: Decodable, Equatable, Identifiable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let rawTime = try container.decode(String.self, forKey: .time)
-        guard let parsed = BackendDateFormatters.localDateTime.date(from: rawTime) else {
+        guard let parsed = BackendDateFormatters.parseLocalDateTime(rawTime) else {
             throw DateDecodingError.invalidLocalDateTime(rawTime)
         }
         time = parsed
@@ -37,7 +37,7 @@ struct HourlyForecastEntry: Decodable, Equatable, Identifiable {
 }
 
 /// One entry of `forecast.daily` (16 entries). `date` is a zone-less local
-/// date (`2024-01-01`), decoded via `BackendDateFormatters.localDate`.
+/// date (`2024-01-01`), decoded via `BackendDateFormatters.parseLocalDate`.
 /// `sunrise`/`sunset` are local ISO datetimes, decoded the same way as
 /// `hourly[].time`.
 struct DailyForecastEntry: Decodable, Equatable, Identifiable {
@@ -106,7 +106,7 @@ struct DailyForecastEntry: Decodable, Equatable, Identifiable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let rawDate = try container.decode(String.self, forKey: .date)
-        guard let parsedDate = BackendDateFormatters.localDate.date(from: rawDate) else {
+        guard let parsedDate = BackendDateFormatters.parseLocalDate(rawDate) else {
             throw DateDecodingError.invalidLocalDate(rawDate)
         }
         date = parsedDate
@@ -116,13 +116,13 @@ struct DailyForecastEntry: Decodable, Equatable, Identifiable {
         description = try container.decode(String.self, forKey: .description)
 
         let rawSunrise = try container.decode(String.self, forKey: .sunrise)
-        guard let parsedSunrise = BackendDateFormatters.localDateTime.date(from: rawSunrise) else {
+        guard let parsedSunrise = BackendDateFormatters.parseLocalDateTime(rawSunrise) else {
             throw DateDecodingError.invalidLocalDateTime(rawSunrise)
         }
         sunrise = parsedSunrise
 
         let rawSunset = try container.decode(String.self, forKey: .sunset)
-        guard let parsedSunset = BackendDateFormatters.localDateTime.date(from: rawSunset) else {
+        guard let parsedSunset = BackendDateFormatters.parseLocalDateTime(rawSunset) else {
             throw DateDecodingError.invalidLocalDateTime(rawSunset)
         }
         sunset = parsedSunset
@@ -149,4 +149,18 @@ struct ForecastResponse: Decodable, Equatable {
     let fromCache: Bool
     let hourly: [HourlyForecastEntry]
     let daily: [DailyForecastEntry]
+    /// The city's offset from UTC; `nil` only from a backend older than this field.
+    var utcOffsetSeconds: Int? = nil
+
+    /// The city's current wall-clock, in the same frame as `hourly`/`daily` times.
+    func cityWallClock(of instant: Date) -> Date {
+        BackendDateFormatters.cityWallClock(of: instant, utcOffsetSeconds: utcOffsetSeconds)
+    }
+
+    /// Whether `instant` falls outside today's sunrise/sunset, in the city's own time.
+    func isNight(at instant: Date) -> Bool {
+        guard let today = daily.first else { return false }
+        let local = cityWallClock(of: instant)
+        return local < today.sunrise || local > today.sunset
+    }
 }

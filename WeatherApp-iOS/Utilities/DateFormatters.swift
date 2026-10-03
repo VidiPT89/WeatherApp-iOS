@@ -8,7 +8,7 @@ import Foundation
 /// - The forecast's `hourly[].time` is a *local* datetime with **no** timezone
 ///   offset, e.g. `2024-01-01T00:00:00`. Decoding that with `.iso8601` throws,
 ///   since `.iso8601` requires an offset. It must be parsed as a plain
-///   local date via a custom formatter instead.
+///   local date via `parseLocalDateTime` instead.
 enum BackendDateFormatters {
     /// Full ISO-8601 instant, e.g. `2024-01-01T12:00:00Z` or with fractional seconds.
     /// `nonisolated(unsafe)`: these formatters are configured once at first access
@@ -31,10 +31,44 @@ enum BackendDateFormatters {
         isoInstant.date(from: string) ?? isoInstantNoFraction.date(from: string)
     }
 
-    /// Local (zone-less) datetime used by `forecast.hourly[].time`,
-    /// e.g. `2024-01-01T00:00:00`. `DateFormatter` itself is `Sendable`, so unlike the
-    /// formatters above/below, this one needs no `nonisolated(unsafe)`.
-    static let localDateTime: DateFormatter = {
+    /// Zone-less forecast times (`hourly[].time`, `daily[].sunrise`, ...) are the city's own
+    /// wall-clock, e.g. `2024-01-01T07:45:00`. They're returned as the same wall-clock in the
+    /// device's calendar, so a view formats them back to exactly those numbers and can lay them
+    /// next to `Date.now`. Parsing happens strictly in UTC first, so a time the device's zone
+    /// skips (a DST gap) still decodes instead of failing the whole forecast.
+    static func parseLocalDateTime(_ string: String) -> Date? {
+        localDateTime.date(from: string).map(deviceWallClock(fromUTC:))
+    }
+
+    /// Zone-less forecast date (`daily[].date`, e.g. `2024-01-01`), as midnight in the device's calendar.
+    static func parseLocalDate(_ string: String) -> Date? {
+        localDate.date(from: string).map(deviceWallClock(fromUTC:))
+    }
+
+    /// The city's wall-clock at `instant`, in the same device-calendar frame [parseLocalDateTime]
+    /// produces -- so a real instant (`observedAt`, `Date.now`) can be compared with sunrise,
+    /// sunset or an hourly slot even when the city is in another time zone. Without an offset
+    /// (an older backend) the device's own zone is the best remaining guess.
+    static func cityWallClock(of instant: Date, utcOffsetSeconds: Int?) -> Date {
+        guard let utcOffsetSeconds, let cityZone = TimeZone(secondsFromGMT: utcOffsetSeconds) else { return instant }
+        var cityCalendar = Calendar(identifier: .gregorian)
+        cityCalendar.timeZone = cityZone
+        let components = cityCalendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: instant)
+        return Calendar.current.date(from: components) ?? instant
+    }
+
+    private static func deviceWallClock(fromUTC date: Date) -> Date {
+        let components = utcCalendar.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        return Calendar.current.date(from: components) ?? date
+    }
+
+    private static let utcCalendar: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(identifier: "UTC")!
+        return calendar
+    }()
+
+    private static let localDateTime: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
         formatter.timeZone = TimeZone(identifier: "UTC")
@@ -43,8 +77,7 @@ enum BackendDateFormatters {
         return formatter
     }()
 
-    /// Local (zone-less) date used by `forecast.daily[].date`, e.g. `2024-01-01`.
-    static let localDate: DateFormatter = {
+    private static let localDate: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.timeZone = TimeZone(identifier: "UTC")

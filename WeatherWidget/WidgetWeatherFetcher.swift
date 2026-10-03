@@ -59,11 +59,13 @@ enum WidgetWeatherFetcher {
               (200...299).contains(httpResponse.statusCode),
               let forecast = try? JSONDecoder().decode(RawForecastResponse.self, from: data),
               let today = forecast.daily.first,
-              let sunrise = BackendDateFormatters.parseInstant(today.sunrise),
-              let sunset = BackendDateFormatters.parseInstant(today.sunset)
+              let sunrise = BackendDateFormatters.parseLocalDateTime(today.sunrise),
+              let sunset = BackendDateFormatters.parseLocalDateTime(today.sunset)
         else { return false }
 
-        return observedAt < sunrise || observedAt > sunset
+        // Sunrise/sunset are the city's zone-less wall-clock, so the instant is compared on that same clock.
+        let local = BackendDateFormatters.cityWallClock(of: observedAt, utcOffsetSeconds: forecast.utcOffsetSeconds)
+        return local < sunrise || local > sunset
     }
 }
 
@@ -98,6 +100,7 @@ private struct RawWeatherResponse: Decodable {
 /// Only the fields needed to know whether it's currently night for the city's timezone.
 private struct RawForecastResponse: Decodable {
     let daily: [Daily]
+    let utcOffsetSeconds: Int?
 
     struct Daily: Decodable {
         let sunrise: String

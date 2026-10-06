@@ -5,6 +5,7 @@ import SwiftUI
 /// Uses `TimelineView` rather than a ViewModel timer so the age recomputation
 /// stays purely a view concern, backed by the pure `CacheAgeFormatter`.
 struct CacheBadgeView: View {
+    @Environment(\.locale) private var locale
     let fromCache: Bool
     let observedAt: Date
 
@@ -12,7 +13,9 @@ struct CacheBadgeView: View {
         if fromCache {
             TimelineView(.periodic(from: .now, by: AppConstants.cacheAgeTickInterval)) { context in
                 badge(
-                    text: "Servido da cache há \(CacheAgeFormatter.formattedAge(observedAt: observedAt, now: context.date))",
+                    text: LocalizedStrings.string(
+                        "Servido da cache há \(CacheAgeFormatter.formattedAge(observedAt: observedAt, now: context.date))",
+                        locale: locale),
                     color: .orange,
                     systemImage: "clock.arrow.circlepath"
                 )

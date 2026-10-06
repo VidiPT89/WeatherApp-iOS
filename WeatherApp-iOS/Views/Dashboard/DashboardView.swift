@@ -152,14 +152,16 @@ private struct EmptyStateView: View {
     let isLocating: Bool
     let locationErrorMessage: String?
 
-    private var message: String {
+    /// A `Text` rather than a `String`: `Text(someString)` is shown verbatim, so the literals
+    /// below must reach `Text` directly to be looked up in the string catalog.
+    private var message: Text {
         if isLocating {
-            return "A localizar-te… (pode demorar alguns minutos se o servidor estiver a arrancar)"
+            return Text("A localizar-te… (pode demorar alguns minutos se o servidor estiver a arrancar)")
         }
         if let locationErrorMessage {
-            return locationErrorMessage
+            return Text(locationErrorMessage)
         }
-        return "Procura uma cidade para veres o tempo atual e a previsão."
+        return Text("Procura uma cidade para veres o tempo atual e a previsão.")
     }
 
     var body: some View {
@@ -167,7 +169,7 @@ private struct EmptyStateView: View {
             Image(systemName: isLocating ? "location.fill" : "magnifyingglass")
                 .font(.system(size: 40))
                 .foregroundStyle(.secondary)
-            Text(message)
+            message
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)

@@ -29,11 +29,9 @@ struct ForecastChartView: View {
     private static let visibleDailyWindow: TimeInterval = 6 * 86400
     private static let coolColor = Color(red: 0.20, green: 0.55, blue: 0.95)
     private static let warmColor = Color(red: 0.95, green: 0.35, blue: 0.20)
-    // Every other label in this view is a hardcoded PT string; date/time
-    // components must match rather than following the device's own locale
-    // (which showed English month/weekday names on an English-locale
-    // simulator otherwise).
-    private static let ptLocale = Locale(identifier: "pt_PT")
+    // Date/time components follow the in-app language (`AppLocale`, injected as
+    // `\.locale`) rather than the device's, matching every other label here.
+    @Environment(\.locale) private var locale
 
     // Explicit, app-owned scroll position, paired with the paging buttons
     // below. Repeated separate swipe gestures on the chart were observed to
@@ -79,7 +77,7 @@ struct ForecastChartView: View {
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                     if range == .hourly {
-                        Text("Agora: \(cityNow.formatted(.dateTime.hour().minute().locale(Self.ptLocale)))")
+                        Text("Agora: \(cityNow.formatted(.dateTime.hour().minute().locale(locale)))")
                             .font(.caption2.weight(.semibold))
                             .foregroundStyle(.orange)
                     }
@@ -146,12 +144,12 @@ struct ForecastChartView: View {
         switch range {
         case .hourly:
             let end = hourlyScrollPosition.addingTimeInterval(Self.visibleHourlyWindow)
-            let dayMonthHour: Date.FormatStyle = .dateTime.day().month(.abbreviated).hour().locale(Self.ptLocale)
-            let hourOnly: Date.FormatStyle = .dateTime.hour().locale(Self.ptLocale)
+            let dayMonthHour: Date.FormatStyle = .dateTime.day().month(.abbreviated).hour().locale(locale)
+            let hourOnly: Date.FormatStyle = .dateTime.hour().locale(locale)
             return "\(hourlyScrollPosition.formatted(dayMonthHour)) – \(end.formatted(hourOnly))"
         case .daily:
             let end = dailyScrollPosition.addingTimeInterval(Self.visibleDailyWindow)
-            let dayMonth: Date.FormatStyle = .dateTime.day().month(.abbreviated).locale(Self.ptLocale)
+            let dayMonth: Date.FormatStyle = .dateTime.day().month(.abbreviated).locale(locale)
             return "\(dailyScrollPosition.formatted(dayMonth)) – \(end.formatted(dayMonth))"
         }
     }
@@ -306,10 +304,10 @@ struct ForecastChartView: View {
         .chartXAxis {
             AxisMarks(values: .stride(by: .hour, count: 3)) { value in
                 AxisGridLine()
-                AxisValueLabel(format: .dateTime.hour().locale(Self.ptLocale))
+                AxisValueLabel(format: .dateTime.hour().locale(locale))
                 if let date = value.as(Date.self), Calendar.current.component(.hour, from: date) == 0 {
                     AxisValueLabel {
-                        Text(date.formatted(.dateTime.weekday(.abbreviated).locale(Self.ptLocale)))
+                        Text(date.formatted(.dateTime.weekday(.abbreviated).locale(locale)))
                             .font(.caption2.weight(.semibold))
                     }
                 }
@@ -366,7 +364,7 @@ struct ForecastChartView: View {
                 AxisValueLabel {
                     if let date = value.as(Date.self) {
                         let isToday = Calendar.current.isDate(date, inSameDayAs: cityNow)
-                        Text(isToday ? "Hoje" : date.formatted(.dateTime.weekday(.abbreviated).locale(Self.ptLocale)))
+                        (isToday ? Text("Hoje") : Text(date.formatted(.dateTime.weekday(.abbreviated).locale(locale))))
                             .font(.caption2.weight(isToday ? .bold : .regular))
                             .foregroundStyle(isToday ? .orange : .secondary)
                     }

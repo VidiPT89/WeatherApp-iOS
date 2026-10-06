@@ -88,7 +88,7 @@ struct MarineDetailView: View {
             .foregroundStyle(Color("TextPrimary"))
     }
 
-    private func detailRow(icon: String, label: LocalizedStringKey, value: String?, note: String? = nil) -> some View {
+    private func detailRow(icon: String, label: LocalizedStringKey, value: String?, note: LocalizedStringKey? = nil) -> some View {
         HStack(alignment: .top, spacing: 12) {
             Image(systemName: icon)
                 .font(.subheadline)

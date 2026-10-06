@@ -6,8 +6,8 @@ enum LocationError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .permissionDenied: return "Localização não autorizada."
-        case .unavailable: return "Não foi possível obter a tua localização."
+        case .permissionDenied: return LocalizedStrings.string("Localização não autorizada.", locale: AppLocale.current.locale)
+        case .unavailable: return LocalizedStrings.string("Não foi possível obter a tua localização.", locale: AppLocale.current.locale)
         }
     }
 }

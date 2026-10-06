@@ -14,8 +14,21 @@ import Foundation
 /// format-key mechanism `Text("... \(x) ...")` uses, so call sites can still
 /// interpolate values while keeping a stable catalog lookup key, e.g.:
 /// `LocalizedStrings.string("\(city) added to favorites.", locale: locale)`.
+///
+/// `String(localized:locale:)` alone is not enough: its `locale` only drives formatting, while the
+/// *language* still comes from the bundle's preferred localization (the device's). So the lookup
+/// goes through the matching `.lproj` bundle explicitly.
 enum LocalizedStrings {
     static func string(_ key: String.LocalizationValue, locale: Locale) -> String {
-        String(localized: key, locale: locale)
+        String(localized: key, bundle: bundle(for: locale), locale: locale)
+    }
+
+    private static func bundle(for locale: Locale) -> Bundle {
+        guard let language = locale.language.languageCode?.identifier,
+              let path = Bundle.main.path(forResource: language, ofType: "lproj"),
+              let bundle = Bundle(path: path) else {
+            return .main
+        }
+        return bundle
     }
 }

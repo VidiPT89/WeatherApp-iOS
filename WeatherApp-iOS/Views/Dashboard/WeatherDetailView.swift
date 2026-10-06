@@ -46,7 +46,7 @@ struct WeatherDetailView: View {
                     Divider()
                     VStack(alignment: .leading, spacing: 12) {
                         sectionTitle("Sobre estes dados")
-                        detailRow(icon: weather.fromCache ? "clock.arrow.circlepath" : "checkmark.circle.fill", label: "Origem", value: weather.fromCache ? "Servido da cache" : "Dados frescos")
+                        detailRow(icon: weather.fromCache ? "clock.arrow.circlepath" : "checkmark.circle.fill", label: "Origem", valueText: Text(weather.fromCache ? "Servido da cache" : "Dados frescos"))
                         detailRow(icon: "server.rack", label: "Fornecedor", value: weather.provider.capitalized, note: weather.isFallbackProvider ? Text("Fornecedor secundário (o principal falhou nesta consulta).") : nil)
                         detailRow(icon: "calendar.badge.clock", label: "Observado em", value: formattedFullTimestamp(weather.observedAt))
                     }

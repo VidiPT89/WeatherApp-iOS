@@ -77,7 +77,7 @@ final class AuthViewModel {
         do {
             let result = try await GIDSignIn.sharedInstance.signIn(withPresenting: presenter)
             guard let idToken = result.user.idToken?.tokenString else {
-                errorMessage = "Não foi possível obter o token do Google."
+                errorMessage = LocalizedStrings.string("Não foi possível obter o token do Google.", locale: AppLocale.current.locale)
                 return
             }
             try await authStore.loginWithOAuth(provider: "google", idToken: idToken)
@@ -107,7 +107,7 @@ final class AuthViewModel {
         guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
               let tokenData = credential.identityToken,
               let idToken = String(data: tokenData, encoding: .utf8) else {
-            errorMessage = "Não foi possível obter o token da Apple."
+            errorMessage = LocalizedStrings.string("Não foi possível obter o token da Apple.", locale: AppLocale.current.locale)
             return
         }
 
@@ -132,7 +132,7 @@ final class AuthViewModel {
         guard let presenter = presentingViewController() else { return }
         guard let clientId = Bundle.main.object(forInfoDictionaryKey: "MICROSOFT_CLIENT_ID") as? String,
               !clientId.isEmpty else {
-            errorMessage = "Login com Microsoft não está configurado."
+            errorMessage = LocalizedStrings.string("Login com Microsoft não está configurado.", locale: AppLocale.current.locale)
             return
         }
 
@@ -172,7 +172,7 @@ final class AuthViewModel {
             }
 
             guard let idToken = result.idToken else {
-                errorMessage = "Não foi possível obter o token da Microsoft."
+                errorMessage = LocalizedStrings.string("Não foi possível obter o token da Microsoft.", locale: AppLocale.current.locale)
                 return
             }
             try await authStore.loginWithOAuth(provider: "microsoft", idToken: idToken)

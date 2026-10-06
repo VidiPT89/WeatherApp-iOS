@@ -89,10 +89,10 @@ final class DashboardViewModel {
             await loadWeather(for: city, isFromNearbyLocation: true, nearbyWeather: weatherResult)
         } catch is LocationError {
             guard generation == loadGeneration, !Task.isCancelled else { return }
-            locationErrorMessage = "Não foi possível obter a tua localização. Procura uma cidade manualmente."
+            locationErrorMessage = LocalizedStrings.string("Não foi possível obter a tua localização. Procura uma cidade manualmente.", locale: AppLocale.current.locale)
         } catch {
             guard generation == loadGeneration, !Task.isCancelled else { return }
-            locationErrorMessage = "Não foi possível obter o tempo para a tua localização. Procura uma cidade manualmente."
+            locationErrorMessage = LocalizedStrings.string("Não foi possível obter o tempo para a tua localização. Procura uma cidade manualmente.", locale: AppLocale.current.locale)
         }
     }
 

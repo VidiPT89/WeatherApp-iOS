@@ -13,13 +13,14 @@ import SwiftUI
 /// ScrollView guarantees the row can never force the card wider than the
 /// screen, regardless of how long the labels get.
 struct DailyInsightRow: View {
+    @Environment(\.locale) private var locale
     let entry: DailyForecastEntry
     let isToday: Bool
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 8) {
-                Text(isToday ? "Hoje" : dayLabel)
+                (isToday ? Text("Hoje") : Text(dayLabel))
                     .font(.caption.weight(isToday ? .bold : .semibold))
                     .foregroundStyle(isToday ? .orange : .primary)
                     .frame(width: 40, alignment: .leading)
@@ -60,7 +61,7 @@ struct DailyInsightRow: View {
     }
 
     private var dayLabel: String {
-        entry.date.formatted(.dateTime.weekday(.abbreviated).locale(Locale(identifier: "pt_PT")))
+        entry.date.formatted(.dateTime.weekday(.abbreviated).locale(locale))
     }
 
     private func badge(icon: String, text: String, tone: ConditionTone) -> some View {

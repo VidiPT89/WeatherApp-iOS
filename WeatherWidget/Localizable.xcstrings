@@ -1,0 +1,70 @@
+{
+  "sourceLanguage" : "pt",
+  "strings" : {
+    "Tempo" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weather"
+          }
+        }
+      }
+    },
+    "Mostra o último tempo que consultaste na app." : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra o último tempo que consultaste na app."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shows the latest weather you checked in the app."
+          }
+        }
+      }
+    },
+    " atrás" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " atrás"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " ago"
+          }
+        }
+      }
+    },
+    "Abre a app para veres o tempo aqui" : {
+      "localizations" : {
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre a app para veres o tempo aqui"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the app to see the weather here"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

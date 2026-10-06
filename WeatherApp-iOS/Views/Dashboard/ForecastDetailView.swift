@@ -18,7 +18,6 @@ struct ForecastDetailView: View {
         _range = State(initialValue: initialRange)
     }
 
-    private static let ptLocale = Locale(identifier: "pt_PT")
 
     var body: some View {
         NavigationStack {
@@ -59,7 +58,7 @@ struct ForecastDetailView: View {
 
     private func hourlyRow(_ entry: HourlyForecastEntry) -> some View {
         HStack(alignment: .firstTextBaseline) {
-            Text(entry.time.formatted(.dateTime.weekday(.abbreviated).day().hour().minute().locale(Self.ptLocale)))
+            Text(entry.time.formatted(.dateTime.weekday(.abbreviated).day().hour().minute().locale(locale)))
                 .font(.subheadline)
                 .foregroundStyle(Color("TextPrimary"))
             Spacer()
@@ -83,7 +82,7 @@ struct ForecastDetailView: View {
     private func dailyRow(_ entry: DailyForecastEntry) -> some View {
         HStack(alignment: .firstTextBaseline) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(entry.date.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated).locale(Self.ptLocale)))
+                Text(entry.date.formatted(.dateTime.weekday(.abbreviated).day().month(.abbreviated).locale(locale)))
                     .font(.subheadline)
                     .foregroundStyle(Color("TextPrimary"))
                 Text(WeatherDescriptionLocalizer.localized(entry.description, locale: locale))

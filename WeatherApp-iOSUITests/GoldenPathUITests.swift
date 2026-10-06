@@ -12,6 +12,8 @@ final class GoldenPathUITests: XCTestCase {
 
     override func setUpWithError() throws {
         continueAfterFailure = false
+        // The assertions use the Portuguese labels; English is the app's default language.
+        app.launchArguments += ["-appLocale", "pt"]
         app.launch()
     }
 

@@ -1,0 +1,22 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSLocationWhenInUseUsageDescription" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We use your location to automatically show the weather where you are."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usamos a tua localização para mostrar automaticamente o tempo onde estás."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

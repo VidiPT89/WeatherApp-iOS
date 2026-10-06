@@ -1,15 +1,15 @@
 import SwiftUI
 
-/// The app's user-selectable display language: PT-PT by default, EN secondary.
+/// The app's user-selectable display language: EN by default, PT-PT secondary.
 /// Persisted via `@AppStorage(AppLocale.storageKey)` (see `SettingsView`) so
 /// both `@AppStorage`-driven view code and this enum's `current` accessor
 /// read/write the exact same `UserDefaults` value.
 enum AppLocale: String, CaseIterable, Identifiable {
-    case pt
     case en
+    case pt
 
     static let storageKey = "appLocale"
-    static let `default`: AppLocale = .pt
+    static let `default`: AppLocale = .en
 
     var id: String { rawValue }
 
@@ -17,22 +17,22 @@ enum AppLocale: String, CaseIterable, Identifiable {
     /// currently active app locale, per standard language-picker convention.
     var titleKey: LocalizedStringKey {
         switch self {
-        case .pt: return "Português"
         case .en: return "English"
+        case .pt: return "Português"
         }
     }
 
     /// The concrete `Locale` `Text()` and date/number formatters should use.
     var locale: Locale {
         switch self {
-        case .pt: return Locale(identifier: "pt_PT")
         case .en: return Locale(identifier: "en_US")
+        case .pt: return Locale(identifier: "pt_PT")
         }
     }
 
     /// The saved preference, read directly from `UserDefaults` so non-View
     /// code (ViewModels, model error mapping) can resolve the right locale
-    /// without needing SwiftUI's environment. Falls back to `.pt` if unset
+    /// without needing SwiftUI's environment. Falls back to `.en` if unset
     /// or if the stored value is stale/invalid.
     static var current: AppLocale {
         guard let raw = UserDefaults.standard.string(forKey: storageKey) else { return .default }

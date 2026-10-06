@@ -28,6 +28,6 @@
 		<string>com.apple.widgetkit-extension</string>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Usamos a tua localização para mostrar automaticamente o tempo onde estás.</string>
+	<string>We use your location to automatically show the weather where you are.</string>
 </dict>
 </plist>

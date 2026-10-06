@@ -30,6 +30,8 @@ targets:
       path: WeatherApp-iOS/Info.plist
       properties:
         CFBundleDisplayName: AmazingWeatherApp
+        # Only standard HTTPS/TLS, which is exempt -- saves answering export compliance per build.
+        ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false

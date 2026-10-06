@@ -22,7 +22,7 @@ struct DashboardView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             }
-            .navigationTitle("WeatherApp")
+            .navigationTitle("AmazingWeatherApp")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     unitsToggle

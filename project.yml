@@ -29,7 +29,7 @@ targets:
     info:
       path: WeatherApp-iOS/Info.plist
       properties:
-        CFBundleDisplayName: WeatherApp
+        CFBundleDisplayName: AmazingWeatherApp
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false

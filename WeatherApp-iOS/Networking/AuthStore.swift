@@ -86,15 +86,27 @@ final class AuthStore {
     }
 
     func logout() {
+        clearLocalSession()
+        Task {
+            await apiClient.logout()
+            await apiClient.setTokens(access: nil, refresh: nil)
+        }
+    }
+
+    /// Deletes the account on the server, then clears the local session. Skips the server-side
+    /// logout call `logout()` makes -- the refresh tokens are already gone with the account.
+    func deleteAccount() async throws {
+        try await apiClient.deleteAccount()
+        clearLocalSession()
+        await apiClient.setTokens(access: nil, refresh: nil)
+    }
+
+    private func clearLocalSession() {
         didLogOut = true
         KeychainHelper.delete(forKey: Self.tokenKey)
         KeychainHelper.delete(forKey: Self.refreshTokenKey)
         token = nil
         currentUser = nil
-        Task {
-            await apiClient.logout()
-            await apiClient.setTokens(access: nil, refresh: nil)
-        }
     }
 
     /// Sets the `APIClient`'s tokens *before* flipping `token` (which drives `isAuthenticated`)

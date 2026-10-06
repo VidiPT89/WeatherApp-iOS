@@ -18,7 +18,7 @@ struct AuthView: View {
                     .foregroundStyle(.blue.gradient)
                     .padding(.top, 32)
 
-                Text("WeatherApp")
+                Text("AmazingWeatherApp")
                     .font(.largeTitle.bold())
 
                 if let viewModel {

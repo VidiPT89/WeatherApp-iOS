@@ -219,6 +219,12 @@ actor APIClient {
         try await send(path: "/api/v1/user/me", method: "GET")
     }
 
+    /// Permanently deletes the caller's account along with its favorites, history and refresh
+    /// tokens. The server refuses it (400) for the admin account.
+    func deleteAccount() async throws {
+        let _: EmptyResponse = try await send(path: "/api/v1/user/me", method: "DELETE")
+    }
+
     // MARK: - Admin (server rejects these with 403 unless the caller's role is admin)
 
     func fetchAdminUsers() async throws -> [UserAccount] {

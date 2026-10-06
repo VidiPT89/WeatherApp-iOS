@@ -12,6 +12,7 @@
 		166B5540F0A72D56B89977DC /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0BF7F855FDE90ADEA8D5FB /* AuthViewModel.swift */; };
 		1C2A241C222613A5393B57DE /* WeatherInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D19A6A50A32CBD631657C58C /* WeatherInsightsView.swift */; };
 		1ED3DD3D23DB790F0A998EFC /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE418EE0FEE4F81640C089A5 /* AuthModels.swift */; };
+		1F63BA7BEC1436589A471395 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = C762D0D6169A031A84450C76 /* PrivacyInfo.xcprivacy */; };
 		25394D34C0F3F03C97C95E03 /* WeatherConditionStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46B84E0A4D17577BD75373C /* WeatherConditionStyle.swift */; };
 		25946DBD8E17789805F2A5ED /* WeatherDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9716FC0458D0669CAD5CD8 /* WeatherDetailView.swift */; };
 		2736EF38D10E3A9A385D12C3 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20270AC914BDF63A2B75FA95 /* HistoryView.swift */; };
@@ -52,6 +53,7 @@
 		670E4F4E0E60BEA6168687F6 /* WeatherDescriptionLocalizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12D01E54C64E4A318C40DE85 /* WeatherDescriptionLocalizerTests.swift */; };
 		68F66F0674D1D74D9037AFB6 /* HistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14E442BDC93065A2B7D4088 /* HistoryViewModel.swift */; };
 		6AD54A544CB08C7C4A9C8925 /* AuthStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C018BC8CFCA0CEF177F18AFD /* AuthStore.swift */; };
+		6BF9CC023C387D725A6BDE76 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1327181DB38C060B1DD856E0 /* PrivacyInfo.xcprivacy */; };
 		724890CB542C9D6A02F12346 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6760C12C0C5F0F2BD679FB2 /* APIClient.swift */; };
 		768D4D1323C85ABE4858730E /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F5A99DD37127D9606069D90 /* MainTabView.swift */; };
 		78FB96BAB44F4E30882703F9 /* APIClientErrorDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20D127892C44CB9123BCAB5 /* APIClientErrorDecodingTests.swift */; };
@@ -149,6 +151,7 @@
 		0F5A99DD37127D9606069D90 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		1257C8C63BD7886972CB00D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		12D01E54C64E4A318C40DE85 /* WeatherDescriptionLocalizerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDescriptionLocalizerTests.swift; sourceTree = "<group>"; };
+		1327181DB38C060B1DD856E0 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		15F1291C683F12C7C08A3AF1 /* WeatherWidgetEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherWidgetEntryView.swift; sourceTree = "<group>"; };
 		1636B2DBA62FF35C8B2F1BDA /* LocalizedStrings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		180405CF79CE9A0779F3FD45 /* HistoryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryEntry.swift; sourceTree = "<group>"; };
@@ -210,6 +213,7 @@
 		C018BC8CFCA0CEF177F18AFD /* AuthStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthStore.swift; sourceTree = "<group>"; };
 		C2CF5ADD0F39852C74786FF7 /* HistoryAndFavoriteDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryAndFavoriteDecodingTests.swift; sourceTree = "<group>"; };
 		C35F91CAB9D0ECF9B0734B02 /* CacheBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CacheBadgeView.swift; sourceTree = "<group>"; };
+		C762D0D6169A031A84450C76 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		C8A7F90C9C435129D97B85F7 /* FavoritesViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesViewModelTests.swift; sourceTree = "<group>"; };
 		C8FC8D57966E979CF700BF68 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		C9360D9E15AA2060853ECD16 /* MarineConditionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarineConditionsView.swift; sourceTree = "<group>"; };
@@ -363,6 +367,7 @@
 			isa = PBXGroup;
 			children = (
 				1257C8C63BD7886972CB00D2 /* Info.plist */,
+				C762D0D6169A031A84450C76 /* PrivacyInfo.xcprivacy */,
 				01CAF21611090D55DF127976 /* WeatherWidget.entitlements */,
 				64C25E56E714A299D612B2FB /* WeatherWidgetBundle.swift */,
 				15F1291C683F12C7C08A3AF1 /* WeatherWidgetEntryView.swift */,
@@ -456,6 +461,7 @@
 			isa = PBXGroup;
 			children = (
 				459C9244A16EDE659351B0D9 /* Localizable.xcstrings */,
+				1327181DB38C060B1DD856E0 /* PrivacyInfo.xcprivacy */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -536,6 +542,7 @@
 			buildConfigurationList = 98CA379252455FE0529AFE18 /* Build configuration list for PBXNativeTarget "WeatherWidgetExtension" */;
 			buildPhases = (
 				100033D045B8542D19641058 /* Sources */,
+				D37BF0764487A0C6F473EB93 /* Resources */,
 				022F3BA45DA1E71E06E7D224 /* Frameworks */,
 			);
 			buildRules = (
@@ -670,6 +677,15 @@
 			files = (
 				E04E57B1C5CE71CF9DB802DF /* Assets.xcassets in Resources */,
 				F04674752AB126C2662D5A40 /* Localizable.xcstrings in Resources */,
+				6BF9CC023C387D725A6BDE76 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D37BF0764487A0C6F473EB93 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F63BA7BEC1436589A471395 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

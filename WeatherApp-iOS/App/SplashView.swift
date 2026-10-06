@@ -53,7 +53,7 @@ struct SplashView: View {
                 .opacity(logoAppeared ? 1 : 0)
 
                 VStack(spacing: 4) {
-                    Text("WeatherApp")
+                    Text("AmazingWeatherApp")
                         .font(.title.weight(.bold))
                     Text("Sol, marés e o que mais precisares de saber")
                         .font(.subheadline)

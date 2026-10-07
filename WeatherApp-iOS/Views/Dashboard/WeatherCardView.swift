@@ -96,6 +96,9 @@ struct WeatherCardView: View {
             Label {
                 Text(value)
                     .font(.subheadline.weight(.semibold))
+                    // 12-hour times ("7:10 PM") are wider than "19:10" and wrapped mid-word.
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
             } icon: {
                 Image(systemName: icon)
                     .font(.caption)

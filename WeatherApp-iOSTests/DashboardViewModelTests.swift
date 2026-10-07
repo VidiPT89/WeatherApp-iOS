@@ -44,4 +44,33 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.errorMessage)
         XCTAssertFalse(viewModel.isLoading)
     }
+
+    func test_nearbyLoadLooksUpForecastSeaAndInsightsByCoordinates() async {
+        let viewModel = DashboardViewModel(apiClient: APIClient(session: MockURLProtocol.makeMockedSession()))
+        let body = unavailable
+        let paths = LockedPaths()
+        MockURLProtocol.requestHandler = { request in
+            let query = URLComponents(url: request.url!, resolvingAgainstBaseURL: false)?.queryItems ?? []
+            if query.first(where: { $0.name == "lat" })?.value == "38.7223",
+               query.first(where: { $0.name == "lon" })?.value == "-9.1393" {
+                paths.append(request.url!.path)
+            }
+            return (503, body)
+        }
+
+        await viewModel.loadWeather(
+            for: "São Sebastião da Pedreira, PT", isFromNearbyLocation: true, nearbyWeather: nearbyWeather,
+            coordinate: GeoCoordinate(latitude: 38.7223, longitude: -9.1393))
+
+        XCTAssertEqual(Set(paths.values),
+                       ["/api/v1/weather/forecast", "/api/v1/weather/marine", "/api/v1/weather/insights"])
+    }
+}
+
+/// The mocked session calls its handler off the main actor, concurrently for the three lookups.
+private final class LockedPaths: @unchecked Sendable {
+    private let lock = NSLock()
+    private var storage: [String] = []
+    var values: [String] { lock.withLock { storage } }
+    func append(_ path: String) { lock.withLock { storage.append(path) } }
 }

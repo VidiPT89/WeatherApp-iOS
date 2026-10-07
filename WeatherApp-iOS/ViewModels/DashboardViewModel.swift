@@ -49,6 +49,9 @@ final class DashboardViewModel {
     /// Whether `lastLoadedCity` came from GPS auto-detection rather than a manual search —
     /// see `loadWeather(for:isFromNearbyLocation:)`.
     private var lastLoadWasFromNearbyLocation = false
+    /// The GPS fix behind `lastLoadedCity` when it came from "use my location", reused on a
+    /// units change so the re-fetch also goes by position.
+    private var lastLoadedCoordinate: GeoCoordinate?
     private var loadGeneration = 0
 
     var units: Units = .metric
@@ -86,7 +89,9 @@ final class DashboardViewModel {
                 latitude: coordinate.latitude, longitude: coordinate.longitude)
             guard generation == loadGeneration, !Task.isCancelled else { return }
             let city = weatherResult.country.isEmpty ? weatherResult.city : "\(weatherResult.city), \(weatherResult.country)"
-            await loadWeather(for: city, isFromNearbyLocation: true, nearbyWeather: weatherResult)
+            await loadWeather(
+                for: city, isFromNearbyLocation: true, nearbyWeather: weatherResult,
+                coordinate: GeoCoordinate(latitude: coordinate.latitude, longitude: coordinate.longitude))
         } catch is LocationError {
             guard generation == loadGeneration, !Task.isCancelled else { return }
             locationErrorMessage = LocalizedStrings.string("Não foi possível obter a tua localização. Procura uma cidade manualmente.", locale: AppLocale.current.locale)
@@ -124,7 +129,13 @@ final class DashboardViewModel {
     ///   widget gets updated. The widget is meant to answer "what's the
     ///   weather where I am", not "what was the last city I looked up", so a
     ///   manual search (the default, `false`) must never overwrite it.
-    func loadWeather(for city: String, isFromNearbyLocation: Bool = false, nearbyWeather: WeatherResponse? = nil) async {
+    /// - Parameter coordinate: the GPS fix `city` was reverse-geocoded from. The secondary
+    ///   lookups (forecast, sea, insights) then go by position: the reverse-geocoded name can be
+    ///   a parish the backend's by-name search doesn't know.
+    func loadWeather(
+        for city: String, isFromNearbyLocation: Bool = false, nearbyWeather: WeatherResponse? = nil,
+        coordinate: GeoCoordinate? = nil
+    ) async {
         let trimmedCity = city.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedCity.isEmpty else { return }
 
@@ -144,6 +155,7 @@ final class DashboardViewModel {
         errorMessage = nil
         forecastErrorMessage = nil
         lastLoadWasFromNearbyLocation = isFromNearbyLocation
+        lastLoadedCoordinate = coordinate
 
         do {
             async let weatherTask: WeatherResponse = {
@@ -157,9 +169,12 @@ final class DashboardViewModel {
             // (data, errorMessage) pair rather than plain `try?` so the view can explain *why*
             // that section is missing instead of just silently omitting it.
             async let forecastOutcome = Self.fetchForecastOutcome(
-                apiClient: apiClient, city: trimmedCity, units: requestedUnits, locale: AppLocale.current.locale)
-            async let marineTask: MarineResponse? = try? apiClient.fetchMarine(city: trimmedCity, units: requestedUnits)
-            async let insightsTask: WeatherInsightsResponse? = try? apiClient.fetchInsights(city: trimmedCity, units: requestedUnits)
+                apiClient: apiClient, city: trimmedCity, units: requestedUnits, coordinate: coordinate,
+                locale: AppLocale.current.locale)
+            async let marineTask: MarineResponse? = try? apiClient.fetchMarine(
+                city: trimmedCity, units: requestedUnits, coordinate: coordinate)
+            async let insightsTask: WeatherInsightsResponse? = try? apiClient.fetchInsights(
+                city: trimmedCity, units: requestedUnits, coordinate: coordinate)
 
             let weatherResult = try await weatherTask
             guard generation == loadGeneration, !Task.isCancelled else { return }
@@ -187,10 +202,10 @@ final class DashboardViewModel {
     }
 
     private static func fetchForecastOutcome(
-        apiClient: APIClient, city: String, units: Units, locale: Locale
+        apiClient: APIClient, city: String, units: Units, coordinate: GeoCoordinate?, locale: Locale
     ) async -> (ForecastResponse?, String?) {
         do {
-            return (try await apiClient.fetchForecast(city: city, units: units), nil)
+            return (try await apiClient.fetchForecast(city: city, units: units, coordinate: coordinate), nil)
         } catch let apiError as APIError {
             return (nil, apiError.localizedDescription(locale: locale))
         } catch {
@@ -209,7 +224,8 @@ final class DashboardViewModel {
         if let city = lastLoadedCity {
             // Preserve whether this city came from GPS auto-detection so a units toggle doesn't
             // accidentally start (or stop) updating the widget.
-            await loadWeather(for: city, isFromNearbyLocation: lastLoadWasFromNearbyLocation)
+            await loadWeather(
+                for: city, isFromNearbyLocation: lastLoadWasFromNearbyLocation, coordinate: lastLoadedCoordinate)
         }
 
         Task { try? await apiClient.updatePreferences(units: newUnits) }

@@ -128,26 +128,26 @@ actor APIClient {
         return try await send(path: "/api/v1/weather/nearby", method: "GET", queryItems: items, requiresAuth: false)
     }
 
-    func fetchForecast(city: String, units: Units?) async throws -> ForecastResponse {
+    func fetchForecast(city: String, units: Units?, coordinate: GeoCoordinate? = nil) async throws -> ForecastResponse {
         try await send(
-            path: "/api/v1/weather/forecast", method: "GET", queryItems: Self.cityQuery(city, units),
+            path: "/api/v1/weather/forecast", method: "GET", queryItems: Self.cityQuery(city, units, coordinate),
             requiresAuth: false)
     }
 
     /// Water temperature + swell (wave height/direction/period) for a city.
     /// All four data fields are `nil` for inland/non-coastal cities — that's
     /// a normal 200 response, not an error.
-    func fetchMarine(city: String, units: Units?) async throws -> MarineResponse {
+    func fetchMarine(city: String, units: Units?, coordinate: GeoCoordinate? = nil) async throws -> MarineResponse {
         try await send(
-            path: "/api/v1/weather/marine", method: "GET", queryItems: Self.cityQuery(city, units),
+            path: "/api/v1/weather/marine", method: "GET", queryItems: Self.cityQuery(city, units, coordinate),
             requiresAuth: false)
     }
 
     /// Derived indicators (moon phase, UV risk, outdoor-activity score, fishing
     /// conditions). `fishingConditionLabel` is `nil` for inland/non-coastal cities.
-    func fetchInsights(city: String, units: Units?) async throws -> WeatherInsightsResponse {
+    func fetchInsights(city: String, units: Units?, coordinate: GeoCoordinate? = nil) async throws -> WeatherInsightsResponse {
         try await send(
-            path: "/api/v1/weather/insights", method: "GET", queryItems: Self.cityQuery(city, units),
+            path: "/api/v1/weather/insights", method: "GET", queryItems: Self.cityQuery(city, units, coordinate),
             requiresAuth: false)
     }
 
@@ -237,8 +237,14 @@ actor APIClient {
 
     // MARK: - Core request plumbing
 
-    private static func cityQuery(_ city: String, _ units: Units?) -> [URLQueryItem] {
+    /// `coordinate`, when given, makes the backend look the place up by position rather than by
+    /// `city` -- see `GeoCoordinate`.
+    private static func cityQuery(_ city: String, _ units: Units?, _ coordinate: GeoCoordinate? = nil) -> [URLQueryItem] {
         var items = [URLQueryItem(name: "city", value: city)]
+        if let coordinate {
+            items.append(URLQueryItem(name: "lat", value: String(coordinate.latitude)))
+            items.append(URLQueryItem(name: "lon", value: String(coordinate.longitude)))
+        }
         if let units {
             items.append(URLQueryItem(name: "units", value: units.rawValue))
         }

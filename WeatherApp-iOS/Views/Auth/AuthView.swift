@@ -52,7 +52,7 @@ private struct AuthFormContent: View {
         VStack(spacing: 16) {
             Picker("Modo", selection: $viewModel.mode) {
                 ForEach(AuthMode.allCases) { mode in
-                    Text(mode.rawValue).tag(mode)
+                    Text(LocalizedStringKey(mode.rawValue)).tag(mode)
                 }
             }
             .pickerStyle(.segmented)

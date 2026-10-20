@@ -1,8 +1,8 @@
 import XCTest
 
 /// End-to-end walk of the app's golden path against the real backend at
-/// http://localhost:8080 (no mocking): register -> search -> cache badge
-/// fresh->cached -> favorites -> history -> settings -> logout.
+/// http://localhost:8080 (no mocking): register -> a beach's coast outlook ->
+/// weather search -> favorites -> history -> settings -> logout.
 ///
 /// Requires the Spring Boot backend to actually be running locally.
 @MainActor
@@ -20,19 +20,14 @@ final class GoldenPathUITests: XCTestCase {
     func test_goldenPath_registerSearchFavoritesHistorySettings() throws {
         signOutIfAlreadyAuthenticated()
         registerNewAccount()
-        attachScreenshot(name: "01_after_register_dashboard_empty")
+        attachScreenshot(name: "01_after_register_coast")
+
+        openSpot("Guincho")
+        attachScreenshot(name: "02_coast_spot_outlook")
 
         searchCity("Lisboa")
         XCTAssertTrue(weatherLoadedIndicator().waitForExistence(timeout: defaultTimeout), "Weather card should appear after searching Lisboa")
-        attachScreenshot(name: "02_weather_card_first_search")
-
-        // Second search of the same city within the cache TTL must be served from cache.
-        searchCity("Lisboa")
-        let cachedBadge = app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS[c] %@", "Servido da cache")
-        ).firstMatch
-        XCTAssertTrue(cachedBadge.waitForExistence(timeout: defaultTimeout), "Second search of the same city should show the cache badge")
-        attachScreenshot(name: "03_cache_badge_on_second_search")
+        attachScreenshot(name: "03_weather_card")
 
         // Forecast chart range toggle
         if app.segmentedControls.buttons["Diária"].waitForExistence(timeout: 5) {
@@ -156,12 +151,16 @@ final class GoldenPathUITests: XCTestCase {
 
         app.buttons["auth.submit"].tap()
 
-        let dashboardTab = app.tabBars.buttons["Início"]
-        XCTAssertTrue(dashboardTab.waitForExistence(timeout: defaultTimeout), "Successful registration should land on the main tab view")
+        let coastTab = app.tabBars.buttons["Costa"]
+        XCTAssertTrue(coastTab.waitForExistence(timeout: defaultTimeout), "Successful registration should land on the main tab view")
     }
 
     private func searchCity(_ city: String) {
         let searchField = app.textFields["dashboard.citySearch"]
+        // The app opens on the Coast tab; city search lives on the Weather tab.
+        if !searchField.waitForExistence(timeout: 2) {
+            app.tabBars.buttons["Tempo"].tap()
+        }
         XCTAssertTrue(searchField.waitForExistence(timeout: defaultTimeout))
         tapTextFieldAndWaitForKeyboard(searchField)
 
@@ -178,16 +177,25 @@ final class GoldenPathUITests: XCTestCase {
         searchField.typeText("\n")
     }
 
-    /// The cache badge's visible copy ("Dados frescos" / "Servido da cache...")
-    /// is the most reliable signal that the weather card actually rendered.
-    /// Accessibility *identifiers* on nested SwiftUI views proved unreliable in
-    /// this app: a container-level `.accessibilityIdentifier` was observed
-    /// overriding descendant leaves' own identifiers in the captured UI
-    /// hierarchy, so matching on visible label text is used instead.
+    /// The weather card's "Humidade" metric label is the most reliable signal that the card
+    /// actually rendered. Accessibility *identifiers* on nested SwiftUI views proved unreliable
+    /// in this app: a container-level `.accessibilityIdentifier` was observed overriding
+    /// descendant leaves' own identifiers in the captured UI hierarchy, so matching on visible
+    /// label text is used instead.
     private func weatherLoadedIndicator() -> XCUIElement {
-        app.staticTexts.matching(
-            NSPredicate(format: "label CONTAINS[c] %@ OR label CONTAINS[c] %@", "Servido da cache", "Dados frescos")
-        ).firstMatch
+        app.staticTexts.matching(NSPredicate(format: "label CONTAINS[c] %@", "Humidade")).firstMatch
+    }
+
+    /// Opens a beach from the Coast tab and waits for its outlook and tide chart.
+    private func openSpot(_ name: String) {
+        app.tabBars.buttons["Costa"].tap()
+        let spot = app.staticTexts[name].firstMatch
+        XCTAssertTrue(spot.waitForExistence(timeout: defaultTimeout), "\(name) should be in the spot list")
+        spot.tap()
+        let nowCard = app.descendants(matching: .any)["coast.nowCard"].firstMatch
+        XCTAssertTrue(nowCard.waitForExistence(timeout: defaultTimeout), "The spot's current conditions should load")
+        XCTAssertTrue(app.descendants(matching: .any)["coast.activity.surf"].firstMatch.exists)
+        app.navigationBars.buttons.element(boundBy: 0).tap()
     }
 
     /// Favorites now uses the same autocomplete-backed `CitySearchField` as

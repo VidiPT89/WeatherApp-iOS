@@ -37,7 +37,9 @@ enum BackendDateFormatters {
     /// next to `Date.now`. Parsing happens strictly in UTC first, so a time the device's zone
     /// skips (a DST gap) still decodes instead of failing the whole forecast.
     static func parseLocalDateTime(_ string: String) -> Date? {
-        localDateTime.date(from: string).map(deviceWallClock(fromUTC:))
+        // Tide times come straight from Open-Meteo, without the seconds (`2024-01-01T07:00`).
+        let withSeconds = string.count == 16 ? string + ":00" : string
+        return localDateTime.date(from: withSeconds).map(deviceWallClock(fromUTC:))
     }
 
     /// Zone-less forecast date (`daily[].date`, e.g. `2024-01-01`), as midnight in the device's calendar.

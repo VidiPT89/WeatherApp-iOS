@@ -23,50 +23,47 @@ final class AppStoreScreenshotsUITests: XCTestCase {
         captureScreens(locale: "pt", city: "Lisboa")
     }
 
+    /// The simulator should be placed near Cascais first
+    /// (`xcrun simctl location <device> set 38.6979,-9.4215`), so Guincho tops the spot list.
     private func captureScreens(locale: String, city: String) {
         app.launchArguments += ["-appLocale", locale, "-appTheme", "light"]
         app.launch()
+        addUIInterruptionMonitor(withDescription: "Location") { alert in
+            alert.buttons.element(boundBy: 1).tap()
+            return true
+        }
 
+        let spotList = app.descendants(matching: .any)["coast.spotList"].firstMatch
+        XCTAssertTrue(spotList.waitForExistence(timeout: timeout))
+        sleep(2)
+        shot("\(locale)-01-coast")
+
+        app.staticTexts["Guincho"].firstMatch.tap()
+        let nowCard = app.descendants(matching: .any)["coast.nowCard"].firstMatch
+        XCTAssertTrue(nowCard.waitForExistence(timeout: timeout))
+        sleep(2)
+        shot("\(locale)-02-spot")
+
+        app.swipeUp()
+        sleep(1)
+        shot("\(locale)-03-tides")
+
+        app.swipeUp()
+        sleep(1)
+        shot("\(locale)-04-hourly")
+
+        app.tabBars.buttons.element(boundBy: 1).tap()
         let search = app.textFields["dashboard.citySearch"]
         XCTAssertTrue(search.waitForExistence(timeout: timeout))
         search.tap()
         search.typeText(city + "\n")
-
         let marineCard = app.descendants(matching: .any)["dashboard.marineCard"].firstMatch
         XCTAssertTrue(marineCard.waitForExistence(timeout: timeout))
-        // Let the forecast and insights finish loading after the current weather.
         sleep(8)
-        shot("\(locale)-01-home")
-
-        // The weather card is a single button labelled with the city name, which the backend
-        // returns in English ("Lisbon") whatever the search language.
-        app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Lisb")).firstMatch.tap()
-        shotAndClose("\(locale)-02-now", close: "weatherDetail.close")
-
-        app.swipeUp()
-        sleep(1)
-        shot("\(locale)-03-sea-forecast")
+        shot("\(locale)-05-weather")
 
         marineCard.tap()
-        shotAndClose("\(locale)-04-tides", close: "marineDetail.close")
-
-        let chart = app.scrollViews["forecast.hourlyChart"]
-        if chart.waitForExistence(timeout: 10) {
-            chart.tap()
-            shotAndClose("\(locale)-05-forecast", close: "forecastDetail.close")
-        }
-
-        app.swipeUp()
-        sleep(1)
-        let insights = app.descendants(matching: .any)["dashboard.insightsCard"].firstMatch
-        if insights.waitForExistence(timeout: 10) {
-            insights.tap()
-            shotAndClose("\(locale)-06-insights", close: "insightsDetail.close")
-        }
-
-        app.tabBars.buttons.element(boundBy: 3).tap()
-        sleep(2)
-        shot("\(locale)-07-settings")
+        shotAndClose("\(locale)-06-sea", close: "marineDetail.close")
     }
 
     private func shotAndClose(_ name: String, close identifier: String) {

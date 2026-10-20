@@ -112,4 +112,15 @@ enum WeatherWidgetStore {
         else { return nil }
         return (defaults.double(forKey: lastCoordinateLatKey), defaults.double(forKey: lastCoordinateLonKey))
     }
+
+    private static let favoriteSpotIdKey = "coastWidget.favoriteSpotId"
+
+    /// The first favorite beach, which the coast widget shows; `nil` clears it.
+    static func saveFavoriteSpotId(_ spotId: String?) {
+        sharedDefaults?.set(spotId, forKey: favoriteSpotIdKey)
+    }
+
+    static func loadFavoriteSpotId() -> String? {
+        sharedDefaults?.string(forKey: favoriteSpotIdKey)
+    }
 }

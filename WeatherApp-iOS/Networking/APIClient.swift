@@ -151,6 +151,25 @@ actor APIClient {
             requiresAuth: false)
     }
 
+    /// Curated beach spots, nearest first (with `distanceKm`) when a position is given.
+    func fetchCoastSpots(near coordinate: GeoCoordinate?) async throws -> [CoastSpot] {
+        var items: [URLQueryItem] = []
+        if let coordinate {
+            items.append(URLQueryItem(name: "lat", value: String(coordinate.latitude)))
+            items.append(URLQueryItem(name: "lon", value: String(coordinate.longitude)))
+        }
+        return try await send(path: "/api/v1/coast/spots", method: "GET", queryItems: items, requiresAuth: false)
+    }
+
+    /// Four-day hourly sea/wind/tide outlook for a spot, with the best surf/fishing/beach window per day.
+    func fetchCoastOutlook(spotId: String, units: Units?) async throws -> CoastOutlookResponse {
+        var items = [URLQueryItem(name: "spot", value: spotId)]
+        if let units {
+            items.append(URLQueryItem(name: "units", value: units.rawValue))
+        }
+        return try await send(path: "/api/v1/coast/outlook", method: "GET", queryItems: items, requiresAuth: false)
+    }
+
     func fetchHistory() async throws -> [HistoryEntry] {
         try await send(path: "/api/v1/weather/history", method: "GET")
     }
@@ -223,16 +242,6 @@ actor APIClient {
     /// tokens. The server refuses it (400) for the admin account.
     func deleteAccount() async throws {
         let _: EmptyResponse = try await send(path: "/api/v1/user/me", method: "DELETE")
-    }
-
-    // MARK: - Admin (server rejects these with 403 unless the caller's role is admin)
-
-    func fetchAdminUsers() async throws -> [UserAccount] {
-        try await send(path: "/api/v1/admin/users", method: "GET")
-    }
-
-    func deleteAdminUser(id: Int) async throws {
-        let _: EmptyResponse = try await send(path: "/api/v1/admin/users/\(id)", method: "DELETE")
     }
 
     // MARK: - Core request plumbing

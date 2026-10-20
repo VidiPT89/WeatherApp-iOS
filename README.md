@@ -2,20 +2,19 @@
 
 > Native SwiftUI client for the [Weather API Aggregator](https://github.com/VidiPT89/WeatherAPI) — proves the same backend contract that powers the [web client](https://github.com/VidiPT89/WeatherApp) serves a native mobile app too.
 
-**Live demo:** not published (no App Store account for this project) — can also point at the live backend directly, see *How to Run*.
+**App Store:** published as AmazingWeatherApp (pending review).
 
 One of three clients (Web / iOS / [Android](https://github.com/VidiPT89/WeatherApp-Android)) built on top of the same backend. This app talks directly to the Weather API — it never talks to Open-Meteo/OpenWeatherMap directly.
 
 ## 📦 What's Inside
 
+- 🌊 **Coast tab (the app's home)** — 28 hand-picked beaches along mainland Portugal, nearest first, with favorites kept on the device. Each beach shows the swell, wind, water temperature and next tide right now, a surf / fishing / beach-day verdict for each of the next four days with its best window and the reasons behind it (e.g. "Solid swell · Offshore wind"), the day's tide curve, and an hour-by-hour table. Because every beach knows which way it faces, the app can tell offshore from onshore wind and how much of the open-sea swell actually reaches it — beaches that share one offshore forecast, like Sagres' Tonel and Mareta, still get different verdicts
 - 🔎 City search with debounced autocomplete (backend geocoding endpoint) — also used on the Favorites tab now, so a favorite can only be added from a real geocoded suggestion, not free-typed text that the weather-by-name lookup might later fail to resolve
 - 🌡️ Current weather + hourly/daily forecast chart (Swift Charts), with a °C/°F toggle — the hourly chart's default visible window is 12h (up from 7h) plus a non-scrolling "next 24h at a glance" sparkline above it, so a full day's temperatures are readable with far less paging
 - 👆 Tap the weather, sea-conditions or "Mais sobre hoje" cards on the Dashboard for an expanded detail sheet (fuller current-conditions breakdown, the full day's tide events, or a multi-day view of UV/activity/fishing/surf conditions)
-- 🧩 **Home-screen widget** (`WeatherWidget`, small + medium) — shows the last weather the app fetched (shared via an App Group), and fetches live GPS weather on its own when that snapshot is missing or older than 30 minutes, so a freshly placed widget shows real data straight away
-- ⚡ **Cache badge** — "dados frescos" vs "servido da cache há Xs", ticking live from the response's `fromCache` flag and timestamp
-- 🔁 **Fallback banner** — appears when the response was served by the secondary provider
+- 🧩 **Coast widget** (`CoastWidget`, small + medium) — next tide, swell and wind at the first favorite beach (or the one nearest the last known position)
+- 🧩 **Weather widget** (`WeatherWidget`, small + medium) — shows the last weather the app fetched (shared via an App Group), and fetches live GPS weather on its own when that snapshot is missing or older than 30 minutes, so a freshly placed widget shows real data straight away
 - 🔐 Auth (register/login, JWT in Keychain), favorite cities (add via autocomplete + swipe-to-delete), search history, saved unit preference
-- 🛡️ Admin section (Settings → "Administração", role-gated) — list every account and delete one (swipe-to-delete), except the caller's own
 - ✅ Loading, error and empty states throughout
 
 ## 🛠️ Tech Stack
@@ -44,8 +43,8 @@ WeatherApp-iOS/
 ├── Models/          # Codable structs mirroring the backend DTOs exactly
 ├── Networking/      # APIClient (actor, URLSession), AuthStore (Keychain), KeychainHelper
 ├── ViewModels/      # one @Observable view model per screen
-├── Views/           # Auth, Dashboard (weather card, cache badge, fallback banner, forecast chart,
-│                    # + detail sheets), Favorites, History, Settings (incl. admin user list), MainTabView
+├── Views/           # Coast (spot list, spot outlook, tide chart, hourly strip), Auth, Dashboard (weather card, forecast chart,
+│                    # + detail sheets), Favorites, History, Settings, MainTabView
 ├── Shared/          # WeatherWidgetSnapshot + App-Group UserDefaults store, compiled into both
 │                    # the app and WeatherWidget targets
 └── Info.plist       # NSAppTransportSecurity localhost exception (plain HTTP in local dev)
@@ -57,7 +56,7 @@ WeatherWidget/       # WidgetKit extension target: small/medium home-screen widg
 
 - **Direct-to-API, no BFF**: unlike the web client (which proxies through Next.js Route Handlers to keep the JWT out of browser JS), a native app's Keychain is already a secure, sandboxed place to hold a token — no XSS surface to defend against, so there's no need for a server-side proxy layer.
 - **Local-datetime forecast decoding**: `hourly[].time`/`daily[].date` come back from the API without a timezone offset (Open-Meteo's `timezone=auto` already localizes them), so they're decoded as plain `Date`/`DateComponents` via a custom formatter instead of `.iso8601`, which would reject them.
-- **XCUITest over manual driving**: this environment doesn't have screen-recording permission for computer-use automation, so the golden path (register → search → cache badge flips → favorites → history → settings) is captured as a real, re-runnable `XCUITest` instead of a one-off manual walkthrough — arguably stronger verification since it re-runs on every future change.
+- **XCUITest over manual driving**: this environment doesn't have screen-recording permission for computer-use automation, so the golden path (register → coast outlook → search → favorites → history → settings) is captured as a real, re-runnable `XCUITest` instead of a one-off manual walkthrough — arguably stronger verification since it re-runs on every future change.
 - **Snapshot first, live fetch as a fallback**: the widget's `TimelineProvider` reads a small `Codable` snapshot the main app writes to a shared App Group container after each successful Dashboard fetch. When that snapshot is missing or older than 30 minutes, the widget fetches the weather for the device's location itself (`WidgetWeatherFetcher`, using only Foundation/CoreLocation so it doesn't link the auth SDKs) and saves it back to the shared store. It uses an `.after(...)` reload policy so WidgetKit asks for the next update itself, and the app also schedules a 3-hourly background refresh (`WidgetRefreshScheduler`). Relying only on the app being opened, or only on `BGAppRefreshTask`, left the widget stale for hours, since iOS treats both as best-effort.
 
 ## 🚀 How to Run
@@ -92,8 +91,8 @@ xcodebuild test -project WeatherApp-iOS.xcodeproj -scheme WeatherApp-iOS \
   -destination 'platform=iOS Simulator,name=iPhone 17'
 ```
 
-- **Unit tests** (`WeatherApp-iOSTests`): model decoding fixtures (including the local-datetime forecast parsing), `APIClient` error-decoding and token-refresh handling (retry-once on an expired access token, propagating the original error when the refresh token itself is rejected, single-flighting concurrent refreshes) against a mocked `URLProtocol`, `AuthStore`'s logout-vs-in-flight-refresh race handling (both the resurrection-after-logout case and the newer forced-logout-on-refresh-failure case), cache-age formatting, weather-condition keyword matching, `FavoritesViewModel.addFavorite(city:)` (success, the 409 duplicate-favorite message, blank-input guard).
-- **UI test** (`WeatherApp-iOSUITests/GoldenPathUITests.swift`): drives the real app against a live backend end-to-end — register → search a city → confirm weather + forecast render → search again and confirm the cache badge flips to "servido da cache" → toggle the forecast chart tabs → add a favorite → jump back to it → check history → toggle units in settings.
+- **Unit tests** (`WeatherApp-iOSTests`): model decoding fixtures (including the local-datetime forecast parsing), `APIClient` error-decoding and token-refresh handling (retry-once on an expired access token, propagating the original error when the refresh token itself is rejected, single-flighting concurrent refreshes) against a mocked `URLProtocol`, `AuthStore`'s logout-vs-in-flight-refresh race handling (both the resurrection-after-logout case and the newer forced-logout-on-refresh-failure case), coast outlook decoding (null readings, tide times without seconds, current hour and next tide), local favorite beaches, weather-condition keyword matching, `FavoritesViewModel.addFavorite(city:)` (success, the 409 duplicate-favorite message, blank-input guard).
+- **UI test** (`WeatherApp-iOSUITests/GoldenPathUITests.swift`): drives the real app against a live backend end-to-end — register → open a beach's coast outlook → search a city → confirm weather + forecast render → toggle the forecast chart tabs → add a favorite → jump back to it → check history → toggle units in settings.
 
 Given the project's scope (three client apps on one backend), test effort is weighted toward decoding/business-logic and one comprehensive end-to-end flow, rather than unit-testing pure SwiftUI layout.
 

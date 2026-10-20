@@ -66,8 +66,6 @@ struct WeatherCardView: View {
                     metric(icon: "drop.fill", label: "Prob. de chuva", value: "\(today.precipitationProbabilityMax)%")
                 }
             }
-
-            CacheBadgeView(fromCache: weather.fromCache, observedAt: weather.observedAt)
         }
         .padding(20)
         .foregroundStyle(.white)
@@ -79,9 +77,8 @@ struct WeatherCardView: View {
         )
         // Deliberately no `.accessibilityIdentifier` on this container: SwiftUI
         // pushes a container-level identifier down onto every descendant leaf
-        // that doesn't already have a *more specific* one winning, which was
-        // observed clobbering CacheBadgeView's own identifiers in UI tests.
-        // Tests key off visible text (city name / cache badge copy) instead.
+        // that doesn't already have a *more specific* one winning. Tests key off
+        // visible text (the city name) instead.
         .contentShape(RoundedRectangle(cornerRadius: 20))
         .onTapGesture { isDetailPresented = true }
         .accessibilityAddTraits(.isButton)

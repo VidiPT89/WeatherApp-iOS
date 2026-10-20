@@ -1,9 +1,8 @@
 import SwiftUI
 
-/// Main screen: city search with autocomplete, current-conditions card
-/// (with cache badge + fallback banner + sunrise/sunset/UV/rain-chance),
-/// sea-conditions card, forecast chart, a weather-insights card, and a
-/// unit toggle.
+/// Weather tab: city search with autocomplete, current-conditions card
+/// (with sunrise/sunset/UV/rain-chance), sea-conditions card, forecast chart,
+/// a weather-insights card, and a unit toggle.
 struct DashboardView: View {
     @Binding var prefillCity: String?
 
@@ -22,7 +21,7 @@ struct DashboardView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
             }
-            .navigationTitle("AmazingWeatherApp")
+            .navigationTitle("Tempo")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     unitsToggle
@@ -58,9 +57,6 @@ struct DashboardView: View {
             // only `weather` itself is guaranteed here, so each of these renders independently
             // instead of the whole card disappearing when just one of them failed to load.
             VStack(alignment: .leading, spacing: 16) {
-                if weather.isFallbackProvider {
-                    FallbackBannerView(provider: weather.provider)
-                }
                 WeatherCardView(
                     weather: weather,
                     today: viewModel.forecast?.daily.first,

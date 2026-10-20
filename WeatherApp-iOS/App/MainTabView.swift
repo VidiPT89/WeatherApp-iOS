@@ -1,20 +1,25 @@
 import SwiftUI
 
 private enum AppTab: Hashable {
-    case dashboard, favorites, history, settings
+    case coast, dashboard, favorites, history, settings
 }
 
-/// Post-login navigation: Dashboard / Favorites / History / Settings.
+/// Main navigation: Coast (the beach outlook, the app's home) / Weather / Favorites / History /
+/// Settings.
 /// Tapping a favorite jumps to the Dashboard pre-loaded with that city by
 /// setting `pendingDashboardCity` and switching the tab selection.
 struct MainTabView: View {
-    @State private var selectedTab: AppTab = .dashboard
+    @State private var selectedTab: AppTab = .coast
     @State private var pendingDashboardCity: String?
 
     var body: some View {
         TabView(selection: $selectedTab) {
+            CoastSpotsView()
+                .tabItem { Label("Costa", systemImage: "water.waves") }
+                .tag(AppTab.coast)
+
             DashboardView(prefillCity: $pendingDashboardCity)
-                .tabItem { Label("Início", systemImage: "cloud.sun.fill") }
+                .tabItem { Label("Tempo", systemImage: "cloud.sun.fill") }
                 .tag(AppTab.dashboard)
 
             FavoritesView(onSelectCity: { city in

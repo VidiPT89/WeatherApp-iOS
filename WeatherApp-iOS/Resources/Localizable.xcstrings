@@ -139,6 +139,22 @@
         }
       }
     },
+    "A carregar o mar, o vento e as marés…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading sea, wind and tides…"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A carregar o mar, o vento e as marés…"
+          }
+        }
+      }
+    },
     "A carregar..." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -186,6 +202,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "A pesquisa de tempo funciona sem conta. Inicia sessão para guardar favoritos e histórico."
+          }
+        }
+      }
+    },
+    "A procurar as praias perto de ti…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finding beaches near you…"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A procurar as praias perto de ti…"
           }
         }
       }
@@ -424,6 +456,22 @@
         }
       }
     },
+    "Amanhã" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tomorrow"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Amanhã"
+          }
+        }
+      }
+    },
     "AmazingWeatherApp" : {
       "localizations" : {
         "en" : {
@@ -606,6 +654,22 @@
         }
       }
     },
+    "Calor" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Warm"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calor"
+          }
+        }
+      }
+    },
     "Cancelar" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -651,6 +715,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Chuva pouco provável hoje."
+          }
+        }
+      }
+    },
+    "Chuva provável" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rain likely"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chuva provável"
           }
         }
       }
@@ -792,6 +872,22 @@
         }
       }
     },
+    "Costa" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coast"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Costa"
+          }
+        }
+      }
+    },
     "Crescente" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -844,6 +940,22 @@
         }
       }
     },
+    "Cruzado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cross-shore"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cruzado"
+          }
+        }
+      }
+    },
     "Dados frescos" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -857,6 +969,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dados frescos"
+          }
+        }
+      }
+    },
+    "De norte a sul" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "North to south"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De norte a sul"
           }
         }
       }
@@ -891,6 +1019,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Demasiados pedidos. Aguarda um momento e tenta novamente."
+          }
+        }
+      }
+    },
+    "Desliza uma praia para a esquerda para a guardar nas favoritas." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swipe a beach to the left to save it to your favorites."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desliza uma praia para a esquerda para a guardar nas favoritas."
           }
         }
       }
@@ -957,6 +1101,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Diária"
+          }
+        }
+      }
+    },
+    "E" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E"
           }
         }
       }
@@ -1179,6 +1339,38 @@
         }
       }
     },
+    "Estimativas calculadas a partir dos modelos da Open-Meteo, não são uma tabela de marés oficial. Confirma sempre as condições no local e respeita a bandeira e o nadador-salvador." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimates calculated from Open-Meteo models, not an official tide table. Always check conditions on site and follow the beach flag and the lifeguard."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estimativas calculadas a partir dos modelos da Open-Meteo, não são uma tabela de marés oficial. Confirma sempre as condições no local e respeita a bandeira e o nadador-salvador."
+          }
+        }
+      }
+    },
+    "Excelente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excellent"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Excelente"
+          }
+        }
+      }
+    },
     "Extremo" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1243,6 +1435,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Fase da lua"
+          }
+        }
+      }
+    },
+    "Favorita" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorite"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorita"
+          }
+        }
+      }
+    },
+    "Favoritas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favorites"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Favoritas"
           }
         }
       }
@@ -1348,6 +1572,22 @@
         }
       }
     },
+    "Fresco" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cool"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fresco"
+          }
+        }
+      }
+    },
     "Gerir utilizadores" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1431,6 +1671,22 @@
         }
       }
     },
+    "Guardar nas favoritas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save to favorites"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guardar nas favoritas"
+          }
+        }
+      }
+    },
     "Histórico" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1476,6 +1732,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Hora"
+          }
+        }
+      }
+    },
+    "Hora a hora" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hour by hour"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hora a hora"
           }
         }
       }
@@ -1647,6 +1919,22 @@
         }
       }
     },
+    "Já não há horas de luz para hoje." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No daylight hours left today."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já não há horas de luz para hoje."
+          }
+        }
+      }
+    },
     "Limpar tudo" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1730,6 +2018,22 @@
         }
       }
     },
+    "Mais perto de ti" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nearest to you"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais perto de ti"
+          }
+        }
+      }
+    },
     "Mais sobre hoje" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1743,6 +2047,86 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mais sobre hoje"
+          }
+        }
+      }
+    },
+    "Mar agitado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rough sea"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mar agitado"
+          }
+        }
+      }
+    },
+    "Mar calmo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Calm sea"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mar calmo"
+          }
+        }
+      }
+    },
+    "Mar grande, só para experientes" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Big surf, experienced surfers only"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mar grande, só para experientes"
+          }
+        }
+      }
+    },
+    "Mar moderado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Moderate sea"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mar moderado"
+          }
+        }
+      }
+    },
+    "Mar muito grande, perigoso" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Huge surf, dangerous"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mar muito grande, perigoso"
           }
         }
       }
@@ -1779,6 +2163,22 @@
         }
       }
     },
+    "Marés" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tides"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Marés"
+          }
+        }
+      }
+    },
     "Marés de hoje" : {
       "localizations" : {
         "en" : {
@@ -1791,6 +2191,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Marés de hoje"
+          }
+        }
+      }
+    },
+    "Melhor janela" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Best window"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melhor janela"
           }
         }
       }
@@ -1946,6 +2362,54 @@
         }
       }
     },
+    "N" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "N"
+          }
+        }
+      }
+    },
+    "NE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NE"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NE"
+          }
+        }
+      }
+    },
+    "NO" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NW"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "NO"
+          }
+        }
+      }
+    },
     "Nascer do sol" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1963,6 +2427,22 @@
         }
       }
     },
+    "Nascer ou pôr do sol" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunrise or sunset"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nascer ou pôr do sol"
+          }
+        }
+      }
+    },
     "Não encontrámos essa cidade." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -1976,6 +2456,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Não encontrámos essa cidade."
+          }
+        }
+      }
+    },
+    "Não foi possível carregar as condições desta praia. Tenta outra vez dentro de momentos." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't load this beach's conditions. Try again in a moment."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível carregar as condições desta praia. Tenta outra vez dentro de momentos."
+          }
+        }
+      }
+    },
+    "Não foi possível carregar as praias. Verifica a ligação e tenta outra vez." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couldn't load the beaches. Check your connection and try again."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível carregar as praias. Verifica a ligação e tenta outra vez."
           }
         }
       }
@@ -2110,6 +2622,38 @@
         }
       }
     },
+    "Nível do mar" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sea level"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nível do mar"
+          }
+        }
+      }
+    },
+    "O" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "W"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O"
+          }
+        }
+      }
+    },
     "O limite do provider foi atingido. Tenta novamente mais tarde." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2210,6 +2754,102 @@
         }
       }
     },
+    "Offshore" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offshore"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "offshore"
+          }
+        }
+      }
+    },
+    "Ondas boas para todos" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fun-sized waves"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ondas boas para todos"
+          }
+        }
+      }
+    },
+    "Ondas pequenas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Small waves"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ondas pequenas"
+          }
+        }
+      }
+    },
+    "Ondulação" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swell"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ondulação"
+          }
+        }
+      }
+    },
+    "Ondulação consistente" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solid swell"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ondulação consistente"
+          }
+        }
+      }
+    },
+    "Onshore" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onshore"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "onshore"
+          }
+        }
+      }
+    },
     "Origem" : {
       "localizations" : {
         "en" : {
@@ -2259,6 +2899,22 @@
         }
       }
     },
+    "Perto da mudança de maré" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Near the turn of the tide"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perto da mudança de maré"
+          }
+        }
+      }
+    },
     "Período" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2276,6 +2932,22 @@
         }
       }
     },
+    "Período curto, mar desorganizado" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Short period, choppy"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Período curto, mar desorganizado"
+          }
+        }
+      }
+    },
     "Período da ondulação" : {
       "localizations" : {
         "en" : {
@@ -2288,6 +2960,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Período da ondulação"
+          }
+        }
+      }
+    },
+    "Período longo, ondas organizadas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Long period, clean lines"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Período longo, ondas organizadas"
+          }
+        }
+      }
+    },
+    "Pesca" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fishing"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pesca"
           }
         }
       }
@@ -2321,6 +3025,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Português"
+          }
+        }
+      }
+    },
+    "Praia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beach"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Praia"
+          }
+        }
+      }
+    },
+    "Praia abrigada desta ondulação" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beach sheltered from this swell"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Praia abrigada desta ondulação"
           }
         }
       }
@@ -2409,6 +3145,22 @@
         }
       }
     },
+    "Procurar praia ou localidade" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Search beach or town"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Procurar praia ou localidade"
+          }
+        }
+      }
+    },
     "Provider principal indisponível — a usar alternativa (%@)" : {
       "comment" : "A warning message that a weather provider is unavailable, and the app is using a fallback provider.",
       "isCommentAutoGenerated" : true,
@@ -2423,6 +3175,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Provider principal indisponível — a usar alternativa (%@)"
+          }
+        }
+      }
+    },
+    "Próxima maré" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next tide"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próxima maré"
           }
         }
       }
@@ -2549,6 +3317,38 @@
         }
       }
     },
+    "Remover" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover"
+          }
+        }
+      }
+    },
+    "Remover das favoritas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from favorites"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remover das favoritas"
+          }
+        }
+      }
+    },
     "Resposta inválida do servidor." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2601,6 +3401,86 @@
         }
       }
     },
+    "S" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S"
+          }
+        }
+      }
+    },
+    "SE" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SE"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SE"
+          }
+        }
+      }
+    },
+    "SO" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SW"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SO"
+          }
+        }
+      }
+    },
+    "Sem dados" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No data"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem dados"
+          }
+        }
+      }
+    },
+    "Sem dados de maré para este dia." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No tide data for this day."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem dados de maré para este dia."
+          }
+        }
+      }
+    },
     "Sem dados marítimos para esta localização." : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2614,6 +3494,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Sem dados marítimos para esta localização."
+          }
+        }
+      }
+    },
+    "Sem ligação" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No connection"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem ligação"
+          }
+        }
+      }
+    },
+    "Sem ondas" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flat"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem ondas"
           }
         }
       }
@@ -2766,6 +3678,22 @@
         }
       }
     },
+    "Surf" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Surf"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Surf"
+          }
+        }
+      }
+    },
     "Temp. da água" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2848,6 +3776,22 @@
         }
       }
     },
+    "Tempo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weather"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tempo"
+          }
+        }
+      }
+    },
     "Tempo entre ondas consecutivas -- períodos maiores costumam indicar ondulação mais organizada." : {
       "localizations" : {
         "en" : {
@@ -2860,6 +3804,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Tempo entre ondas consecutivas -- períodos maiores costumam indicar ondulação mais organizada."
+          }
+        }
+      }
+    },
+    "Tentar outra vez" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try again"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tentar outra vez"
           }
         }
       }
@@ -3013,6 +3973,54 @@
         }
       }
     },
+    "Vento %@ nesta praia" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ wind at this beach"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vento %@ nesta praia"
+          }
+        }
+      }
+    },
+    "Vento forte" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Strong wind"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vento forte"
+          }
+        }
+      }
+    },
+    "Vento fraco" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Light wind"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vento fraco"
+          }
+        }
+      }
+    },
     "Vento máximo previsto" : {
       "localizations" : {
         "en" : {
@@ -3025,6 +4033,38 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Vento máximo previsto"
+          }
+        }
+      }
+    },
+    "Vento offshore" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Offshore wind"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vento offshore"
+          }
+        }
+      }
+    },
+    "Vento onshore" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onshore wind"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vento onshore"
           }
         }
       }
@@ -3042,6 +4082,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Verifica os dados introduzidos."
+          }
+        }
+      }
+    },
+    "Virada a %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faces %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Virada a %@"
           }
         }
       }
@@ -3082,6 +4138,38 @@
         }
       }
     },
+    "Água" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Water"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Água"
+          }
+        }
+      }
+    },
+    "Água amena" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mild water"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Água amena"
+          }
+        }
+      }
+    },
     "Água e ondulação" : {
       "localizations" : {
         "en" : {
@@ -3094,6 +4182,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Água e ondulação"
+          }
+        }
+      }
+    },
+    "Água fria" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cold water"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Água fria"
           }
         }
       }

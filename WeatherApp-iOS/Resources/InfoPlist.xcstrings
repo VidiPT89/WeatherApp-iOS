@@ -6,13 +6,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "We use your location to automatically show the weather where you are."
+            "value" : "We use your location to show the beaches nearest you and the weather where you are."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usamos a tua localização para mostrar automaticamente o tempo onde estás."
+            "value" : "Usamos a tua localização para mostrar as praias mais perto de ti e o tempo onde estás."
           }
         }
       }

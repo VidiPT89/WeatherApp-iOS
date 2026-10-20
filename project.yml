@@ -32,12 +32,16 @@ targets:
       path: WeatherApp-iOS/Info.plist
       properties:
         CFBundleDisplayName: AmazingWeatherApp
+        # Spelled out so `xcodegen generate` keeps reading them from the build settings instead
+        # of resetting them to a hardcoded 1, which App Store Connect then rejects as a reused build.
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         # Only standard HTTPS/TLS, which is exempt -- saves answering export compliance per build.
         ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
-        NSLocationWhenInUseUsageDescription: We use your location to automatically show the weather where you are.
+        NSLocationWhenInUseUsageDescription: We use your location to show the beaches nearest you and the weather where you are.
         NSAppTransportSecurity:
           NSExceptionDomains:
             localhost:
@@ -124,10 +128,12 @@ targets:
       path: WeatherWidget/Info.plist
       properties:
         CFBundleDisplayName: WeatherWidget
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
         API_BASE_URL: $(WEATHER_API_BASE_URL)
-        NSLocationWhenInUseUsageDescription: We use your location to automatically show the weather where you are.
+        NSLocationWhenInUseUsageDescription: We use your location to show the beaches nearest you and the weather where you are.
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: dev.ividi.weatherapp.WeatherWidget
